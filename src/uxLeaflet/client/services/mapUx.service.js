@@ -15,8 +15,8 @@ angular.module('uxleaflet')
     l_scale: false, //{ position: 'bottomleft', numDigits: 4 },
     l_magnifying: { scale: 3, radius: 180 },
     l_localtiles: false,
-    baseLayers: ['osm', 'dark2', 'ogWorld'],
-    baseLayerDefault: 'osm',
+    baseLayers: ['osm', 'dark2', 'ogWorld', 'googleTerrain', 'googleHybrid', 'googleRoadmap', 'googleSatellite'],
+    baseLayerDefault: 'googleRoadmap',
     overlays: [],
     mapOptions: {
         editPointSize: 10
@@ -30,7 +30,8 @@ angular.module('uxleaflet')
         type: 'xyz',
         layerParams: {
             attribution: 'OpenStreet Map',
-            maxZoom: 19
+            maxZoom: 19,
+            subdomains: ['a', 'b', 'c']
         }
     },
     dark2: {
@@ -50,7 +51,37 @@ angular.module('uxleaflet')
             maxZoom: 19
         },
         type: 'xyz'
+    },
+    googleTerrain: {
+        name: 'Google Terrain',
+        layerType: 'TERRAIN',
+        type: 'google'
+    },
+    googleHybrid: {
+        name: 'Google Hybrid',
+        layerType: 'HYBRID',
+        type: 'google'
+    },
+    googleRoadmap: {
+        name: 'Google Streets',
+        layerType: 'ROADMAP',
+        type: 'google'
+    },
+    googleSatellite: {
+        name: 'Google Satellite',
+        layerType: 'SATELLITE',
+        type: 'google'
     }
+    // google: {
+    //     name: 'Google Maps',
+    //     url: '//{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+    //     layerParams: {
+    //         attribution: 'OpenGate Maps',
+    //         maxZoom: 19,
+    //         subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+    //     },
+    //     type: 'xyz'
+    // }
     ///////////////// REVISAR NO FUNCIONA
     //     ///////////////////
     //     opengate-angular-js-3.0.1.js:7119 Invalid leaflet. No locallayer defined
@@ -81,6 +112,16 @@ angular.module('uxleaflet')
         delete allNgBaseLayers.osm;
         defaultMapOptions.baseLayers.splice(defaultMapOptions.baseLayers.indexOf('osm'), 1);
     });
+
+    // $http.get('//maps.google.com/maps').error(function(data) {
+    //     delete allNgBaseLayers.googleTerrain;
+    //     delete allNgBaseLayers.googleHybrid;
+    //     delete allNgBaseLayers.googleRoadmap;
+    //     defaultMapOptions.baseLayers.splice(defaultMapOptions.baseLayers.indexOf('googleTerrain'), 1);
+    //     defaultMapOptions.baseLayers.splice(defaultMapOptions.baseLayers.indexOf('googleHybrid'), 1);
+    //     defaultMapOptions.baseLayers.splice(defaultMapOptions.baseLayers.indexOf('googleRoadmap'), 1);
+    // });
+    // http://mt0.google.com/vt/lyrs=m&x=0&y=0&z=0
 
     $http.get('//a.basemaps.cartocdn.com/dark_all/0/0/0.png').error(function(data) {
         delete allNgBaseLayers.dark2;
@@ -585,7 +626,7 @@ angular.module('uxleaflet')
     /** Return a L.TileLayer from a known name  (osm, gmaps, etc) */
     function tileLayerFromName(name) {
         var all = _mapUxService.getAllBaseLayerConfigs();
-        var opt = all[name] || all.osm || all.dark2 || all.ogWorld;
+        var opt = all[name] || all.osm || all.dark2 || all.ogWorld || all.googleTerrain || all.googleHybrid || all.googleRoadmap || all.googleSatellite;
         if (opt.type === 'xyz') {
             var tilelayer = new L.TileLayer(opt.url, opt.options || opt.layerParams);
             return tilelayer;
