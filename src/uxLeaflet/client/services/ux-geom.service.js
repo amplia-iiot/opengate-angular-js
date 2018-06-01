@@ -3,7 +3,7 @@
 angular.module('uxleaflet')
 
 /**   
- * geomUxService implements utilities for manage geometries and coordinates
+ * uxGeomService implements utilities for manage geometries and coordinates
  */
 .service('geomUxService', function($timeout) {
     var _this = this;
@@ -93,7 +93,7 @@ angular.module('uxleaflet')
             // only one linear ring expected: the exteriorRing
 
             var MIN_CIRCLE_POINTS = 50; // minimum points for conversion circle to polygon
-            
+
             if (exteriorRing.length >= MIN_CIRCLE_POINTS) {
                 // polygon candidate to circle.
                 isCircle = true;

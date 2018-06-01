@@ -41,9 +41,9 @@
             var xhr = new XMLHttpRequest();
             xhr.responseType = 'arraybuffer';
             xhr.open('GET', url);
-            xhr.onload = function () {
+            xhr.onload = function() {
                 if (xhr.status >= 200 && xhr.status < 300) {
-                    convertArrayToUrlData(xhr.response, ext, function (urlData) {
+                    convertArrayToUrlData(xhr.response, ext, function(urlData) {
                         _this.data = urlData;
                         sucessCallback(_this);
                     });
@@ -66,7 +66,7 @@
             var prefixImage = 'data:image/' + imageType + ';base64,';
             var blob = new Blob([arrayBuffer], { type: 'application/octet-binary' });
             var reader = new FileReader();
-            
+
             reader.onload = function(evt) {
                 var b64Data = evt.target.result.split(',');
                 if (b64Data[0].startsWith('data')) {
@@ -173,7 +173,7 @@
             var tilesToLoad = queue.length;
 
             // if its the first batch of tiles to load
-            console.info('Descarga desde zoom: ' + zoom + ', cantidad: ' + tilesToLoad);
+            console.info('Existing tiles from zoom: ' + zoom + ', count: ' + tilesToLoad);
 
             if (tilesToLoad === 0) { return []; }
 
@@ -210,12 +210,12 @@
             var fails = 0;
 
             function Promisse2() {
-                this.success = function () {
+                this.success = function() {
                     progressCallback(okis + 1, fails, total);
                     okis += 1;
                     oneLess();
                 };
-                this.reject = function () {
+                this.reject = function() {
                     oneLess();
                 };
             }

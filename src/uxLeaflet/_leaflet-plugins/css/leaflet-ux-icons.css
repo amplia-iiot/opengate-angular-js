@@ -1,6 +1,13 @@
 /* file: leaflet-ux-icons.css */
 
 
+/* it overrides general typography */
+
+.leaflet-container {
+    font-size: 14px;
+}
+
+
 /* priority to disabled styles */
 
 .leaflet-control-container .leaflet-bar a.leaflet-disabled {

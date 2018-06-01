@@ -15,9 +15,6 @@
         return;
     }
 
-    /* Custom styling */
-    L.Editable.VertexIcon.prototype.options.iconSize = new L.Point(14, 14);
-
     /**
      * Main Control as container for edition buttons: 
      * AddPolyline, AddPolygon, AddMarker, and DeleteGeom.
@@ -251,11 +248,11 @@
 
 
 // naming of leaflet classes
-L.Class.prototype.toString = function () { 'use strict'; return 'Class: ' + this._clazzName; };
+L.Class.prototype.toString = function() { 'use strict'; return 'Class: ' + this._clazzName; };
 
 L.Map.prototype._clazzName = 'Map';
 L.Polygon.prototype._clazzName = 'Polygon';
-L.Polygon.prototype.toString = function () {
+L.Polygon.prototype.toString = function() {
     'use strict';
     return L.Polyline.prototype.toString.call(this) + ' ' + JSON.stringify(this._latlng);
 };

@@ -45,6 +45,7 @@
 
 .leaflet-control-osmplacefinder .search-tooltip {
     position: absolute;
+    display: none;
     font-size: 1.2em;
     padding: .2em;
     top: 100%;
@@ -60,6 +61,10 @@
     max-height: 75vh;
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+.leaflet-control-osmplacefinder.exp .search-tooltip {
+    display: block;
 }
 
 .leaflet-control-osmplacefinder .leaflet-right .search-tooltip {

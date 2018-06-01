@@ -15,6 +15,7 @@ angular.module('uxleaflet')
     l_scale: false, //{ position: 'bottomleft', numDigits: 4 },
     l_magnifying: { scale: 3, radius: 180 },
     l_localtiles: false,
+    // l_mousewheeltoggle: 'clic to zoom with mouse wheel'  // no activar todavía. HMI lo usaría por defecto.
     baseLayers: ['osm', 'dark2', 'ogWorld', 'googleTerrain', 'googleHybrid', 'googleRoadmap', 'googleSatellite'],
     baseLayerDefault: 'osm',
     overlays: {},
@@ -93,15 +94,16 @@ angular.module('uxleaflet')
     //     at resetTiles (opengate-angular-js-3.0.1.js:7047)
     //     at e.<anonymous> (opengate-angular-js-3.0.1.js:6960)
     //     at HTMLAnchorElement.s [as _leaflet_click126] (leaflet.js:8)
-    // local: {
-    //     name: '',
-    //     url: 'file://_$local_$NAME_{z}/{x}/{y}.png',
-    //     type: 'xyz',
-    //     layerParams: {
-    //         attribution: '',
-    //         maxZoom: 20
-    //     }
-    // }
+    ,
+    local: {
+        name: '',
+        url: 'file://_$local_$NAME_{z}/{x}/{y}.png',
+        type: 'xyz',
+        layerParams: {
+            attribution: '',
+            maxZoom: 20
+        }
+    }
 })
 
 /**
@@ -362,11 +364,12 @@ angular.module('uxleaflet')
     /**
      * Return an array of instances of plugings configured as options parameters.
      * @param options
-     * @param searchCalls: placefinderCb, searchCb
+     * @param {JSON optional} : searchCalls {placefinderCb:fn, searchCb:fn}
      * @returns Array of leafletplugins 
      */
     _this.createCustomWidgets = function(options, searchCalls) {
         /* known plugins, constructor and default options for ux-map plugins  */
+        searchCalls = typeof searchCalls === 'object' ? searchCalls : {};
 
         /* jshint ignore:start */
         var knownPlugins = {
@@ -521,7 +524,7 @@ angular.module('uxleaflet')
                 _desc: 'Control for reset/load base tiles for offline navigation',
                 constructor: L.Control.LocalTileControl,
                 defaultOpts: {
-                    //title: 'Magnifying glass',
+                    //title: 'Demo Localtiles',
                     position: 'topright'
                 },
                 _bower: false
@@ -780,62 +783,15 @@ angular.module('uxleaflet')
         return obj;
     };
 
+    /** deprecated. Use map#enableWheelZoomToggle */
     _this.enableRightClickToZoom = function(map, scope) {
-        map.scrollWheelZoom.disable();
-
-        var timeoutMessage;
-
-        function hideMessage() {
-            scope.showClickMessage = false;
-            scope.$apply();
+        console.warn("WARN. Use ");
+        var opts = {};
+        if (scope.config && scope.config.wheelzoomtext) {
+            opts.text = scope.config.wheelzoomtext;
         }
-
-        map.on('fullscreenchange', function(event) {
-            if (event.target._isFullscreen) {
-                map.scrollWheelZoom.enable();
-            } else {
-                map.scrollWheelZoom.disable();
-            }
-        });
-
-        map.on('contextmenu', function(event) {
-            scope.showClickMessage = false;
-            map.scrollWheelZoom.enable();
-        });
-        map.on('click', function(event) {
-            scope.showClickMessage = false;
-            map.scrollWheelZoom.enable();
-        });
-        // map.on('mouseup', function(event) {
-        //     map.scrollWheelZoom.disable();
-        // });
-        map.on('mouseout', function(event) {
-            map.scrollWheelZoom.disable();
-
-            if (timeoutMessage) clearTimeout(timeoutMessage);
-            timeoutMessage = setTimeout(hideMessage, 2000);
-        });
-        map.on('blur', function(event) {
-            map.scrollWheelZoom.disable();
-
-            if (timeoutMessage) clearTimeout(timeoutMessage);
-            timeoutMessage = setTimeout(hideMessage, 2000);
-        });
-        map.on('mousemove', function(event) {
-            if (!event.target._isFullscreen) {
-                if (!map.scrollWheelZoom._enabled) {
-                    scope.showClickMessage = true;
-
-                    if (timeoutMessage) clearTimeout(timeoutMessage);
-                    timeoutMessage = setTimeout(hideMessage, 2000);
-                }
-            } else {
-                if (!map.scrollWheelZoom._enabled) {
-                    map.scrollWheelZoom.enable();
-                }
-            }
-        });
-    }
+        map.enableWheelZoomToggle(opts);
+    };
 
     // v ---- ya existe en servicio geomUxService
     _this.circleToPolygon = geomUxService.circleToPolygon;

@@ -27,8 +27,10 @@ angular.module('uxleaflet').service('mapExtraApiService',
                 isApikeyRequired: true,
                 options: { libraries: 'drawing,places' },
                 getUrl: function() {
-                    var libs = (this.options.libraries) ? '&libraries=' + this.options.libraries : ''; // probar
-                    return 'https://maps.google.com/maps/api/js?v=3.20&libraries=drawing,places&key=' + this.apikey;
+                    var GOOGLE_API_VERSION = '3.6';
+                    var libs = (this.options.libraries) ? '&libraries=' + this.options.libraries : '';
+                    var key = '&key=' + this.apikey;
+                    return 'https://maps.google.com/maps/api/js?v=' + GOOGLE_API_VERSION + libs + key;
                 },
                 status: null
             },
@@ -179,5 +181,21 @@ angular.module('uxleaflet').service('mapExtraApiService',
             }
 
         } // 
+
+
+        // comment this code in production
+        if (document.location.host.startsWith('172.') || document.location.host.startsWith('localhost')) {
+
+            var VAR_NAME = 'google-apikey';
+            var sApiKey = localStorage.getItem(VAR_NAME);
+            if (sApiKey && L.extraApi) {
+                console.info('Found apikey in locaStorage[\'' + VAR_NAME + '\']');
+                L.extraApi.setApikey('google', sApiKey);
+            } else {
+                console.debug('Not Found apikey in locaStorage[\'' + VAR_NAME + '\']');
+                // or l.extraApi not loaded yet
+            }
+
+        }
 
     });

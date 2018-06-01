@@ -9,7 +9,7 @@
  * - Minimap synchorinization
  * - Local layer management
  */
-(function() {
+(function(L) {
 
     // L.UxMap extends L.Map
     // L.Control.UxLayers extends L.Control.Layers
@@ -41,16 +41,54 @@
                     initSimpleUxMap(this);
                 }
             },
+            _$ngScope: undefined,
             /** Use this method for synchronize ng config object with L.Map */
             setNgScope: function(optScope) {
-                if (!this._$ScopeConfig) {
-                    this._$ScopeConfig = optScope && optScope.config;
-                    // TODO - test method
-                    enableMinimapSynchronization(this, optScope); // it use optScope.controls
+                // only once
+                if (!this._$ngScope === undefined) {
+                    this._$ngScope = optScope || null;
+                    this._enableLayerSynchronization();
                 }
             },
-            _enableMinimapSynchronization: function(optScope) {
-
+            /* enable listener for automatic change of layer in minimap */
+            _enableLayerSynchronization: function() {
+                // only if custom Controls are been added to this map
+                var customControls = this._$ngScope && this._$ngScope.controls && this._$ngScope.controls.custom;
+                if (!customControls) {
+                    return;
+                }
+                // listenibng to baselayerchange event
+                this.on('baselayerchange', this._baseLayerChanged, this);
+            },
+            /* */
+            _disableMinimapSynchronization: function() {
+                this.off('baselayerchange', this._baseLayerChanged);
+            },
+            /* */
+            _baseLayerChanged: function(evt) {
+                var customControls = this._$ngScope && this._$ngScope.controls && this._$ngScope.controls.custom;
+                // manage layer changing in custom controls that are not overriden o that are mandatory choosen 
+                var minimapLayer = selectMapControlOfType(L.Control.MiniMap, customControls);
+                if (minimapLayer) {
+                    var tileLayer = new L.TileLayer(evt.layer._url);
+                    minimapLayer.changeLayer(tileLayer);
+                }
+                // check baseTile for change home-control envelope
+                var gohomeControl = selectMapControlOfType(L.Control.Gohome, customControls);
+                if (gohomeControl) {
+                    var homeInfo = evt.layer.getHomeInfo && evt.layer.getHomeInfo();
+                    if (homeInfo && homeInfo.center) {
+                        gohomeControl.changeTargetView(homeInfo.center, homeInfo.zoom);
+                    } else {
+                        gohomeControl.restoreOriginalView();
+                    }
+                }
+                // Check tile options for over-snap zoom levels.
+                // PRUEBA de 'saltado' de niveles de zoom.
+                // var mapZooms = evt.layer.options.zooms ||
+                //     (evt.layer._localTiles && [1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 15, 18]) ||
+                //     undefined;
+                // map.options.zooms = mapZooms;
             },
             addControl: function(control) {
                 _BASE_.addControl.apply(this, arguments);
@@ -353,47 +391,8 @@
         }
     }
 
-    /**
-     * Utilidad para sincronización de Minimap con mapa principal.
-     * En pruebas. Se puede implementar en otro lugar.
-     * @param {*} map 
-     * @param {*} scope 
-     */
-    function enableMinimapSynchronization(map, scope) {
-        // custom controls are referenced in scope.controls.custom
-        var customControls = scope && scope.controls && scope.controls.custom;
-        if (map._syncMinimapLayerenabled || !customControls) {
-            return;
-        }
-        map._syncMinimapLayerenabled = true;
-        map.on('baselayerchange', function(evt) {
-            // search minimap and change its layer
-            var minimapLayer = searchMapControl(customControls, L.Control.MiniMap);
-            if (minimapLayer) {
-                var tileLayer = new L.TileLayer(evt.layer._url);
-                minimapLayer.changeLayer(tileLayer);
-            }
-            // check baseTile for change home-control envelope
-            var gohomeControl = searchMapControl(customControls, L.Control.Gohome);
-            if (gohomeControl) {
-                var homeInfo = evt.layer.getHomeInfo && evt.layer.getHomeInfo();
-                if (homeInfo && homeInfo.center) {
-                    gohomeControl.changeTargetView(homeInfo.center, homeInfo.zoom);
-                } else {
-                    gohomeControl.restoreOriginalView();
-                }
-            }
-            // Check tile options for over-snap zoom levels.
-            // PRUEBA de 'saltado' de niveles de zoom.
-            // var mapZooms = evt.layer.options.zooms ||
-            //     (evt.layer._localTiles && [1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 15, 18]) ||
-            //     undefined;
-            // map.options.zooms = mapZooms;
-        });
-    }
-
     /** Search a Control (given its type) from a Map passed as argument. */
-    function searchMapControl(mapControls, clazz) {
+    function selectMapControlOfType(clazz, mapControls) {
         for (var index = 0; index < mapControls.length; index += 1) {
             var cc = mapControls[index];
             if (cc instanceof clazz) {
@@ -442,7 +441,7 @@
     function __overrideClass(clazzToModify, newMembers, overriddenMembers) {
         /*  Parche para modificar la clase (en vez de extender de ella)
             Pendiente extender cuando sea posible personalizar Leaflet desde angular-leaflet */
-        console.warn('WARN: MapUx está usando __overrideClass. Class in development: ',
+        console.debug('WARN: MapUx está usando __overrideClass. Class in development: ',
             clazzToModify.constructor); // eliminar comentario si pruebas OK
         var oldMembers = overriddenMembers || {};
 
@@ -465,4 +464,4 @@
         return oldMembers;
     }
 
-})();
+})(window.L);

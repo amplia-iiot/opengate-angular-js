@@ -2,9 +2,12 @@
 
 /**
  * L.LocalTileLayer hace uso de Tiles en local.
- * No se implementa como clase hija de L.TileLayer sino que se hackea L.TileLayer
+ * carga los tiles desde un url (fichero json) o desde localstorge.
+ * Mientras se siga usando ui-leaflet:
+ * - No se implementa como clase hija de L.TileLayer sino que se hackea L.TileLayer
  * para que tenga en cuenta la funcionalidad de tiles en local.
- * carga los tiles desde un url o desde localstorge.
+ * 
+
  */
 (function() {
 
@@ -87,10 +90,7 @@
             function(jsonData) {
                 try {
                     var tiles = _thisLayer._localTiles = JSON.parse(jsonData);
-                    var n = 0;
-                    for (var key in tiles) {
-                        n += (key.indexOf('/') > 0) ? 1 : 0;
-                    }
+                    var n = _thisLayer._checkTiles(tiles);
                     console.info('Loaded tiles offline: ' + jsonPathFileName + '\n Tile count:' + n +
                         '\n Map View: ', tiles.mapview);
                 } catch (err) {
@@ -109,15 +109,35 @@
     L.TileLayer.prototype.changeTileDataFromJson = function(tileSetJson) {
         try {
             var tiles = this._localTiles = JSON.parse(tileSetJson);
-            var n = 0;
-            for (var key in tiles) {
-                n += (key.indexOf('/') > 0) ? 1 : 0;
-            }
+            var n = this._checkTiles(tiles);
             console.info('Loaded tiles offline from localstorage\n Tile count:' + n +
                 '\n Map View: ', tiles.mapview);
         } catch (err) {
             console.info('Fail parsing json content \n', err);
         }
+    };
+
+    /**
+     * Check tiles. Return count and 
+     * (Mejor crear nueva capa cuando se deje de usar ui-leaflet)
+     */
+    L.TileLayer.prototype._checkTiles = function(tiles) {
+        var n = 0;
+        var max = 0;
+        for (var key in tiles) {
+            var z = +key.split('/')[0];
+            // UPGRADE - Check if too large
+            // UPGRADE - Check if void png transparent.
+            if (isNaN(z) === false) {
+                n += 1;
+                max = Math.max(z, max);
+            }
+        }
+        // updat options maxNativeZoom and options.tms
+        this.options.maxNativeZoom = max;
+        this.options.tms = (tiles.mapview && tiles.mapview.tms);
+        //
+        return n;
     };
 
     /**

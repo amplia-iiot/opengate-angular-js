@@ -6,12 +6,12 @@
  * Esta clase está preparada para esperar su inicialización hasta que se resuelva la carga de
  * su la librería de la que depende: google.maps.places.Autocomplete.
  * Es necesario un API-KEY de Google para que funcione. 
- * Este API-KEY se está buscando en localStorage / 'google-key'
+ * Este API-KEY se está buscando uando L.extraApi.ensureLib('google', ...)
  */
 (function() {
 
     'use strict';
-    
+
     var BASE_CLASS = L.Control.GPlaceAutocomplete;
     if (!BASE_CLASS) {
         console.error('L.Control.GPlaceAutocomplete2 requires L.Control.GPlaceAutocomplete');
@@ -42,28 +42,5 @@
         }
 
     });
-
-
-    // comment this code in production
-    if (document.location.host.startsWith('172.') || document.location.host.startsWith('localhost')) {
-        var CHECK_EACH = 2000; // ms
-        var CHECK_TIMES = 3;
-        var times = CHECK_TIMES;
-        var interval = window.setInterval(function() {
-            var VAR_NAME = 'google-apikey';
-            var sApiKey = localStorage.getItem(VAR_NAME);
-            if (sApiKey && L.extraApi) {
-                console.info('Found apikey in locaStorage[\'' + VAR_NAME + '\']');
-                L.extraApi.setApikey('google', sApiKey);
-                times = -1;
-            } else {
-                console.debug('Not Found apikey in locaStorage[\'' + VAR_NAME + '\']');
-                // or l.extraApi not loaded yet
-            }
-            if ((times -= 1) < 0) {
-                window.clearInterval(interval);
-            }
-        }, CHECK_EACH);
-    }
 
 })();

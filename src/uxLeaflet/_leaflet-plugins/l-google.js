@@ -3,14 +3,20 @@
  * Google layer using Google Maps API.
  * window.google.maps is required when constructor is called.
  */
-(function() {
+(function(L, google) {
 
     'use strict';
 
-    if (!window.L) {
+    // check objects loaded in header as external libraries.
+    if (!L) {
         throw new Error('L.Google needs Leaflet');
     }
 
+
+    /**
+     * L.Google implementation for L-0.7.7
+     * (In L-1.x, L.Google must inherit from L.Evented)
+     */
     L.Google = L.Class.extend({
         includes: L.Mixin.Events,
 
@@ -30,7 +36,8 @@
         initialize: function(type, options) {
             L.Util.setOptions(this, options);
 
-            this._ready = window.google !== undefined;
+            // check param of this scope
+            this._ready = google !== undefined;
             if (!this._ready) {
                 delayInit(this);
             }
@@ -187,6 +194,8 @@
         ensureStarted = true;
         L.extraApi.ensureLib('google', ['google.maps.Map'], function() {
             var i;
+            // refresh 'google' parameter
+            google = window.google;
             for (i = 0; i < L.Google.asyncWait.length; i++) {
                 var o = L.Google.asyncWait[i];
                 o._ready = true;
@@ -198,18 +207,18 @@
             L.Google.asyncWait = [];
         });
     }
-/*
-    function testPromise() {
-        var p = new Promise(function(resolve, reject) {
-            window.setTimeout(function() {
-                resolve('p-' + $scope.$id);
-            }, 2000);
-        })
-        p.then(
-            function(data) {
-                console.info('OK: ' + data);
-            }
-        );
-    }
-*/
-})();
+    /*
+        function testPromise() {
+            var p = new Promise(function(resolve, reject) {
+                window.setTimeout(function() {
+                    resolve('p-' + $scope.$id);
+                }, 2000);
+            })
+            p.then(
+                function(data) {
+                    console.info('OK: ' + data);
+                }
+            );
+        }
+    */
+})(window.L, window.google);

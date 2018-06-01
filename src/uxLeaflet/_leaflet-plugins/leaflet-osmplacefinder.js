@@ -591,7 +591,8 @@
 
     } //  L.OsmGeoocodingService
 
-    if (L.Map._isDemoEnabled) {
+    if (L.Map._isDemoGeocodingEnabled) {
+        // option-demo: L.Map._isDemoGeocodingEnabled = true
         console.info('OJO: Nominatim activado. Hacking L.Map._onclic');
 
         // Código de prueba. DECLARAMOS nuevo plugin de leaflet.
