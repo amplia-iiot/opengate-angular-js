@@ -69,6 +69,7 @@ angular.module('opengate-angular-js').component('customUiSelectArea', {
         area: '=',
         multiple: '<',
         required: '=',
-        organization: '<'
+        organization: '<',
+        uiSelectMatchClass: '@?'
     }
 });

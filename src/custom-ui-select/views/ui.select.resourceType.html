@@ -2,7 +2,7 @@
     <label class="custom-ui-select-label">{{'FORM.LABEL.RESOURCE_TYPE' | translate }} <field-options required="$ctrl.required" multiple="$ctrl.multiple" /></label>
     <ui-select custom-ui-select-config="$ctrl.ownConfig" name="resourceType" ng-model="$ctrl.resourceType" theme="bootstrap" title="{{ 'FORM.PLACEHOLDER.RESOURCE_TYPE_MULTI' | translate }}" custom-ui-select multiple="true" on-select="$ctrl.resourceTypeSelected($item, $model)"
         on-remove="$ctrl.resourceTypeRemove($item, $model)" ng-required="$ctrl.required">
-        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDER.RESOURCE_TYPE' | translate }}" allow-clear="true">
+        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.RESOURCE_TYPE' | translate }}" allow-clear="true">
             {{$item.identifier | translate}}
         </ui-select-match>
         <ui-select-choices repeat="resourceType in $ctrl.ownConfig.collection | filter:$select.search track by $index">
@@ -16,7 +16,7 @@
     <label class="custom-ui-select-label">{{'FORM.LABEL.RESOURCE_TYPE' | translate }} <field-options required="$ctrl.required" multiple="$ctrl.multiple" /></label>
     <ui-select custom-ui-select-config="$ctrl.ownConfig" name="resourceType" ng-model="$ctrl.resourceType" theme="bootstrap" title="Choose an resourceType" custom-ui-select multiple="false" on-select="$ctrl.resourceTypeSelected($item, $model)" on-remove="$ctrl.resourceTypeRemove($item, $model)"
         ng-required="$ctrl.required">
-        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDER.RESOURCE_TYPE' | translate }}" allow-clear="true">
+        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.RESOURCE_TYPE' | translate }}" allow-clear="true">
             {{$item.identifier | translate}}
         </ui-select-match>
         <ui-select-choices repeat="resourceType in $ctrl.ownConfig.collection | filter:$select.search track by $index">

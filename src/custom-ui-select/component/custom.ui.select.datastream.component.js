@@ -230,6 +230,7 @@ angular.module('opengate-angular-js').component('customUiSelectDatastream', {
         resourceTypes: '=',
         organization: '=',
         placeholder: '=',
+        uiSelectMatchClass: '@?',
         identifier: '<?',
         ngModel: '=?'
     }

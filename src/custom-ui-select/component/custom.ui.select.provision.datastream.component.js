@@ -119,7 +119,8 @@ angular.module('opengate-angular-js').component('customUiSelectProvisionDatastre
         multiple: '<',
         required: '=',
         organization: '=',
-        allowedResourceTypes: '='
+        allowedResourceTypes: '=',
+        uiSelectMatchClass: '@?'
     }
 
 });

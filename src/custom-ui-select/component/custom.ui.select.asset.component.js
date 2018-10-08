@@ -251,7 +251,8 @@ angular.module('opengate-angular-js').component('customUiSelectAsset', {
         action: '=?',
         specificType: '@?',
         disabled: '<?',
-        ngModel: '=?'
+        ngModel: '=?',
+        uiSelectMatchClass: '@?'
     }
 
 });

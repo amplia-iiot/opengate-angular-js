@@ -32,7 +32,8 @@ angular.module('opengate-angular-js').component('uiSelectResourceType', {
         onRemove: '&',
         resourceType: '=',
         multiple: '<',
-        required: '='
+        required: '=',
+        uiSelectMatchClass: '@?'
     }
 
 });

@@ -2,7 +2,7 @@
     <label for="domain" class="custom-ui-select-label">{{ ($ctrl.label?$ctrl.label:'FORM.LABEL.DOMAIN') | translate }} <field-options required="$ctrl.required" multiple="$ctrl.multiple" /></label>
     <ui-select name="domain" custom-ui-select-config="$ctrl.ownConfig" ng-model="$ctrl.domain" theme="bootstrap" title="Choose a domaion" custom-ui-select multiple="true" custom-mass-autocomplete-item="$ctrl.ownConfig" on-select="$ctrl.domainSelected($item, $model)"
         on-remove="$ctrl.domainRemove($item, $model)" ng-required="$ctrl.required">
-        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDER.DOMAIN' | translate }}" allow-clear="true"> {{$item.name}} </ui-select-match>
+        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.DOMAIN' | translate }}" allow-clear="true"> {{$item.name}} </ui-select-match>
         <ui-select-choices repeat="domainData in $ctrl.ownConfig.collection track by $index">
             <span ng-bind-html="domainData.name | highlight: $select.search">
         </ui-select-choices>
@@ -13,7 +13,7 @@
     <ui-select custom-ui-select-config="$ctrl.ownConfig" name="domain" ng-model="$ctrl.domain" theme="bootstrap"
         title="Choose a domain" custom-ui-select multiple="false" custom-mass-autocomplete-item="$ctrl.ownConfig" on-select="$ctrl.domainSelected($item, $model)"
         on-remove="$ctrl.domainRemove($item, $model)" ng-required="$ctrl.required">
-        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDER.DOMAIN' | translate }}" allow-clear="true"> {{$item.name}} </ui-select-match>
+        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.DOMAIN' | translate }}" allow-clear="true"> {{$item.name}} </ui-select-match>
         <ui-select-choices repeat="domainData in $ctrl.ownConfig.collection track by $index">
             <span ng-bind-html="domainData.name | highlight: $select.search">
         </ui-select-choices>

@@ -4,7 +4,7 @@
         <ui-select id="icon" name="icon" ng-model="$ctrl.icon" theme="bootstrap" ng-required="$ctrl.required" title="$ctrl.title"
             ng-disabled="$ctrl.disabled" on-remove="$ctrl.iconRemove($item, $model)" on-select="$ctrl.iconSelected($item, $model)"
             ng-required="$ctrl.required" allow-clear="$ctrl.allowClear" uis-open-close="$ctrl.onOpenClose(isOpen)">
-            <ui-select-match placeholder="{{ 'FORM.PLACEHOLDER.ICON.CHOOSE' | translate }}" allow-clear="$ctrl.allowClear">
+            <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.ICON.CHOOSE' | translate }}" allow-clear="$ctrl.allowClear">
                 <i class="fa {{$select.selected.key}} fa-2x"></i>
                 <span>{{$select.selected.key}}</span>
             </ui-select-match>

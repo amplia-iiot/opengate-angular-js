@@ -2,7 +2,7 @@
     <label class="custom-ui-select-label">{{ ($ctrl.label?$ctrl.label:'FORM.LABEL.ENTITY_KEY') | translate }} <field-options required="$ctrl.ngRequired" multiple="$ctrl.multiple" /></label>
     <ui-select custom-ui-select-config="$ctrl.ownConfig" ng-disabled="$ctrl.disabled" name="device" ng-model="$ctrl.device" theme="bootstrap" title="Choose a entity" custom-ui-select multiple="true" custom-mass-autocomplete-item="$ctrl.ownConfig"
         on-select="$ctrl.deviceSelected($item, $model)" on-remove="$ctrl.deviceRemove($item, $model)" ng-required="$ctrl.ngRequired">
-        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDER.ENTITY' | translate }}" allow-clear="true">
+        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.ENTITY' | translate }}" allow-clear="true">
             {{$item.provision.administration.identifier._current.value || $item.identifier}}
         </ui-select-match>
         <ui-select-choices repeat="entityData in $ctrl.ownConfig.collection track by $index">
@@ -21,7 +21,7 @@
     <label class="custom-ui-select-label">{{ ($ctrl.label?$ctrl.label:'FORM.LABEL.ENTITY_KEY') | translate }} <field-options required="$ctrl.ngRequired" multiple="$ctrl.multiple" /></label>
     <ui-select custom-ui-select-config="$ctrl.ownConfig" ng-disabled="$ctrl.disabled" name="device" ng-model="$ctrl.device" theme="bootstrap" title="Choose a entity" custom-ui-select multiple="false" custom-mass-autocomplete-item="$ctrl.ownConfig"
         on-select="$ctrl.deviceSelected($item, $model)" on-remove="$ctrl.deviceRemove($item, $model)" ng-required="$ctrl.ngRequired">
-        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDER.ENTITY' | translate }}" allow-clear="true">
+        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.ENTITY' | translate }}" allow-clear="true">
             {{$item.provision.administration.identifier._current.value || $item.identifier}}
         </ui-select-match>
         <ui-select-choices repeat="entityData in $ctrl.ownConfig.collection track by $index">

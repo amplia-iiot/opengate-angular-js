@@ -49,6 +49,7 @@ angular.module('opengate-angular-js').component('customUiSelectBundle', {
         onRemove: '&',
         bundle: '=',
         multiple: '<',
-        required: '='
+        required: '=',
+        uiSelectMatchClass: '@?'
     }
 });

@@ -46,7 +46,8 @@ angular.module('opengate-angular-js').component('uiSelectFaStyles', {
         disabled: '=',
         icon: '=',
         title: '@',
-        label: '='
+        label: '=',
+        uiSelectMatchClass: '@?'
     }
 
 });

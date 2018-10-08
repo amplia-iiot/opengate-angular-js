@@ -2,7 +2,7 @@
     <label class="custom-ui-select-label">{{ 'FORM.LABEL.AREA' | translate }} <field-options required="$ctrl.required" multiple="$ctrl.multiple" /></label>
     <ui-select custom-ui-select-config="$ctrl.ownConfig" name="area" ng-model="$ctrl.area" theme="bootstrap" title="{{ 'FORM.PLACEHOLDER.AREA_MULTI' | translate }}" custom-ui-select multiple="true" custom-mass-autocomplete-item="$ctrl.ownConfig" on-select="$ctrl.areaSelected($item, $model)"
         on-remove="$ctrl.areaRemove($item, $model)" ng-required="$ctrl.required">
-        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDER.AREA_MULTI' | translate }}" allow-clear="true">
+        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.AREA_MULTI' | translate }}" allow-clear="true">
             {{$item.identifier}}
         </ui-select-match>
         <ui-select-choices repeat="area in $ctrl.ownConfig.collection | filter:$select.search track by $index">
@@ -18,7 +18,7 @@
     <label class="custom-ui-select-label">{{ 'FORM.LABEL.AREA' | translate }} <field-options required="$ctrl.required" multiple="$ctrl.multiple" /></label>
     <ui-select custom-ui-select-config="$ctrl.ownConfig" name="area" ng-model="$ctrl.area" theme="bootstrap" title="Choose an area" custom-ui-select multiple="false" custom-mass-autocomplete-item="$ctrl.ownConfig" on-select="$ctrl.areaSelected($item, $model)"
         on-remove="$ctrl.areaRemove($item, $model)" ng-required="$ctrl.required">
-        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDER.AREA' | translate }}" allow-clear="true">
+        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.AREA' | translate }}" allow-clear="true">
             {{$item.identifier}}
         </ui-select-match>
         <ui-select-choices repeat="area in $ctrl.ownConfig.collection | filter:$select.search track by $index">

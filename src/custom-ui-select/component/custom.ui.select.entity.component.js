@@ -128,7 +128,7 @@ angular.module('opengate-angular-js').controller('customUiSelectEntityController
                                         }
                                     }
                                 }
-                            })
+                            });
                         });
                     }
                 } else {
@@ -164,7 +164,8 @@ angular.module('opengate-angular-js').component('customUiSelectEntity', {
         label: '<',
         action: '<?',
         disabled: '<?',
-        ngModel: '=?'
+        ngModel: '=?',
+        uiSelectMatchClass: '@?'
     }
 
 });

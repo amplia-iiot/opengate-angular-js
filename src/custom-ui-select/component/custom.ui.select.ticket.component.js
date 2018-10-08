@@ -42,7 +42,8 @@ angular.module('opengate-angular-js').component('customUiSelectTicket', {
         onRemove: '&',
         ticket: '=',
         multiple: '<',
-        required: '='
+        required: '=',
+        uiSelectMatchClass: '@?'
     }
 
 });

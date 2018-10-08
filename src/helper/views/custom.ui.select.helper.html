@@ -3,12 +3,10 @@
     <input class="form-control" name="{{$ctrl.name}}" type="text" id="{{$ctrl.id}}" ng-model="$ctrl.helperModel" ng-required="$ctrl.required">
     <span class="help-inline" ng-show="!$ctrl.helperModel && $ctrl.required">{{$ctrl.labelError}}</span>
 </div>
-<!--<div class="form-group" ng-hide="!$ctrl.have_helper_keys" ng-transclude="custom">-->
 <div class="form-group" ng-hide="!$ctrl.have_helper_keys">
     <label for="{{$ctrl.id}}">{{$ctrl.labelText | translate }} <field-options required="$ctrl.required" /></label>
-    <!-- <div class="custom-ui-select-container input-group"> -->
     <ui-select id="{{$ctrl.id}}" name="{{$ctrl.name}}" ng-model="$ctrl.helperModel" theme="bootstrap" title="Choose an option" ng-required="$ctrl.required" tagging="$ctrl.helperTagTransform" tagging-label="false">
-        <ui-select-match placeholder="Choose an option">
+        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="Choose an option">
             <span ng-if="$select.selected && $select.selected.key !== 'image'">{{$select.selected.value}}</span>
             <img ng-if="$select.selected && $select.selected.key === 'image'" src="{{ $select.selected.value }}" style="max-height:30px;"></img>
         </ui-select-match>
@@ -18,9 +16,4 @@
             <img ng-if="parameter.key === 'image'" src="{{ parameter.value }}" style="max-height:30px;"></img>
         </ui-select-choices>
     </ui-select>
-    <!-- <div class="custom-ui-select-button input-group-addon">
-            <button class="btn btn-default no-margin no-padding fa fa-close" ng-click="$ctrl.clean()"></button>
-        </div> -->
-    <!-- </div> -->
-    <!-- <span class="help-inline" ng-show="!$ctrl.helperModel && $ctrl.required" translate>FORM.REQUIRED.FIELD</span> -->
 </div>

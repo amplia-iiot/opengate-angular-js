@@ -141,7 +141,8 @@ angular.module('opengate-angular-js').component('customUiSelectSubscription', {
         ngRequired: '<',
         required: '<',
         excludeDevices: '=',
-        action: '=?'
+        action: '=?',
+        uiSelectMatchClass: '@?'
     }
 
 });

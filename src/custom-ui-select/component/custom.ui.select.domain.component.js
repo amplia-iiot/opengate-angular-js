@@ -47,7 +47,8 @@ angular.module('opengate-angular-js').component('customUiSelectDomain', {
         domain: '=',
         multiple: '<',
         required: '=',
-        label: '='
+        label: '=',
+        uiSelectMatchClass: '@?'
     }
 
 });

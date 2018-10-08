@@ -273,7 +273,8 @@ angular.module('opengate-angular-js').component('customUiSelectDevice', {
         action: '=?',
         specificType: '@?',
         disabled: '<?',
-        ngModel: '=?'
+        ngModel: '=?',
+        uiSelectMatchClass: '@?'
     }
 
 });
