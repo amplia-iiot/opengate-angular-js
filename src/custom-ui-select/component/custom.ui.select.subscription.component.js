@@ -120,7 +120,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
 
         if (!ctrl.actions) {
             ctrl.actions = [{
-                title: $translate.instant('BUTTON.TITLE.NEW_SUBSCRIPTION'),
+                title: $translate.instant('FORM.LABEL.NEW'),
                 icon: 'glyphicon glyphicon-plus-sign',
                 action: function() {
                     $doActions.executeModal('createSubscription', {}, function(result) {

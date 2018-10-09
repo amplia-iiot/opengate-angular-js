@@ -1,17 +1,17 @@
 'use strict';
 
 
-angular.module('opengate-angular-js').controller('uiSelectFaStylesController', ['$scope', 'faStylesService', '$window', function ($scope, faStylesService, $window) {
+angular.module('opengate-angular-js').controller('uiSelectFaStylesController', ['$scope', 'faStylesService', '$window', function($scope, faStylesService, $window) {
     var ctrl = this;
 
     ctrl.availableIcons = faStylesService.getStyles();
     var intervalIconsid = -1;
     ctrl.maxIcons = 50;
-    ctrl.onOpenClose = function (isOpen) {
+    ctrl.onOpenClose = function(isOpen) {
         ctrl.maxIcons = 50;
         $window.clearInterval(intervalIconsid);
         if (isOpen) {
-            intervalIconsid = $window.setInterval(function () {
+            intervalIconsid = $window.setInterval(function() {
                 ctrl.maxIcons = ctrl.maxIcons + 50;
 
                 if (ctrl.maxIcons > Object.keys(ctrl.availableIcons).length) {
@@ -22,14 +22,14 @@ angular.module('opengate-angular-js').controller('uiSelectFaStylesController', [
         }
     };
 
-    ctrl.iconSelected = function ($item, $model) {
+    ctrl.iconSelected = function($item, $model) {
         var returnObj = {};
         returnObj.$item = $item;
         returnObj.$model = $model;
         ctrl.onSelectItem(returnObj);
     };
 
-    ctrl.iconRemove = function ($item, $model) {
+    ctrl.iconRemove = function($item, $model) {
         ctrl.onRemove($item, $model);
     };
 }]);
