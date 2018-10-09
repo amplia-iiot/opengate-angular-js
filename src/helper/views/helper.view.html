@@ -79,7 +79,8 @@
                 <div uib-accordion-heading>{{ 'FORM.SUBSCRIBERS' | translate }}</div>
                 <div class="row row-eq-height">
                     <div class="col-xs-10">
-                        <custom-ui-select-subscriber on-select-item="$ctrl.onSelectSubscriberKey($item, $model)" specific-type="{{$ctrl.specific_type}}" exclude-devices="$ctrl.exclude_devices" on-remove="$ctrl.onDeleteSubscriberKey()" entity="$ctrl.subscriber.selected" multiple="false">
+                        <custom-ui-select-subscriber on-select-item="$ctrl.onSelectSubscriberKey($item, $model)" specific-type="{{$ctrl.specific_type}}" organization="{{$ctrl.organization}}" channel="{{$ctrl.channel}}" exclude-devices="$ctrl.exclude_devices" on-remove="$ctrl.onDeleteSubscriberKey()"
+                            entity="$ctrl.subscriber.selected" multiple="false">
                         </custom-ui-select-subscriber>
                     </div>
                     <div class="col-xs-2 vcenter no-padding" ng-if="$ctrl.helper_exclusive">
@@ -93,8 +94,8 @@
                 <div uib-accordion-heading>{{ 'FORM.SUBSCRIPTIONS' | translate }}</div>
                 <div class="row row-eq-height">
                     <div class="col-xs-10">
-                        <custom-ui-select-subscription on-select-item="$ctrl.onSelectSubscriptionKey($item, $model)" specific-type="{{$ctrl.specific_type}}" exclude-devices="$ctrl.exclude_devices" on-remove="$ctrl.onDeleteSubscriptionKey()" entity="$ctrl.subscription.selected"
-                            multiple="false">
+                        <custom-ui-select-subscription on-select-item="$ctrl.onSelectSubscriptionKey($item, $model)" specific-type="{{$ctrl.specific_type}}" organization="{{$ctrl.organization}}" channel="{{$ctrl.channel}}" exclude-devices="$ctrl.exclude_devices" on-remove="$ctrl.onDeleteSubscriptionKey()"
+                            entity="$ctrl.subscription.selected" multiple="false">
                         </custom-ui-select-subscription>
                     </div>
                     <div class="col-xs-2 vcenter no-padding" ng-if="$ctrl.helper_exclusive">

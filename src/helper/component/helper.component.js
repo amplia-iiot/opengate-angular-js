@@ -54,6 +54,12 @@ _wizard.controller('helperDialogController', ['$scope', '$element', '$attrs', '$
                 specific_type: function() {
                     return $helper.specificType;
                 },
+                organization: function() {
+                    return $helper.organization;
+                },
+                channel: function() {
+                    return $helper.channel;
+                },
                 exclude_devices: function() {
                     return $helper.excludeDevices === 'true';
                 },
@@ -100,8 +106,8 @@ _wizard.controller('helperDialogController', ['$scope', '$element', '$attrs', '$
     };
 }]);
 
-_wizard.controller('helperDialogModalController', ['$scope', '$uibModalInstance', 'helper_id', 'helper_exclusive', 'specific_type', 'exclude_devices', 'helper_extra', 'helper_selected', 'helper_type', 'Upload', 'mapUxService', '$translate', 'fullCopy',
-    function($scope, $uibModalInstance, helper_id, helper_exclusive, specific_type, exclude_devices, helper_extra, helper_selected, helper_type, Upload, mapUxService, $translate, fullCopy) {
+_wizard.controller('helperDialogModalController', ['$scope', '$uibModalInstance', 'helper_id', 'helper_exclusive', 'specific_type', 'organization', 'channel', 'exclude_devices', 'helper_extra', 'helper_selected', 'helper_type', 'Upload', 'mapUxService', '$translate', 'fullCopy',
+    function($scope, $uibModalInstance, helper_id, helper_exclusive, specific_type, organization, channel, exclude_devices, helper_extra, helper_selected, helper_type, Upload, mapUxService, $translate, fullCopy) {
         var $ctrl = this;
         $ctrl.helper_extra = helper_extra;
 
@@ -127,6 +133,9 @@ _wizard.controller('helperDialogModalController', ['$scope', '$uibModalInstance'
         $ctrl.helper_keys.__clean[$translate.instant('FORM.HELPER.FIELD.EMPTY')] = '';
 
         $ctrl.specific_type = specific_type;
+        $ctrl.organization = organization;
+        $ctrl.channel = channel;
+
         $ctrl.exclude_devices = exclude_devices;
 
         var events = [];
@@ -549,6 +558,8 @@ _wizard.component('helperDialog', {
         onCopy: '&',
         helperId: '@',
         specificType: '@',
+        organization: '@',
+        channel: '@',
         excludeDevices: '@',
         helperButton: '@',
         helperTitle: '@',

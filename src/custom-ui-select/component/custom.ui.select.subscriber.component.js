@@ -57,13 +57,56 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriberContro
                     }
                 }
 
+                if (ctrl.organization) {
+                    if (filter.and) {
+                        filter.and.push({
+                            'eq': {
+                                'provision.administration.organization': ctrl.organization
+                            }
+                        });
+                    } else {
+                        filter = {
+                            'and': [
+                                filter,
+                                {
+                                    'eq': {
+                                        'provision.administration.organization': ctrl.organization
+                                    }
+                                }
+                            ]
+                        };
+                    }
+                }
+                if (ctrl.channel) {
+                    if (filter.and) {
+                        filter.and.push({
+                            'eq': {
+                                'provision.administration.channel': ctrl.channel
+                            }
+                        });
+                    } else {
+                        filter = {
+                            'and': [
+                                filter,
+                                {
+                                    'eq': {
+                                        'provision.administration.channel': ctrl.channel
+                                    }
+                                }
+                            ]
+                        };
+                    }
+                }
+
                 return filter;
             },
             rootKey: 'devices',
             collection: [],
             customSelectors: $api().subscribersSearchBuilder().provisioned(),
             processingData: $entityExtractor.extractSubscribers,
-            specificType: ctrl.specificType
+            specificType: ctrl.specificType,
+            organization: ctrl.organization,
+            channel: ctrl.channel
         };
 
         ctrl.entitySelected = function($item, $model) {
@@ -91,6 +134,8 @@ angular.module('opengate-angular-js').component('customUiSelectSubscriber', {
         onSelectItem: '&',
         onRemove: '&',
         entity: '=',
+        organization: '@',
+        channel: '@',
         specificType: '@',
         multiple: '<',
         ngRequired: '<',

@@ -54,6 +54,46 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
                         };
                     }
                 }
+                if (ctrl.organization) {
+                    if (filter.and) {
+                        filter.and.push({
+                            'eq': {
+                                'provision.administration.organization': ctrl.organization
+                            }
+                        });
+                    } else {
+                        filter = {
+                            'and': [
+                                filter,
+                                {
+                                    'eq': {
+                                        'provision.administration.organization': ctrl.organization
+                                    }
+                                }
+                            ]
+                        };
+                    }
+                }
+                if (ctrl.channel) {
+                    if (filter.and) {
+                        filter.and.push({
+                            'eq': {
+                                'provision.administration.channel': ctrl.channel
+                            }
+                        });
+                    } else {
+                        filter = {
+                            'and': [
+                                filter,
+                                {
+                                    'eq': {
+                                        'provision.administration.channel': ctrl.channel
+                                    }
+                                }
+                            ]
+                        };
+                    }
+                }
 
                 return filter;
             },
@@ -61,7 +101,9 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             collection: [],
             customSelectors: $api().subscriptionsSearchBuilder().provisioned(),
             processingData: $entityExtractor.extractSubscriptions,
-            specificType: ctrl.specificType
+            specificType: ctrl.specificType,
+            organization: ctrl.organization,
+            channel: ctrl.channel
         };
 
         ctrl.entitySelected = function($item, $model) {
@@ -81,7 +123,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
                 title: $translate.instant('BUTTON.TITLE.NEW_SUBSCRIPTION'),
                 icon: 'glyphicon glyphicon-plus-sign',
                 action: function() {
-                    $doActions.executeModal('createSubscription', {}, function (result) {
+                    $doActions.executeModal('createSubscription', {}, function(result) {
                         if (result && result.length > 0) {
                             ctrl.entity = !ctrl.entity ? [] : ctrl.entity;
                             ctrl.entity.push({
@@ -109,13 +151,13 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             }, {
                 title: $translate.instant('BUTTON.TITLE.EXECUTE_OPERATION'),
                 icon: 'glyphicon glyphicon-flash',
-                action: function () {
+                action: function() {
                     $doActions.executeModal('executeOperation', {
                         keys: jsonPath(ctrl.entity, '$..' + $jsonFinderHelper.subscription.provisioned.getPath('identifier') + '._current.value') || [],
                         entityType: 'SUBSCRIPTION'
                     });
                 },
-                disable: function () {
+                disable: function() {
                     return !ctrl.entity || ctrl.entity.length === 0;
                 },
                 permissions: 'executeOperation'
@@ -137,6 +179,8 @@ angular.module('opengate-angular-js').component('customUiSelectSubscription', {
         onRemove: '&',
         entity: '=',
         specificType: '@',
+        organization: '@',
+        channel: '@',
         multiple: '<',
         ngRequired: '<',
         required: '<',
