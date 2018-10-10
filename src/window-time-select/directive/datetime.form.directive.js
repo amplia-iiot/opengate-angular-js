@@ -184,6 +184,13 @@ angular.module('opengate-angular-js')
 
             $scope.init();
 
+
+        },
+        link: function(scope) {
+            scope.$on('$destroy', function() {
+                console.log("destroy");
+                scope.calendarOpen = false;
+            });
         }
     };
 });

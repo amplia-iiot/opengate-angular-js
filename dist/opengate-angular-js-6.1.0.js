@@ -2393,7 +2393,22 @@ angular.module('opengate-angular-js')
                     type: type
                 };
             }
-        }]
+        }],
+        link: function(scope) {
+            scope.$on('$destroy', function() {
+                scope.fromCalendarOpen = false;
+                scope.toCalendarOpen = false;
+
+                // manual destroy
+                var pickers = angular.element('ul[class*="datetime-picker-dropdown"]')
+
+                if (pickers && pickers.length) {
+                    angular.forEach(pickers, function(element) {
+                        element.remove();
+                    });
+                }
+            });
+        }
     };
 });
 
@@ -2582,7 +2597,14 @@ angular.module('opengate-angular-js')
 
             $scope.init();
 
-        }]
+
+        }],
+        link: function(scope) {
+            scope.$on('$destroy', function() {
+                console.log("destroy");
+                scope.calendarOpen = false;
+            });
+        }
     };
 });
 
