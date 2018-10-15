@@ -1,6 +1,18 @@
 .input-group span.ui-select-toggle {
     display: inline-block !important;
 }
+
+action-button>div>div {
+    float: left;
+    margin-right: 5px;
+    max-width: 100%;
+}
+
+action-button>div>div>.btn {
+    max-width: 100%;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
 /* esri-leaflet-geocoder */
 .geocoder-control-input{
     position:absolute;left:0;top:0;

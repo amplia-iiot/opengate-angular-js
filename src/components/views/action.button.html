@@ -1,5 +1,5 @@
-<div class="input-group">
-    <div ng-repeat="action in $ctrl.actions" class=" input-group-addon " permission permission-only="action.permissions">
+<div class="form-group">
+    <div ng-repeat="action in $ctrl.actions" permission permission-only="action.permissions">
         <a title="{{action.title}}" style="cursor:pointer" ng-click="$ctrl.onAction(action)" class="custom-ui-select-button btn btn-xs no-margin {{(action.disable && action.disable()) ? 'disabled' : ''}}">
             <i class="text-primary {{action.icon}}">
             </i>&nbsp;<small>{{action.title}}</small>
