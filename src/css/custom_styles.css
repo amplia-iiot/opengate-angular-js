@@ -13,3 +13,12 @@ action-button>div>div>.btn {
     overflow-x: hidden;
     text-overflow: ellipsis;
 }
+
+.ui-select-match-item div.entity-editable {
+    position: absolute;
+    opacity: 0;
+    width: 65%;
+    height: 70%;
+    transition: all linear 0.2s;
+    cursor: context-menu;
+}

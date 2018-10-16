@@ -119,6 +119,36 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
 
         };
 
+        ctrl.editDevice = function(deviceData) {
+            var deviceFinder = $api().devicesSearchBuilder().filter({
+                "and": [{
+                    "eq": {
+                        "provision.device.identifier": deviceData.provision.administration.identifier._current.value || deviceData.identifier
+                    }
+                }]
+            });
+
+            deviceFinder.build().execute()
+                .then(function(result) {
+                    if (result.statusCode === 204) {
+                        $translate('TOASTR.ENTITY_NOT_FOUND', {
+                            identifier: entityId
+                        }).
+                        then(function(translatedMessage) {
+                            toastr.error(translatedMessage);
+                        });
+                    } else {
+                        $doActions.executeModal('editDevice', angular.copy(result.data.devices[0]));
+                    }
+                })
+                .catch(function(err) {
+                    $translate('TOASTR.CANNOT_GET_ENTITY_INFO').
+                    then(function(translatedMessage) {
+                        toastr.error(translatedMessage);
+                    });
+                });
+        };
+
         // Actions que finalmente se mostrarán en el control
         ctrl._actions = [{
             title: $translate.instant('FORM.LABEL.NEW'),
