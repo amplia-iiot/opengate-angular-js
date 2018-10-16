@@ -16,7 +16,6 @@ action-button>div>div>.btn {
 
 .ui-select-match-item div.entity-editable {
     position: absolute;
-    opacity: 0;
     width: 65%;
     height: 70%;
     transition: all linear 0.2s;
