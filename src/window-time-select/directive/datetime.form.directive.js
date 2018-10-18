@@ -188,7 +188,7 @@ angular.module('opengate-angular-js')
         },
         link: function(scope) {
             scope.$on('$destroy', function() {
-                console.log("destroy");
+                //console.log("destroy");
                 scope.calendarOpen = false;
             });
         }

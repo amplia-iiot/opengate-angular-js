@@ -19,6 +19,33 @@
     </div>
     <div class="modal-body without-padding-top">
         <uib-accordion close-others="true">
+            <div uib-accordion-group is-open="$ctrl.areaIsOpen" class="area-option" ng-hide="$ctrl.helper_exclusive ? !$ctrl.areaIsExclusive: false">
+                <div uib-accordion-heading>{{ 'FORM.AREAS' | translate }}</div>
+                <div class="row row-eq-height">
+                    <div class="col-xs-10">
+                        <custom-ui-select-area on-select-item="$ctrl.onSelectAreaKey($item, $model)" on-remove="$ctrl.onDeleteAreaKey()" area="$ctrl.area.selected" organization="$ctrl.area.organization" multiple="false"> </custom-ui-select-area>
+                    </div>
+                    <div class="col-xs-2 vcenter no-padding" ng-if="$ctrl.helper_exclusive">
+                        <a class="top-buffer btn btn-default ux-txt-success pointer" ng-class="{'disabled': !$ctrl.helper_keys.area}" ng-click="$ctrl.ok('area')" ng-disabled="!$ctrl.helper_keys.area">
+                            <i class="fa fa-lg fa-files-o" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div uib-accordion-group is-open="$ctrl.assetIsOpen" ng-hide="$ctrl.helper_exclusive ? (!$ctrl.entityIsExclusive && !$ctrl.assetIsExclusive): false" class="asset-option">
+                <div uib-accordion-heading>{{ 'FORM.ASSETS' | translate }}</div>
+                <div class="row row-eq-height">
+                    <div class="col-xs-10">
+                        <custom-ui-select-asset on-select-item="$ctrl.onSelectAssetKey($item, $model)" on-remove="$ctrl.onDeleteAssetKey()" asset="$ctrl.asset.selected" multiple="false" specific-type="{{$ctrl.specific_type}}"></custom-ui-select-asset>
+                    </div>
+                    <div class="col-xs-2 vcenter no-padding" ng-if="$ctrl.helper_exclusive">
+                        <a class="top-buffer btn btn-default ux-txt-success pointer" ng-class="{'disabled': !$ctrl.helper_keys.asset}" ng-click="$ctrl.ok('asset')" ng-disabled="!$ctrl.helper_keys.asset">
+                            <i class="fa fa-lg fa-files-o" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
             <div uib-accordion-group is-open="$ctrl.mapIsOpen" ng-hide="$ctrl.helper_exclusive ? !$ctrl.mapIsExclusive : false" class="map-option">
                 <div uib-accordion-heading>Map</div>
                 <div class="row" ng-if="$ctrl.mapIsOpen">
@@ -55,20 +82,6 @@
                     </div>
                     <div class="col-xs-2 vcenter no-padding" ng-if="$ctrl.helper_exclusive">
                         <a class="top-buffer btn btn-default ux-txt-success pointer" ng-class="{'disabled': !$ctrl.helper_keys.device}" ng-click="$ctrl.ok('device')" ng-disabled="!$ctrl.helper_keys.device">
-                            <i class="fa fa-lg fa-files-o" aria-hidden="true"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div uib-accordion-group is-open="$ctrl.assetIsOpen" ng-hide="$ctrl.helper_exclusive ? (!$ctrl.entityIsExclusive && !$ctrl.assetIsExclusive): false" class="asset-option">
-                <div uib-accordion-heading>{{ 'FORM.ASSETS' | translate }}</div>
-                <div class="row row-eq-height">
-                    <div class="col-xs-10">
-                        <custom-ui-select-asset on-select-item="$ctrl.onSelectAssetKey($item, $model)" on-remove="$ctrl.onDeleteAssetKey()" asset="$ctrl.asset.selected" multiple="false" specific-type="{{$ctrl.specific_type}}"></custom-ui-select-asset>
-                    </div>
-                    <div class="col-xs-2 vcenter no-padding" ng-if="$ctrl.helper_exclusive">
-                        <a class="top-buffer btn btn-default ux-txt-success pointer" ng-class="{'disabled': !$ctrl.helper_keys.asset}" ng-click="$ctrl.ok('asset')" ng-disabled="!$ctrl.helper_keys.asset">
                             <i class="fa fa-lg fa-files-o" aria-hidden="true"></i>
                         </a>
                     </div>
@@ -131,19 +144,8 @@
                     </div>
                 </div>
             </div>
-            <div uib-accordion-group is-open="$ctrl.areaIsOpen" class="area-option" ng-hide="$ctrl.helper_exclusive ? !$ctrl.areaIsExclusive: false">
-                <div uib-accordion-heading>{{ 'FORM.AREAS' | translate }}</div>
-                <div class="row row-eq-height">
-                    <div class="col-xs-10">
-                        <custom-ui-select-area on-select-item="$ctrl.onSelectAreaKey($item, $model)" on-remove="$ctrl.onDeleteAreaKey()" area="$ctrl.area.selected" organization="$ctrl.area.organization" multiple="false"> </custom-ui-select-area>
-                    </div>
-                    <div class="col-xs-2 vcenter no-padding" ng-if="$ctrl.helper_exclusive">
-                        <a class="top-buffer btn btn-default ux-txt-success pointer" ng-class="{'disabled': !$ctrl.helper_keys.area}" ng-click="$ctrl.ok('area')" ng-disabled="!$ctrl.helper_keys.area">
-                            <i class="fa fa-lg fa-files-o" aria-hidden="true"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
+
+
             <div uib-accordion-group is-open="$ctrl.bundleIsOpen" class="bundle-option" ng-hide="$ctrl.helper_exclusive ? !$ctrl.bundleIsExclusive: false">
                 <div uib-accordion-heading>{{ 'FORM.BUNDLES' | translate }}</div>
                 <div class="row row-eq-height">
@@ -174,6 +176,21 @@
                     </div>
                 </div>
             </div>
+
+            <div uib-accordion-group is-open="$ctrl.organizationIsOpen" ng-hide="$ctrl.helper_exclusive ? !$ctrl.organizationIsExclusive: false" class="organization-option">
+                <div uib-accordion-heading>{{ 'FORM.ORGANIZATION' | translate }}</div>
+                <div class="row row-eq-height">
+                    <div class="col-xs-10">
+                        <custom-ui-select-organization on-select-item="$ctrl.onSelectOrganization($item, $model)" on-remove="$ctrl.onDeleteOrganization()" organization="$ctrl.organization.selected" multiple="false"></custom-ui-select-organization>
+                    </div>
+                    <div class="col-xs-2 vcenter no-padding" ng-if="$ctrl.helper_exclusive">
+                        <a class="top-buffer btn btn-default ux-txt-success pointer" ng-class="{'disabled': !$ctrl.helper_keys.organization}" ng-click="$ctrl.ok('organization')" ng-disabled="!$ctrl.helper_keys.organization">
+                            <i class="fa fa-lg fa-files-o" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
         </uib-accordion>
     </div>
     <div class="modal-footer">

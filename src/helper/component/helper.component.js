@@ -510,6 +510,24 @@ _wizard.controller('helperDialogModalController', ['$scope', '$uibModalInstance'
             delete $ctrl.helper_keys.image;
         };
 
+        //config organization
+        $ctrl.organization = {};
+        if (helper_selected && helper_selected.organization) {
+
+            $ctrl.organization = {
+                selected: helper_selected.organization
+
+            };
+        }
+
+        $ctrl.onSelectOrganization = function($item, $model) {
+            $ctrl.helper_keys.organization = $item;
+        };
+
+        $ctrl.onDeleteOrganization = function() {
+            delete $ctrl.helper_keys.organization;
+        };
+
         //Condicion para botón de aplicar todo lo seleccionado en los helpers
         $ctrl.canApply = function() {
             return Object.keys($ctrl.helper_keys).length > 0;

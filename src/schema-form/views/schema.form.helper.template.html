@@ -2,10 +2,10 @@
     <div class="form-group" ng-class="{'has-error': hasError(), 'has-success': hasSuccess(), 'has-feedback': form.feedback !== false }">
         <!-- Surrounding DIV for sfField builder to add a sfField directive to. -->
         <!--on-copy="evalExpr(form.oncopy, {args: $helper_keys})"-->
-        <helper-dialog helper-id="{{form.helperid}}" helper-exclusive="{{form.exclusive}}" helper-type="{{form.helperType}}" specific-type="{{form.specificType}}" organization="{{form.organization}}" channel="{{form.channel}}" required="form.required">
-            <helper-ui-select id="{{form.id}}" name="{{form.name}}" label-text="{{form.title}}" helper-model="$$value$$" sf-field-model="replaceAll" label-error="{{form.labelerror}}" required="form.required">
+        <helper-dialog helper-id="{{form.helperid}}" helper-exclusive="{{form.exclusive}}" helper-type="{{form.helperType}}" specific-type="{{form.specificType}}" organization="{{form.organization}}" channel="{{form.channel}}" ng-required="form.required">
+            <helper-ui-select id="{{form.id}}" name="{{form.name}}" label-text="{{form.title}}" helper-model="$$value$$" sf-field-model="replaceAll" label-error="{{form.labelerror}}" ng-required="form.required">
                 <helper-ui-select-input>
-                    <label for="{{form.name}}">{{form.title}} {{form.helperid}} {{form.exclusive}} <field-options required="form.required" /></label>
+                    <label for="{{form.name}}">{{form.title}} {{form.helperid}} {{form.exclusive}} <field-optionsng-required="form.required" /></label>
                     <input class="form-control" name="{{form.name}}" type="text" id="{{form.id}}" ng-model="$$value$$" sf-field-model="replaceAll" ng-required="form.required">
                 </helper-ui-select-input>
             </helper-ui-select>
