@@ -54,7 +54,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
                         };
                     }
                 }
-                if (ctrl.organization) {
+                if (ctrl.organization && typeof ctrl.organization === 'string') {
                     if (filter.and) {
                         filter.and.push({
                             'eq': {
@@ -74,7 +74,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
                         };
                     }
                 }
-                if (ctrl.channel) {
+                if (ctrl.channel && typeof ctrl.channel === 'string') {
                     if (filter.and) {
                         filter.and.push({
                             'eq': {

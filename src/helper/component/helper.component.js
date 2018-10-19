@@ -528,10 +528,10 @@ _wizard.controller('helperDialogModalController', ['$scope', '$uibModalInstance'
         };
 
         //config channel
-        $ctrl.channel = {};
+        $ctrl.channelC = {};
         if (helper_selected && helper_selected.channel) {
 
-            $ctrl.channel = {
+            $ctrl.channelC = {
                 selected: helper_selected.channel
             };
         }
