@@ -181,10 +181,24 @@
                 <div uib-accordion-heading>{{ 'FORM.ORGANIZATION' | translate }}</div>
                 <div class="row row-eq-height">
                     <div class="col-xs-10">
-                        <custom-ui-select-organization on-select-item="$ctrl.onSelectOrganization($item, $model)" on-remove="$ctrl.onDeleteOrganization()" organization="$ctrl.organization.selected" multiple="false"></custom-ui-select-organization>
+                        <custom-ui-select-organization on-select-item="$ctrl.onSelectOrganization($item, $model)" on-remove="$ctrl.onDeleteOrganization()" organization="$ctrl.organizationC.selected" multiple="false"></custom-ui-select-organization>
                     </div>
                     <div class="col-xs-2 vcenter no-padding" ng-if="$ctrl.helper_exclusive">
                         <a class="top-buffer btn btn-default ux-txt-success pointer" ng-class="{'disabled': !$ctrl.helper_keys.organization}" ng-click="$ctrl.ok('organization')" ng-disabled="!$ctrl.helper_keys.organization">
+                            <i class="fa fa-lg fa-files-o" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div uib-accordion-group is-open="$ctrl.channelIsOpen" ng-hide="$ctrl.helper_exclusive ? !$ctrl.channelIsExclusive: false" class="channel-option">
+                <div uib-accordion-heading>{{ 'FORM.CHANNEL' | translate }}</div>
+                <div class="row row-eq-height">
+                    <div class="col-xs-10">
+                        <custom-ui-select-channel on-select-item="$ctrl.onSelectChannel($item, $model)" on-remove="$ctrl.onDeleteChannel()" channel="$ctrl.channel.selected" multiple="false" organization="$ctrl.organization"></custom-ui-select-channel>
+                    </div>
+                    <div class="col-xs-2 vcenter no-padding" ng-if="$ctrl.helper_exclusive">
+                        <a class="top-buffer btn btn-default ux-txt-success pointer" ng-class="{'disabled': !$ctrl.helper_keys.channel}" ng-click="$ctrl.ok('channel')" ng-disabled="!$ctrl.helper_keys.channel">
                             <i class="fa fa-lg fa-files-o" aria-hidden="true"></i>
                         </a>
                     </div>

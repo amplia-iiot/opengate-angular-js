@@ -1,0 +1,33 @@
+<div class="form-group no-margin" mass-autocomplete ng-if="$ctrl.multiple">
+    <label ng-if="$ctrl.label" class="custom-ui-select-label">{{ $ctrl.label | translate }}
+        <field-options required="$ctrl.ngRequired" multiple="$ctrl.multiple" /></label>
+    <ui-select name="channel" custom-ui-select-config="$ctrl.ownConfig" ng-model="$ctrl.channel" theme="bootstrap" title="Choose a channel" custom-ui-select multiple="true" custom-mass-autocomplete-item="$ctrl.ownConfig" on-select="$ctrl.channelSelected($item, $model)"
+        on-remove="$ctrl.channelRemove($item, $model)" ng-required="$ctrl.ngRequired">
+        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.CHANNEL' | translate }}" allow-clear="true">
+            {{$item.provision.administration.identifier._current.value}}
+        </ui-select-match>
+        <ui-select-choices repeat="channel in $ctrl.ownConfig.collection track by $index">
+            <span ng-bind-html="channel.provision.administration.identifier._current.value | highlight: $select.search"></span>
+            <small>
+                (<span ng-bind-html="channel.provision.administration.organization._current.value | highlight: $select.search"></span>)
+            </small>
+        </ui-select-choices>
+    </ui-select>
+</div>
+<div class="form-group no-margin" mass-autocomplete ng-if="!$ctrl.multiple">
+    <label ng-if="$ctrl.label" class="custom-ui-select-label">{{ $ctrl.label | translate }}
+        <field-options required="$ctrl.ngRequired" multiple="$ctrl.multiple" /></label>
+
+    <ui-select custom-ui-select-config="$ctrl.ownConfig" name="channel" ng-model="$ctrl.channel" theme="bootstrap" title="Choose a channel" custom-ui-select multiple="false" custom-mass-autocomplete-item="$ctrl.ownConfig" on-select="$ctrl.channelSelected($item, $model)"
+        on-remove="$ctrl.channelRemove($item, $model)" ng-required="$ctrl.ngRequired">
+        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.CHANNEL' | translate }}" allow-clear="true">
+            {{$item.provision.administration.identifier._current.value}}
+        </ui-select-match>
+        <ui-select-choices repeat="channel in $ctrl.ownConfig.collection track by $index">
+            <span ng-bind-html="channel.provision.administration.identifier._current.value | highlight: $select.search"></span>
+            <small>
+                (<span ng-bind-html="channel.provision.administration.organization._current.value | highlight: $select.search"></span>)
+            </small>
+        </ui-select-choices>
+    </ui-select>
+</div>

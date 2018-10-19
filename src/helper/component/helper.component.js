@@ -511,12 +511,11 @@ _wizard.controller('helperDialogModalController', ['$scope', '$uibModalInstance'
         };
 
         //config organization
-        $ctrl.organization = {};
+        $ctrl.organizationC = {};
         if (helper_selected && helper_selected.organization) {
 
-            $ctrl.organization = {
+            $ctrl.organizationC = {
                 selected: helper_selected.organization
-
             };
         }
 
@@ -526,6 +525,26 @@ _wizard.controller('helperDialogModalController', ['$scope', '$uibModalInstance'
 
         $ctrl.onDeleteOrganization = function() {
             delete $ctrl.helper_keys.organization;
+        };
+
+        //config channel
+        $ctrl.channel = {};
+        if (helper_selected && helper_selected.channel) {
+
+            $ctrl.channel = {
+                selected: helper_selected.channel
+            };
+        }
+
+        $ctrl.onSelectChannel = function($item, $model) {
+            $ctrl.helper_keys.channel = {
+                channelName: $item.provision.administration.identifier._current.value,
+                channelOrganization: $item.provision.administration.organization._current.value
+            };
+        };
+
+        $ctrl.onDeleteChannel = function() {
+            delete $ctrl.helper_keys.channel;
         };
 
         //Condicion para botón de aplicar todo lo seleccionado en los helpers

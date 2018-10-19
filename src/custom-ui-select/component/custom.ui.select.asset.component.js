@@ -105,8 +105,14 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
             if (ctrl.onRemove) {
                 ctrl.onRemove($item, $model);
             }
-            ctrl.ngModel = undefined;
 
+            if (ctrl.multiple) {
+                if (ctrl.ngModel && ctrl.ngModel.indexOf($item.provision.administration.identifier._current.value) !== -1) {
+                    ctrl.ngModel.splice(ctrl.ngModel.indexOf($item.provision.administration.identifier._current.value), 1);
+                }
+            } else {
+                ctrl.ngModel = undefined;
+            }
         };
 
         if (!ctrl.actions) {

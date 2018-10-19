@@ -1,12 +1,12 @@
 'use strict';
 
 
-angular.module('opengate-angular-js').controller('customUiSelectDatastreamController', ['$api', '$q', 'Authentication', function ($api, $q, Authentication) {
+angular.module('opengate-angular-js').controller('customUiSelectDatastreamController', ['$api', '$q', 'Authentication', function($api, $q, Authentication) {
     var ctrl = this;
     ctrl.ownConfig = {
         builder: $api().datamodelsSearchBuilder(),
         limit: 5,
-        filter: function (search) {
+        filter: function(search) {
             ctrl.lastSearch = search;
 
             var finalFilter = {};
@@ -87,11 +87,11 @@ angular.module('opengate-angular-js').controller('customUiSelectDatastreamContro
         },
         rootKey: 'datamodels',
         collection: [],
-        processingData: function (data, collection) {
-            return $q(function (C_ok) {
+        processingData: function(data, collection) {
+            return $q(function(C_ok) {
                 var _datastreams = [];
                 var datamodels = data.data.datamodels;
-                angular.forEach(datamodels, function (datamodel, key) {
+                angular.forEach(datamodels, function(datamodel, key) {
                     var categories = datamodel.categories;
                     var _datamodel = {
                         identifier: datamodel.identifier,
@@ -99,17 +99,17 @@ angular.module('opengate-angular-js').controller('customUiSelectDatastreamContro
                         name: datamodel.name,
                         organization: datamodel.organizationName
                     };
-                    angular.forEach(categories, function (category, key) {
+                    angular.forEach(categories, function(category, key) {
                         var datastreams = category.datastreams;
                         if (datastreams) {
                             var _category = {
                                 identifier: category.identifier
                             };
                             angular.forEach(datastreams
-                                .filter(function (ds) {
+                                .filter(function(ds) {
                                     return (ds.identifier.toLowerCase().indexOf(ctrl.lastSearch.toLowerCase()) > -1 && !!ctrl.lastSearch.length) || !ctrl.lastSearch;
                                 }),
-                                function (datastream, key) {
+                                function(datastream, key) {
                                     var _datastream = angular.copy(datastream);
                                     _datastream.datamodel = _datamodel;
                                     _datastream.category = _category;
@@ -134,11 +134,11 @@ angular.module('opengate-angular-js').controller('customUiSelectDatastreamContro
         customSelectors: $api().datamodelsSearchBuilder()
     };
 
-    ctrl.datastreamSelected = function ($item, $model) {
+    ctrl.datastreamSelected = function($item, $model) {
         if (ctrl.multiple) {
             var identifierTmp = ctrl.ngModel || [];
 
-            angular.forEach(ctrl.datastream, function (datastreamTmp) {
+            angular.forEach(ctrl.datastream, function(datastreamTmp) {
                 identifierTmp.push(datastreamTmp.identifier);
             });
 
@@ -155,7 +155,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDatastreamContro
         }
     };
 
-    ctrl.datastreamRemove = function ($item, $model) {
+    ctrl.datastreamRemove = function($item, $model) {
         if (ctrl.onRemove) {
             var returnObj = {};
             returnObj.$item = $item;
@@ -163,10 +163,16 @@ angular.module('opengate-angular-js').controller('customUiSelectDatastreamContro
             ctrl.onRemove(returnObj);
         }
 
-        ctrl.ngModel = null;
+        if (ctrl.multiple) {
+            if (ctrl.ngModel && ctrl.ngModel.indexOf($item.identifier) !== -1) {
+                ctrl.ngModel.splice(ctrl.ngModel.indexOf($item.identifier), 1);
+            }
+        } else {
+            ctrl.ngModel = undefined;
+        }
     };
 
-    ctrl.$onChanges = function (changesObj) {
+    ctrl.$onChanges = function(changesObj) {
         if (changesObj && changesObj.identifier) {
             mapIdentifier(changesObj.identifier.currentValue);
         }
@@ -192,7 +198,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDatastreamContro
                 if (angular.isArray(identifier)) {
                     ctrl.datastream = [];
 
-                    angular.forEach(identifier, function (idTmp) {
+                    angular.forEach(identifier, function(idTmp) {
                         ctrl.datastream.push({
                             identifier: idTmp
 
