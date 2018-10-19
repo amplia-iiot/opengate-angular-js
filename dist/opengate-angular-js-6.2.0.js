@@ -21,7 +21,7 @@ $templateCache.put("custom-ui-select/views/custom.ui.select.ticket.html","<div c
 $templateCache.put("custom-ui-select/views/ui.select.icon.html","<div class=\"form-group no-margin\"><label ng-if=$ctrl.label for=icon translate>FORM.LABEL.ICON</label><div class=\"{{$ctrl.allowClear ? \'input-group\' : \'\'}}\"><ui-select id=icon name=icon ng-model=$ctrl.icon theme=bootstrap ng-required=$ctrl.required title=$ctrl.title ng-disabled=$ctrl.disabled on-remove=\"$ctrl.iconRemove($item, $model)\" on-select=\"$ctrl.iconSelected($item, $model)\" allow-clear=$ctrl.allowClear uis-open-close=$ctrl.onOpenClose(isOpen)><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.ICON.CHOOSE\' | translate }}\" allow-clear=$ctrl.allowClear><i class=\"fa {{$select.selected.key}} fa-2x\"></i> <span>{{$select.selected.key}}</span></ui-select-match><ui-select-choices class=oux-icon-selector repeat=\"icon.key as (key, icon) in $ctrl.availableIcons | filter: $select.search | limitTo: $ctrl.maxIcons\"><i class=\"fa fa-4x\" ng-class=icon.key title={{icon.key}}></i><br><span ng-bind-html=\"icon.key| highlight: $select.search\"></span></ui-select-choices></ui-select><span class=input-group-btn ng-if=$ctrl.allowClear><button type=button ng-click=\"$ctrl.icon = undefined\" class=\"btn btn-default\"><span class=\"glyphicon glyphicon-trash\"></span></button></span></div></div>");
 $templateCache.put("custom-ui-select/views/ui.select.resourceType.html","<div class=\"form-group no-margin\" ng-if=$ctrl.multiple><label class=custom-ui-select-label>{{\'FORM.LABEL.RESOURCE_TYPE\' | translate }}<field-options required=$ctrl.required multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=resourceType ng-model=$ctrl.resourceType theme=bootstrap title=\"{{ \'FORM.PLACEHOLDER.RESOURCE_TYPE_MULTI\' | translate }}\" custom-ui-select multiple=true on-select=\"$ctrl.resourceTypeSelected($item, $model)\" on-remove=\"$ctrl.resourceTypeRemove($item, $model)\" ng-required=$ctrl.required><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.RESOURCE_TYPE\' | translate }}\" allow-clear=true>{{$item.identifier | translate}}</ui-select-match><ui-select-choices repeat=\"resourceType in $ctrl.ownConfig.collection | filter:$select.search track by $index\"><div><span ng-bind-html=\"resourceType.identifier | translate | highlight: $select.search\"></span></div></ui-select-choices></ui-select></div><div class=\"form-group no-margin\" ng-if=!$ctrl.multiple><label class=custom-ui-select-label>{{\'FORM.LABEL.RESOURCE_TYPE\' | translate }}<field-options required=$ctrl.required multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=resourceType ng-model=$ctrl.resourceType theme=bootstrap title=\"Choose an resourceType\" custom-ui-select multiple=false on-select=\"$ctrl.resourceTypeSelected($item, $model)\" on-remove=\"$ctrl.resourceTypeRemove($item, $model)\" ng-required=$ctrl.required><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.RESOURCE_TYPE\' | translate }}\" allow-clear=true>{{$item.identifier | translate}}</ui-select-match><ui-select-choices repeat=\"resourceType in $ctrl.ownConfig.collection | filter:$select.search track by $index\"><div><span ng-bind-html=\"resourceType.identifier | translate | highlight: $select.search\"></span></div></ui-select-choices></ui-select></div>");
 $templateCache.put("helper/views/custom.ui.select.helper.html","<div class=form-group ng-hide=$ctrl.have_helper_keys ng-transclude=input><label for={{$ctrl.id}}>{{$ctrl.labelText | translate }}<field-options required=$ctrl.required></field-options></label> <input class=form-control name={{$ctrl.name}} type=text id={{$ctrl.id}} ng-model=$ctrl.helperModel ng-required=$ctrl.required> <span class=help-inline ng-show=\"!$ctrl.helperModel && $ctrl.required\">{{$ctrl.labelError}}</span></div><div class=form-group ng-hide=!$ctrl.have_helper_keys><label for={{$ctrl.id}}>{{$ctrl.labelText | translate }}<field-options required=$ctrl.required></field-options></label><ui-select id={{$ctrl.id}} name={{$ctrl.name}} ng-model=$ctrl.helperModel theme=bootstrap title=\"Choose an option\" ng-required=$ctrl.required tagging=$ctrl.helperTagTransform tagging-label=false><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"Choose an option\"><span ng-if=\"$select.selected && $select.selected.key !== \'image\'\">{{$select.selected.value}}</span> <img ng-if=\"$select.selected && $select.selected.key === \'image\'\" src=\"{{ $select.selected.value }}\" style=max-height:30px;></ui-select-match><ui-select-choices repeat=\"parameter.value as (key, parameter) in $ctrl.$helper_keys | filter: $select.search\"><span ng-bind-html=\"parameter.key | highlight: $select.search\"></span>: <small ng-if=\"parameter.key !== \'image\'\" ng-bind-html=\"parameter.value | highlight: $select.search\"></small> <img ng-if=\"parameter.key === \'image\'\" src=\"{{ parameter.value }}\" style=max-height:30px;></ui-select-choices></ui-select></div>");
-$templateCache.put("helper/views/helper.view.html","<div class=\"container col-md-12 col-xs-12\" style=padding-left:0;padding-right:0 ng-transclude></div><div class=\"col-xs-12 col-md-12 text-right no-margin no-padding\"><a class=\"btn btn-default btn-xs ux-txt-info pointer oux-button-margin\" ng-href ng-click=$helper.open() ng-switch=$helper.mode><span ng-switch-when=button><i ng-class=$helper.helperButton aria-hidden=true></i></span> <span ng-switch-when=title>{{$helper.helperTitle}}</span> <span ng-switch-when=title_button><i ng-class=$helper.helperButton aria-hidden=true></i>{{$helper.helperTitle}}</span> <span ng-switch-default><i ng-if=\"!$helper.helperTitle && !$helper.helperButton\" class=\"fa fa-lg fa-search-plus\" title=\"{{ \'FORM.HELPER.TITLE\' | translate }}\" aria-hidden=true></i></span></a></div><script type=text/ng-template id=helper.view.modal.html><div class=\"modal-header\"> <h4 class=\"modal-title\">{{ \'FORM.HELPER.TITLE\' | translate }}</h4> </div> <div class=\"modal-body without-padding-top\"> <uib-accordion close-others=\"true\"> <div uib-accordion-group is-open=\"$ctrl.areaIsOpen\" class=\"area-option\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.areaIsExclusive: false\"> <div uib-accordion-heading>{{ \'FORM.AREAS\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-area on-select-item=\"$ctrl.onSelectAreaKey($item, $model)\" on-remove=\"$ctrl.onDeleteAreaKey()\" area=\"$ctrl.area.selected\" organization=\"$ctrl.area.organization\" multiple=\"false\"> </custom-ui-select-area> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.area}\" ng-click=\"$ctrl.ok(\'area\')\" ng-disabled=\"!$ctrl.helper_keys.area\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.assetIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? (!$ctrl.entityIsExclusive && !$ctrl.assetIsExclusive): false\" class=\"asset-option\"> <div uib-accordion-heading>{{ \'FORM.ASSETS\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-asset on-select-item=\"$ctrl.onSelectAssetKey($item, $model)\" on-remove=\"$ctrl.onDeleteAssetKey()\" asset=\"$ctrl.asset.selected\" multiple=\"false\" specific-type=\"{{$ctrl.specific_type}}\"></custom-ui-select-asset> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.asset}\" ng-click=\"$ctrl.ok(\'asset\')\" ng-disabled=\"!$ctrl.helper_keys.asset\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.mapIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.mapIsExclusive : false\" class=\"map-option\"> <div uib-accordion-heading>Map</div> <div class=\"row\" ng-if=\"$ctrl.mapIsOpen\"> <div class=\"col-xs-12\"> <div class=\"form-group leaflet-container\"> <leaflet id=\"map-marker\" lf-center=\"$ctrl.map.center\" layers=\"$ctrl.map.layers\" controls=\"$ctrl.map.controls\" event-broadcast=\"$ctrl.map.events\" markers=\"$ctrl.map.markers\" width=\"100% \" height=\"300px\"></leaflet> </div> </div> <div class=\"col-xs-12 text-right\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.map}\" ng-click=\"$ctrl.ok(\'map\')\" ng-disabled=\"!$ctrl.helper_keys.map\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.entityIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.entityIsExclusive: false\" class=\"entity-option\"> <div uib-accordion-heading>{{ \'FORM.ENTITY\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-entity on-select-item=\"$ctrl.onSelectEntityKey($item, $model)\" on-remove=\"$ctrl.onDeleteEntityKey()\" entity=\"$ctrl.entity.selected\" multiple=\"false\"> </custom-ui-select-entity> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.entity}\" ng-click=\"$ctrl.ok(\'entity\')\" ng-disabled=\"!$ctrl.helper_keys.entity\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.deviceIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? (!$ctrl.entityIsExclusive && !$ctrl.deviceIsExclusive): false\" class=\"device-option\"> <div uib-accordion-heading>{{ \'FORM.DEVICES\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-device on-select-item=\"$ctrl.onSelectDeviceKey($item, $model)\" on-remove=\"$ctrl.onDeleteDeviceKey()\" device=\"$ctrl.device.selected\" multiple=\"false\" specific-type=\"{{$ctrl.specific_type}}\"> </custom-ui-select-device> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.device}\" ng-click=\"$ctrl.ok(\'device\')\" ng-disabled=\"!$ctrl.helper_keys.device\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.subscriberIsOpen\" class=\"subscriber-option\" ng-hide=\"$ctrl.helper_exclusive ? (!$ctrl.entityIsExclusive && !$ctrl.subscriberIsExclusive): false\"> <div uib-accordion-heading>{{ \'FORM.SUBSCRIBERS\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-subscriber on-select-item=\"$ctrl.onSelectSubscriberKey($item, $model)\" specific-type=\"{{$ctrl.specific_type}}\" organization=\"{{$ctrl.organization}}\" channel=\"{{$ctrl.channel}}\" exclude-devices=\"$ctrl.exclude_devices\" on-remove=\"$ctrl.onDeleteSubscriberKey()\" entity=\"$ctrl.subscriber.selected\" multiple=\"false\"> </custom-ui-select-subscriber> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.subscriber}\" ng-click=\"$ctrl.ok(\'subscriber\')\" ng-disabled=\"!$ctrl.helper_keys.subscriber\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.subscriptionIsOpen\" class=\"subscription-option\" ng-hide=\"$ctrl.helper_exclusive ? (!$ctrl.entityIsExclusive && !$ctrl.subscriptionIsExclusive): false\"> <div uib-accordion-heading>{{ \'FORM.SUBSCRIPTIONS\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-subscription on-select-item=\"$ctrl.onSelectSubscriptionKey($item, $model)\" specific-type=\"{{$ctrl.specific_type}}\" organization=\"{{$ctrl.organization}}\" channel=\"{{$ctrl.channel}}\" exclude-devices=\"$ctrl.exclude_devices\" on-remove=\"$ctrl.onDeleteSubscriptionKey()\" entity=\"$ctrl.subscription.selected\" multiple=\"false\"> </custom-ui-select-subscription> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.subscription}\" ng-click=\"$ctrl.ok(\'subscription\')\" ng-disabled=\"!$ctrl.helper_keys.subscription\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.datastreamIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.datastreamIsExclusive: false\" class=\"datastream-option\"> <div uib-accordion-heading>{{ \'FORM.DATASTREAM\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-datastream on-select-item=\"$ctrl.onSelectDatastreamKey($item, $model)\" on-remove=\"$ctrl.onDeleteDatastreamKey()\" datastream=\"$ctrl.datastream.selected\" multiple=\"false\"> </custom-ui-select-datastream> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.datastream}\" ng-click=\"$ctrl.ok(\'datastream\')\" ng-disabled=\"!$ctrl.helper_keys.datastream\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.domainIsOpen\" class=\"domain-option\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.domainIsExclusive: false\"> <div uib-accordion-heading>{{ \'FORM.DOMAINS\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-domain on-select-item=\"$ctrl.onSelectDomainKey($item, $model)\" on-remove=\"$ctrl.onDeleteDomainKey()\" domain=\"$ctrl.domain.selected\" multiple=\"false\"> </custom-ui-select-domain> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.domain}\" ng-click=\"$ctrl.ok(\'domain\')\" ng-disabled=\"!$ctrl.helper_keys.domain\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.bundleIsOpen\" class=\"bundle-option\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.bundleIsExclusive: false\"> <div uib-accordion-heading>{{ \'FORM.BUNDLES\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-bundle on-select-item=\"$ctrl.onSelectBundleKey($item, $model)\" on-remove=\"$ctrl.onDeleteBundleKey()\" bundle=\"$ctrl.bundle.selected\" multiple=\"false\"> </custom-ui-select-bundle> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.bundle}\" ng-click=\"$ctrl.ok(\'bundle\')\" ng-disabled=\"!$ctrl.helper_keys.bundle\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.imageIsOpen\" class=\"image-option\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.imageIsExclusive: false\"> <div uib-accordion-heading>{{ \'FORM.IMAGE\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-12 col-md-8\"> <div name=\"image\" ng-if=\"!$ctrl.helper_keys.image && !$ctrl.helper_keys.image.image\" ngf-drop=\"$ctrl.imageSelected($file)\" ng-model=\"$ctrl.image\" ngf-max-size=\"1MB\" ngf-select=\"$ctrl.imageSelected($file)\" class=\"drop-box pointer\" ngf-drag-over-class=\"\'dragover\'\" ngf-multiple=\"false\" ng-required=\"$ctrl.helper_keys.image\" ngf-accept=\"\'image/*\'\" ngf-pattern=\"\'image/*\'\">{{ \'FORM.DRAG_DROP\' | translate }} <br>{{ \'FORM.MAX_SIZE\' | translate }}</div> <img ng-if=\"$ctrl.helper_keys.image && $ctrl.helper_keys.image.image\" src=\"{{ $ctrl.helper_keys.image.image }}\" style=\"max-height:200px;\" name=\"image\" /> </div> <div class=\"col-xs-12 col-md-4\"> <button id=\"idRemoveFileLink\" ng-if=\"$ctrl.helper_keys.image && $ctrl.helper_keys.image.image\" ng-click=\"$ctrl.removeDataFile()\" class=\"btn btn-warning ux-txt-warning pointer\"> <i class=\"fa fa-trash\" aria-hidden=\"true\"></i> {{ \'BUTTON.TITLE.REMOVE\' | translate }}</button> <a ng-if=\"$ctrl.helper_exclusive\" class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.bundle}\" ng-click=\"$ctrl.ok(\'bundle\')\" ng-disabled=\"!$ctrl.helper_keys.bundle\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.organizationIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.organizationIsExclusive: false\" class=\"organization-option\"> <div uib-accordion-heading>{{ \'FORM.ORGANIZATION\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-organization on-select-item=\"$ctrl.onSelectOrganization($item, $model)\" on-remove=\"$ctrl.onDeleteOrganization()\" organization=\"$ctrl.organizationC.selected\" multiple=\"false\"></custom-ui-select-organization> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.organization}\" ng-click=\"$ctrl.ok(\'organization\')\" ng-disabled=\"!$ctrl.helper_keys.organization\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.channelIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.channelIsExclusive: false\" class=\"channel-option\"> <div uib-accordion-heading>{{ \'FORM.CHANNEL\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-channel on-select-item=\"$ctrl.onSelectChannel($item, $model)\" on-remove=\"$ctrl.onDeleteChannel()\" channel=\"$ctrl.channel.selected\" multiple=\"false\" organization=\"$ctrl.organization\"></custom-ui-select-channel> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.channel}\" ng-click=\"$ctrl.ok(\'channel\')\" ng-disabled=\"!$ctrl.helper_keys.channel\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> </uib-accordion> </div> <div class=\"modal-footer\"> <a ng-if=\"!$ctrl.helper_exclusive\" class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.canApply()}\" ng-click=\"$ctrl.ok()\" ng-disabled=\"!$ctrl.canApply()\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> {{\'BUTTON.TITLE.ALL\' | translate }} </a> <button class=\"btn btn-warning\" type=\"button\" ng-click=\"$ctrl.cancel()\">{{\'BUTTON.TITLE.CANCEL\' | translate}}</button> </div></script>");
+$templateCache.put("helper/views/helper.view.html","<div class=\"container col-md-12 col-xs-12\" style=padding-left:0;padding-right:0 ng-transclude></div><div class=\"col-xs-12 col-md-12 text-right no-margin no-padding\"><a class=\"btn btn-default btn-xs ux-txt-info pointer oux-button-margin\" ng-href ng-click=$helper.open() ng-switch=$helper.mode><span ng-switch-when=button><i ng-class=$helper.helperButton aria-hidden=true></i></span> <span ng-switch-when=title>{{$helper.helperTitle}}</span> <span ng-switch-when=title_button><i ng-class=$helper.helperButton aria-hidden=true></i>{{$helper.helperTitle}}</span> <span ng-switch-default><i ng-if=\"!$helper.helperTitle && !$helper.helperButton\" class=\"fa fa-lg fa-search-plus\" title=\"{{ \'FORM.HELPER.TITLE\' | translate }}\" aria-hidden=true></i></span></a></div><script type=text/ng-template id=helper.view.modal.html><div class=\"modal-header\"> <h4 class=\"modal-title\">{{ \'FORM.HELPER.TITLE\' | translate }}</h4> </div> <div class=\"modal-body without-padding-top\"> <uib-accordion close-others=\"true\"> <div uib-accordion-group is-open=\"$ctrl.areaIsOpen\" class=\"area-option\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.areaIsExclusive: false\"> <div uib-accordion-heading>{{ \'FORM.AREAS\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-area on-select-item=\"$ctrl.onSelectAreaKey($item, $model)\" on-remove=\"$ctrl.onDeleteAreaKey()\" area=\"$ctrl.area.selected\" organization=\"$ctrl.area.organization\" multiple=\"false\"> </custom-ui-select-area> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.area}\" ng-click=\"$ctrl.ok(\'area\')\" ng-disabled=\"!$ctrl.helper_keys.area\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.assetIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? (!$ctrl.entityIsExclusive && !$ctrl.assetIsExclusive): false\" class=\"asset-option\"> <div uib-accordion-heading>{{ \'FORM.ASSETS\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-asset on-select-item=\"$ctrl.onSelectAssetKey($item, $model)\" on-remove=\"$ctrl.onDeleteAssetKey()\" asset=\"$ctrl.asset.selected\" multiple=\"false\" specific-type=\"{{$ctrl.specific_type}}\"></custom-ui-select-asset> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.asset}\" ng-click=\"$ctrl.ok(\'asset\')\" ng-disabled=\"!$ctrl.helper_keys.asset\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.mapIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.mapIsExclusive : false\" class=\"map-option\"> <div uib-accordion-heading>Map</div> <div class=\"row\" ng-if=\"$ctrl.mapIsOpen\"> <div class=\"col-xs-12\"> <div class=\"form-group leaflet-container\"> <leaflet id=\"map-marker\" lf-center=\"$ctrl.map.center\" layers=\"$ctrl.map.layers\" controls=\"$ctrl.map.controls\" event-broadcast=\"$ctrl.map.events\" markers=\"$ctrl.map.markers\" width=\"100% \" height=\"300px\"></leaflet> </div> </div> <div class=\"col-xs-12 text-right\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.map}\" ng-click=\"$ctrl.ok(\'map\')\" ng-disabled=\"!$ctrl.helper_keys.map\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.entityIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.entityIsExclusive: false\" class=\"entity-option\"> <div uib-accordion-heading>{{ \'FORM.ENTITY\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-entity on-select-item=\"$ctrl.onSelectEntityKey($item, $model)\" on-remove=\"$ctrl.onDeleteEntityKey()\" entity=\"$ctrl.entity.selected\" multiple=\"false\"> </custom-ui-select-entity> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.entity}\" ng-click=\"$ctrl.ok(\'entity\')\" ng-disabled=\"!$ctrl.helper_keys.entity\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.deviceIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? (!$ctrl.entityIsExclusive && !$ctrl.deviceIsExclusive): false\" class=\"device-option\"> <div uib-accordion-heading>{{ \'FORM.DEVICES\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-device on-select-item=\"$ctrl.onSelectDeviceKey($item, $model)\" on-remove=\"$ctrl.onDeleteDeviceKey()\" device=\"$ctrl.device.selected\" multiple=\"false\" specific-type=\"{{$ctrl.specific_type}}\"> </custom-ui-select-device> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.device}\" ng-click=\"$ctrl.ok(\'device\')\" ng-disabled=\"!$ctrl.helper_keys.device\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.subscriberIsOpen\" class=\"subscriber-option\" ng-hide=\"$ctrl.helper_exclusive ? (!$ctrl.entityIsExclusive && !$ctrl.subscriberIsExclusive): false\"> <div uib-accordion-heading>{{ \'FORM.SUBSCRIBERS\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-subscriber on-select-item=\"$ctrl.onSelectSubscriberKey($item, $model)\" specific-type=\"{{$ctrl.specific_type}}\" organization=\"{{$ctrl.organization}}\" channel=\"{{$ctrl.channel}}\" exclude-devices=\"$ctrl.exclude_devices\" on-remove=\"$ctrl.onDeleteSubscriberKey()\" entity=\"$ctrl.subscriber.selected\" multiple=\"false\"> </custom-ui-select-subscriber> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.subscriber}\" ng-click=\"$ctrl.ok(\'subscriber\')\" ng-disabled=\"!$ctrl.helper_keys.subscriber\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.subscriptionIsOpen\" class=\"subscription-option\" ng-hide=\"$ctrl.helper_exclusive ? (!$ctrl.entityIsExclusive && !$ctrl.subscriptionIsExclusive): false\"> <div uib-accordion-heading>{{ \'FORM.SUBSCRIPTIONS\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-subscription on-select-item=\"$ctrl.onSelectSubscriptionKey($item, $model)\" specific-type=\"{{$ctrl.specific_type}}\" organization=\"{{$ctrl.organization}}\" channel=\"{{$ctrl.channel}}\" exclude-devices=\"$ctrl.exclude_devices\" on-remove=\"$ctrl.onDeleteSubscriptionKey()\" entity=\"$ctrl.subscription.selected\" multiple=\"false\"> </custom-ui-select-subscription> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.subscription}\" ng-click=\"$ctrl.ok(\'subscription\')\" ng-disabled=\"!$ctrl.helper_keys.subscription\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.datastreamIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.datastreamIsExclusive: false\" class=\"datastream-option\"> <div uib-accordion-heading>{{ \'FORM.DATASTREAM\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-datastream on-select-item=\"$ctrl.onSelectDatastreamKey($item, $model)\" on-remove=\"$ctrl.onDeleteDatastreamKey()\" datastream=\"$ctrl.datastream.selected\" multiple=\"false\"> </custom-ui-select-datastream> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.datastream}\" ng-click=\"$ctrl.ok(\'datastream\')\" ng-disabled=\"!$ctrl.helper_keys.datastream\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.domainIsOpen\" class=\"domain-option\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.domainIsExclusive: false\"> <div uib-accordion-heading>{{ \'FORM.DOMAINS\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-domain on-select-item=\"$ctrl.onSelectDomainKey($item, $model)\" on-remove=\"$ctrl.onDeleteDomainKey()\" domain=\"$ctrl.domain.selected\" multiple=\"false\"> </custom-ui-select-domain> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.domain}\" ng-click=\"$ctrl.ok(\'domain\')\" ng-disabled=\"!$ctrl.helper_keys.domain\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.bundleIsOpen\" class=\"bundle-option\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.bundleIsExclusive: false\"> <div uib-accordion-heading>{{ \'FORM.BUNDLES\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-bundle on-select-item=\"$ctrl.onSelectBundleKey($item, $model)\" on-remove=\"$ctrl.onDeleteBundleKey()\" bundle=\"$ctrl.bundle.selected\" multiple=\"false\"> </custom-ui-select-bundle> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.bundle}\" ng-click=\"$ctrl.ok(\'bundle\')\" ng-disabled=\"!$ctrl.helper_keys.bundle\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.imageIsOpen\" class=\"image-option\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.imageIsExclusive: false\"> <div uib-accordion-heading>{{ \'FORM.IMAGE\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-12 col-md-8\"> <div name=\"image\" ng-if=\"!$ctrl.helper_keys.image && !$ctrl.helper_keys.image.image\" ngf-drop=\"$ctrl.imageSelected($file)\" ng-model=\"$ctrl.image\" ngf-max-size=\"1MB\" ngf-select=\"$ctrl.imageSelected($file)\" class=\"drop-box pointer\" ngf-drag-over-class=\"\'dragover\'\" ngf-multiple=\"false\" ng-required=\"$ctrl.helper_keys.image\" ngf-accept=\"\'image/*\'\" ngf-pattern=\"\'image/*\'\">{{ \'FORM.DRAG_DROP\' | translate }} <br>{{ \'FORM.MAX_SIZE\' | translate }}</div> <img ng-if=\"$ctrl.helper_keys.image && $ctrl.helper_keys.image.image\" src=\"{{ $ctrl.helper_keys.image.image }}\" style=\"max-height:200px;\" name=\"image\" /> </div> <div class=\"col-xs-12 col-md-4\"> <button id=\"idRemoveFileLink\" ng-if=\"$ctrl.helper_keys.image && $ctrl.helper_keys.image.image\" ng-click=\"$ctrl.removeDataFile()\" class=\"btn btn-warning ux-txt-warning pointer\"> <i class=\"fa fa-trash\" aria-hidden=\"true\"></i> {{ \'BUTTON.TITLE.REMOVE\' | translate }}</button> <a ng-if=\"$ctrl.helper_exclusive\" class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.bundle}\" ng-click=\"$ctrl.ok(\'bundle\')\" ng-disabled=\"!$ctrl.helper_keys.bundle\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.organizationIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.organizationIsExclusive: false\" class=\"organization-option\"> <div uib-accordion-heading>{{ \'FORM.ORGANIZATION\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-organization on-select-item=\"$ctrl.onSelectOrganization($item, $model)\" on-remove=\"$ctrl.onDeleteOrganization()\" organization=\"$ctrl.organizationC.selected\" multiple=\"false\"></custom-ui-select-organization> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.organization}\" ng-click=\"$ctrl.ok(\'organization\')\" ng-disabled=\"!$ctrl.helper_keys.organization\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.channelIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.channelIsExclusive: false\" class=\"channel-option\"> <div uib-accordion-heading>{{ \'FORM.CHANNEL\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-channel on-select-item=\"$ctrl.onSelectChannel($item, $model)\" on-remove=\"$ctrl.onDeleteChannel()\" channel=\"$ctrl.channelC.selected\" multiple=\"false\" organization=\"$ctrl.organization\"></custom-ui-select-channel> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.channel}\" ng-click=\"$ctrl.ok(\'channel\')\" ng-disabled=\"!$ctrl.helper_keys.channel\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> </uib-accordion> </div> <div class=\"modal-footer\"> <a ng-if=\"!$ctrl.helper_exclusive\" class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.canApply()}\" ng-click=\"$ctrl.ok()\" ng-disabled=\"!$ctrl.canApply()\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> {{\'BUTTON.TITLE.ALL\' | translate }} </a> <button class=\"btn btn-warning\" type=\"button\" ng-click=\"$ctrl.cancel()\">{{\'BUTTON.TITLE.CANCEL\' | translate}}</button> </div></script>");
 $templateCache.put("schema-form/views/schema.form.asset.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-asset label=form.title specific-type={{form.specificType}} on-select-item=\"evalExpr(form.onselectitem, {$item: $$value$$, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $$value$$, $model: $model})\" ng-model=$$value$$ identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll ui-select-match-class=form.uiSelectMatchClass asset=form.dummy ng-required=form.required></custom-ui-select-asset></div>");
 $templateCache.put("schema-form/views/schema.form.channel.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-channel label=form.title on-select-item=\"evalExpr(form.onselectitem, {$item: $item, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $item, $model: $model})\" channel=form.dummy identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll ng-model=$$value$$ organization=evalInScope(form.organization) ng-required=form.required ui-select-match-class=form.uiSelectMatchClass></custom-ui-select-channel></div>");
 $templateCache.put("schema-form/views/schema.form.datastream.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-datastream on-select-item=\"evalExpr(form.onselectitem, {$item: $$value$$, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $$value$$, $model: $model})\" ng-model=$$value$$ datastream=form.dummy identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll ng-required=form.required ui-select-match-class=form.uiSelectMatchClass></custom-ui-select-datastream></div>");
@@ -2135,483 +2135,6 @@ angular.module('ui-leaflet')
         },
     };
 }]);
-
-angular.module('opengate-angular-js')
-
-.directive('windowTimeSelect', function() { // ['$scope', '$compile'], function($scope, $compile) {
-    return {
-        restrict: 'AE',
-        templateUrl: 'window-time-select/views/window-time.select.view.html',
-        scope: {
-            event: '@',
-            rawdate: '@'
-        },
-        controller: ["$scope", "$element", "$attrs", "$translate", function($scope, $element, $attrs, $translate) {
-            $scope.fromCalendarOpen = false;
-            $scope.toCalendarOpen = false;
-
-            // General config
-            $scope.customButtonBar = {
-                show: true,
-                now: {
-                    show: false
-                },
-                today: {
-                    show: false
-                },
-                clear: {
-                    show: false
-                },
-                date: {
-                    show: true,
-                    text: ' ',
-                    cls: 'btn-sm btn-info oux-button-margin fa fa-calendar'
-                },
-                time: {
-                    show: true,
-                    text: ' ',
-                    cls: 'btn-sm btn-info oux-button-margin fa fa-clock-o'
-                },
-                close: {
-                    show: true,
-                    text: ' ',
-                    cls: 'btn-sm btn-success oux-button-margin fa fa-check'
-                },
-                cancel: {
-                    show: false
-                }
-            };
-
-            function toLimit() {
-                return window.moment($scope.date.from).add(1, 'minutes')._d;
-            }
-
-            function fromLimit() {
-                return window.moment($scope.date.to).subtract(1, 'minutes')._d;
-            }
-
-            function fromDate() {
-                return window.moment($scope.date.to).subtract(1, 'months')._d;
-            }
-
-            function setTo(toDate) {
-                if (!$scope.date) $scope.date = {};
-                $scope.date.to = toDate;
-                $scope.toMax = toDate;
-
-                $scope.toOptions = {
-                    datePicker: {
-                        startingDay: 1,
-                        showWeeks: false,
-                        minDate: $scope.toMin,
-                        minMode: 'day',
-                        closed: $scope.toChange
-                    },
-                    timePicker: {
-                        //min: $scope.toMin,
-                        showMeridian: false
-                    }
-                }
-            }
-
-            function setFrom() {
-                $scope.date.from = fromDate($scope.date.to);
-
-                $scope.toOptions.datePicker.minDate = toLimit();
-                //$scope.toOptions.timePicker.min = toLimit();
-
-                $scope.toMin = toLimit();
-                $scope.fromMax = fromLimit($scope.date.to);
-
-                $scope.fromOptions = {
-                    datePicker: {
-                        startingDay: 1,
-                        showWeeks: false,
-                        maxDate: $scope.fromMax,
-                        maxMode: 'day',
-                        closed: $scope.fromChange
-                    },
-                    timePicker: {
-                        //max: $scope.fromMax,
-                        showMeridian: false
-                    }
-                };
-            }
-
-            $scope.oneDayClass = $scope.oneWeekClass = $scope.oneMonthClass = $scope.customClass = 'btn-info';
-            $scope.filterApplied = false;
-            $scope.format = 'dd MMMM yyyy HH:mm';
-            $scope.clear = function() {
-
-                $scope.oneDayClass = $scope.oneWeekClass = $scope.oneMonthClass = $scope.customClass = 'btn-info';
-                $scope.filterApplied = false;
-                $scope.customEnabled = false;
-                $scope.$emit('onWindowTimeChanged', {});
-            };
-            $scope.fromOpen = function() {
-                $scope.fromPopup.opened = true;
-            };
-            $scope.fromPopup = {
-                opened: false
-            };
-            $scope.toOpen = function() {
-                $scope.toPopup.opened = true;
-            };
-            $scope.toPopup = {
-                opened: false
-            };
-
-            $scope.openCalendarFrom = function() {
-                $scope.fromCalendarOpen = true;
-            };
-
-            $scope.openCalendarTo = function() {
-                $scope.toCalendarOpen = true;
-            };
-
-            $scope.custom = function() {
-                if (!$scope.customEnabled || (!$scope.fromCalendarOpen && !$scope.toCalendarOpen)) {
-                    $scope.customEnabled = !$scope.customEnabled;
-                }
-
-            };
-            $scope.apply = function(winTime, fire_event) {
-                $scope.filterApplied = true;
-                $scope.customEnabled = false;
-                /* jshint ignore:start */
-                if (!window.eval($scope.rawdate)) {
-                    for (var key in winTime) {
-                        if (key !== 'type' && key !== 'rawdate')
-                            winTime[key] = window.moment(winTime[key]).format();
-                    }
-                    //TODO: enganche con widgets, habría que ver como resolver este problema o hacer que esto sea una directiva propia del angular-dashboard-framework
-                    winTime.rawdate = false;
-                }
-                /* jshint ignore:end */
-                if (fire_event) {
-                    $scope.$emit('onWindowTimeChanged', winTime);
-                }
-            };
-            $scope.oneDay = function(no_fire_event) {
-                $scope.oneDayClass = 'btn-success';
-                $scope.oneWeekClass = $scope.oneMonthClass = $scope.customClass = 'btn-info';
-                $scope.apply(genWindowTime('days'), !no_fire_event);
-            };
-            $scope.oneWeek = function(no_fire_event) {
-                $scope.oneWeekClass = 'btn-success';
-                $scope.oneDayClass = $scope.oneMonthClass = $scope.customClass = 'btn-info';
-                $scope.apply(genWindowTime('weeks'), !no_fire_event);
-            };
-            $scope.oneMonth = function(no_fire_event) {
-                $scope.oneMonthClass = 'btn-success';
-                $scope.oneWeekClass = $scope.oneDayClass = $scope.customClass = 'btn-info';
-                $scope.apply(genWindowTime('months'), !no_fire_event);
-            };
-
-            $scope.applyCustom = function(no_fire_event) {
-                if ($scope.fromCalendarOpen) {
-                    $scope.fromChange();
-                } else if ($scope.toCalendarOpen) {
-                    $scope.toChange()
-                } else {
-                    $scope.fromCalendarOpen = false;
-                    $scope.toCalendarOpen = false;
-
-                    $scope.customClass = 'btn-success';
-                    $scope.oneWeekClass = $scope.oneDayClass = $scope.oneMonthClass = 'btn-info';
-                    $scope.apply({
-                        type: 'custom',
-                        to: $scope.date.to,
-                        from: $scope.date.from
-                    }, !no_fire_event);
-                }
-            };
-
-            // Config custom window
-            $scope.init = function() {
-
-                setTo(new Date());
-                setFrom();
-
-                $scope.toChange = function() {
-                    validateCustomWindow();
-                    $scope.fromMax = fromLimit($scope.date.to);
-                    $scope.fromOptions.datePicker.maxDate = $scope.fromMax;
-                    //$scope.fromOptions.timePicker.max = $scope.fromMax;
-                    $scope.toCalendarOpen = false;
-                };
-                $scope.fromChange = function() {
-                    validateCustomWindow();
-                    $scope.toOptions.datePicker.minDate = toLimit();
-                    //$scope.toOptions.timePicker.min = toLimit();
-
-                    $scope.toMin = toLimit();
-                    $scope.fromCalendarOpen = false;
-                };
-
-                function validateCustomWindow() {
-                    if (window.moment($scope.date.to).diff($scope.date.from) <= 0) {
-                        $scope.errorCustomWindow = 'From date(' + $scope.date.from.toISOString() + ') is bigger than to date(' + $scope.date.to.toISOString() + ')';
-                    } else {
-                        $scope.errorCustomWindow = undefined;
-                    }
-                }
-
-
-                //TODO: enganche con widgets, habría que ver como resolver este problema o hacer que esto sea una directiva propia del angular-dashboard-framework
-                if ($scope.$parent.config && $scope.$parent.config.windowFilter) {
-                    var configWindowFilter = $scope.$parent.config.windowFilter;
-                    /* jshint ignore:start */
-                    if (!window.eval($scope.rawdate)) {
-                        $scope.$parent.config.windowFilter.rawdate = false;
-                    }
-                    /* jshint ignore:end */
-                    switch (configWindowFilter.type) {
-                        case 'days':
-                            $scope.oneDay(true);
-                            break;
-                        case 'weeks':
-                            $scope.oneWeek(true);
-                            break;
-                        case 'months':
-                            $scope.oneMonth(true);
-                            break;
-                        case 'custom':
-                            if (configWindowFilter.to && configWindowFilter.from) {
-                                $scope.date.to = new Date(configWindowFilter.to);
-                                $scope.date.from = new Date(configWindowFilter.from);
-                            }
-                            $scope.applyCustom(true);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            };
-
-            $scope.init();
-
-            function genWindowTime(type) {
-                var from = window.moment().subtract(1, type);
-                return {
-                    from: from._d,
-                    type: type
-                };
-            }
-        }],
-        link: function(scope) {
-            scope.$on('$destroy', function() {
-                scope.fromCalendarOpen = false;
-                scope.toCalendarOpen = false;
-
-                // manual destroy
-                var pickers = angular.element('ul[class*="datetime-picker-dropdown"]')
-
-                if (pickers && pickers.length) {
-                    angular.forEach(pickers, function(element) {
-                        element.remove();
-                    });
-                }
-            });
-        }
-    };
-});
-
-angular.module('opengate-angular-js')
-
-.directive('datetimeSelect', function() { // ['$scope', '$compile'], function($scope, $compile) {
-    return {
-        restrict: 'AE',
-        templateUrl: 'window-time-select/views/datetime.select.view.html',
-        scope: {
-            ngModel: '=',
-            ngValue: '=',
-            ngRequired: '<',
-            placeholder: '@',
-            format: '@',
-            mode: '@',
-            ngChange: '<',
-            dateOptions: '=',
-            timeOptions: '=',
-            min: '=',
-            max: '='
-        },
-        controller: ["$scope", "$element", "$attrs", "$translate", "uibDateParser", function($scope, $element, $attrs, $translate, uibDateParser) {
-            if (!$scope.mode || $scope.mode === 'date-time') {
-                $scope.inputMode = 'datetime';
-            } else {
-                $scope.inputMode = $scope.mode;
-            }
-
-            $scope.required = !$scope.ngRequired ? false : !!$scope.ngRequired;
-
-            $scope.calendarOpen = false;
-            $scope.enableDate = !$scope.inputMode || $scope.inputMode === 'datetime' || $scope.inputMode === 'date';
-            $scope.enableTime = $scope.inputMode && ($scope.inputMode === 'datetime' || $scope.inputMode === 'time');
-
-            if (!$scope.format) {
-                if ($scope.enableDate && !$scope.enableTime) {
-                    $scope.format = 'yyyy-MM-dd';
-                    $scope.visibleFormat = 'dd MMMM yyyy';
-                } else if (!$scope.enableDate && $scope.enableTime) {
-                    $scope.format = 'HH:mm:ss';
-                    $scope.visibleFormat = 'HH:mm';
-                } else {
-                    $scope.format = 'yyyy-MM-ddTHH:mm:ss.sssZ';
-                    $scope.visibleFormat = 'dd MMMM yyyy HH:mm';
-                }
-            } else {
-                $scope.visibleFormat = $scope.format;
-            }
-
-            $scope.outputFormat = $scope.format;
-
-            // Control del valor de entrada
-            if (!angular.isUndefined($scope.ngModel) || !angular.isUndefined($scope.ngValue)) {
-                if ($scope.ngValue) {
-                    $scope.rawdata = $scope.ngValue;
-                } else if ($scope.ngModel) {
-                    $scope.rawdata = uibDateParser.parse($scope.ngModel, $scope.outputFormat);
-                }
-            }
-
-            // General config
-            $scope.customButtonBar = {
-                show: true,
-                now: {
-                    show: false
-                },
-                today: {
-                    show: true,
-                    text: ' ',
-                    cls: 'btn-sm btn-info oux-button-margin fa fa-calendar-o'
-                },
-                clear: {
-                    show: true,
-                    text: ' ',
-                    cls: 'btn-sm btn-success oux-button-margin fa fa-close'
-                },
-                date: {
-                    show: !$scope.inputMode || $scope.inputMode === 'datetime' || $scope.inputMode === 'date',
-                    text: ' ',
-                    cls: 'btn-sm btn-info oux-button-margin fa fa-calendar'
-                },
-                time: {
-                    show: $scope.inputMode && ($scope.inputMode === 'datetime' || $scope.inputMode === 'time'),
-                    text: ' ',
-                    cls: 'btn-sm btn-info oux-button-margin fa fa-clock-o'
-                },
-                close: {
-                    show: true,
-                    text: ' ',
-                    cls: 'btn-sm btn-success oux-button-margin fa fa-check'
-                },
-                cancel: {
-                    show: false
-                }
-            };
-
-            $scope.pickerOptions = {
-                datePicker: {
-                    startingDay: 1,
-                    showWeeks: false,
-                    appendToBody: true
-                },
-                timePicker: {
-                    //max: $scope.fromMax,
-                    showMeridian: false,
-                    appendToBody: true
-                }
-            };
-
-            if ($scope.dateOptions) {
-                angular.merge($scope.pickerOptions.datePicker, $scope.dateOptions);
-            }
-
-            if ($scope.timeOptions) {
-                angular.merge($scope.pickerOptions.timePicker, $scope.timeOptions);
-            }
-
-            $scope.openCalendar = function() {
-                $scope.calendarOpen = true;
-            };
-
-            //$scope.$watch('rawdata', function(newValue) {
-            $scope.changedRawdata = function() {
-                var newValue = $scope.rawdata;
-                if (newValue) {
-                    if (($scope.min && (newValue < $scope.min || newValue < uibDateParser.parse($scope.min, $scope.outputFormat))) ||
-                        ($scope.max && (newValue > $scope.max || newValue > uibDateParser.parse($scope.max, $scope.outputFormat)))) {
-                        $scope.rawdata = undefined;
-
-                        if ($scope.ngModel) {
-                            $scope.ngModel = undefined;
-                            if ($scope.ngChange) {
-                                $scope.ngChange($scope.ngModel);
-                            }
-                        }
-                    } else {
-                        var parsedNewValue;
-                        if ($scope.outputFormat !== 'yyyy-MM-ddTHH:mm:ss.sssZ') {
-                            parsedNewValue = uibDateParser.filter(newValue, $scope.outputFormat);
-                        } else {
-                            parsedNewValue = newValue.toISOString();
-                        }
-
-                        if (parsedNewValue !== $scope.ngModel) {
-                            $scope.ngModel = parsedNewValue;
-                            if ($scope.ngChange) {
-                                $scope.ngChange($scope.ngModel);
-                            }
-                        }
-                    }
-
-                } else {
-                    $scope.rawdata = undefined;
-
-                    if ($scope.ngModel) {
-                        $scope.ngModel = undefined;
-                        if ($scope.ngChange) {
-                            $scope.ngChange($scope.ngModel);
-                        }
-                    }
-
-                }
-                //$scope.ngValue = newValue;
-            };
-
-            $scope.$watch('ngModel', function(newValue) {
-                if (newValue) {
-                    if (uibDateParser.parse(newValue, $scope.outputFormat)) {
-                        $scope.rawdata = uibDateParser.parse(newValue, $scope.outputFormat);
-                    } else {
-                        $scope.rawdata = new Date(newValue);
-                    }
-                } else
-                    $scope.rawdata = undefined;
-
-                if ($scope.ngChange) {
-                    $scope.ngChange($scope.ngModel);
-                }
-            });
-
-            // Config custom window
-            $scope.init = function() {
-
-            };
-
-            $scope.init();
-
-
-        }],
-        link: function(scope) {
-            scope.$on('$destroy', function() {
-                //console.log("destroy");
-                scope.calendarOpen = false;
-            });
-        }
-    };
-});
 
 
 // Use Applicaion configuration module to register a new module
@@ -9369,6 +8892,483 @@ L.Util.saveAs = (function(view) {
     typeof window !== 'undefined' && window 
 ));
 
+
+angular.module('opengate-angular-js')
+
+.directive('windowTimeSelect', function() { // ['$scope', '$compile'], function($scope, $compile) {
+    return {
+        restrict: 'AE',
+        templateUrl: 'window-time-select/views/window-time.select.view.html',
+        scope: {
+            event: '@',
+            rawdate: '@'
+        },
+        controller: ["$scope", "$element", "$attrs", "$translate", function($scope, $element, $attrs, $translate) {
+            $scope.fromCalendarOpen = false;
+            $scope.toCalendarOpen = false;
+
+            // General config
+            $scope.customButtonBar = {
+                show: true,
+                now: {
+                    show: false
+                },
+                today: {
+                    show: false
+                },
+                clear: {
+                    show: false
+                },
+                date: {
+                    show: true,
+                    text: ' ',
+                    cls: 'btn-sm btn-info oux-button-margin fa fa-calendar'
+                },
+                time: {
+                    show: true,
+                    text: ' ',
+                    cls: 'btn-sm btn-info oux-button-margin fa fa-clock-o'
+                },
+                close: {
+                    show: true,
+                    text: ' ',
+                    cls: 'btn-sm btn-success oux-button-margin fa fa-check'
+                },
+                cancel: {
+                    show: false
+                }
+            };
+
+            function toLimit() {
+                return window.moment($scope.date.from).add(1, 'minutes')._d;
+            }
+
+            function fromLimit() {
+                return window.moment($scope.date.to).subtract(1, 'minutes')._d;
+            }
+
+            function fromDate() {
+                return window.moment($scope.date.to).subtract(1, 'months')._d;
+            }
+
+            function setTo(toDate) {
+                if (!$scope.date) $scope.date = {};
+                $scope.date.to = toDate;
+                $scope.toMax = toDate;
+
+                $scope.toOptions = {
+                    datePicker: {
+                        startingDay: 1,
+                        showWeeks: false,
+                        minDate: $scope.toMin,
+                        minMode: 'day',
+                        closed: $scope.toChange
+                    },
+                    timePicker: {
+                        //min: $scope.toMin,
+                        showMeridian: false
+                    }
+                }
+            }
+
+            function setFrom() {
+                $scope.date.from = fromDate($scope.date.to);
+
+                $scope.toOptions.datePicker.minDate = toLimit();
+                //$scope.toOptions.timePicker.min = toLimit();
+
+                $scope.toMin = toLimit();
+                $scope.fromMax = fromLimit($scope.date.to);
+
+                $scope.fromOptions = {
+                    datePicker: {
+                        startingDay: 1,
+                        showWeeks: false,
+                        maxDate: $scope.fromMax,
+                        maxMode: 'day',
+                        closed: $scope.fromChange
+                    },
+                    timePicker: {
+                        //max: $scope.fromMax,
+                        showMeridian: false
+                    }
+                };
+            }
+
+            $scope.oneDayClass = $scope.oneWeekClass = $scope.oneMonthClass = $scope.customClass = 'btn-info';
+            $scope.filterApplied = false;
+            $scope.format = 'dd MMMM yyyy HH:mm';
+            $scope.clear = function() {
+
+                $scope.oneDayClass = $scope.oneWeekClass = $scope.oneMonthClass = $scope.customClass = 'btn-info';
+                $scope.filterApplied = false;
+                $scope.customEnabled = false;
+                $scope.$emit('onWindowTimeChanged', {});
+            };
+            $scope.fromOpen = function() {
+                $scope.fromPopup.opened = true;
+            };
+            $scope.fromPopup = {
+                opened: false
+            };
+            $scope.toOpen = function() {
+                $scope.toPopup.opened = true;
+            };
+            $scope.toPopup = {
+                opened: false
+            };
+
+            $scope.openCalendarFrom = function() {
+                $scope.fromCalendarOpen = true;
+            };
+
+            $scope.openCalendarTo = function() {
+                $scope.toCalendarOpen = true;
+            };
+
+            $scope.custom = function() {
+                if (!$scope.customEnabled || (!$scope.fromCalendarOpen && !$scope.toCalendarOpen)) {
+                    $scope.customEnabled = !$scope.customEnabled;
+                }
+
+            };
+            $scope.apply = function(winTime, fire_event) {
+                $scope.filterApplied = true;
+                $scope.customEnabled = false;
+                /* jshint ignore:start */
+                if (!window.eval($scope.rawdate)) {
+                    for (var key in winTime) {
+                        if (key !== 'type' && key !== 'rawdate')
+                            winTime[key] = window.moment(winTime[key]).format();
+                    }
+                    //TODO: enganche con widgets, habría que ver como resolver este problema o hacer que esto sea una directiva propia del angular-dashboard-framework
+                    winTime.rawdate = false;
+                }
+                /* jshint ignore:end */
+                if (fire_event) {
+                    $scope.$emit('onWindowTimeChanged', winTime);
+                }
+            };
+            $scope.oneDay = function(no_fire_event) {
+                $scope.oneDayClass = 'btn-success';
+                $scope.oneWeekClass = $scope.oneMonthClass = $scope.customClass = 'btn-info';
+                $scope.apply(genWindowTime('days'), !no_fire_event);
+            };
+            $scope.oneWeek = function(no_fire_event) {
+                $scope.oneWeekClass = 'btn-success';
+                $scope.oneDayClass = $scope.oneMonthClass = $scope.customClass = 'btn-info';
+                $scope.apply(genWindowTime('weeks'), !no_fire_event);
+            };
+            $scope.oneMonth = function(no_fire_event) {
+                $scope.oneMonthClass = 'btn-success';
+                $scope.oneWeekClass = $scope.oneDayClass = $scope.customClass = 'btn-info';
+                $scope.apply(genWindowTime('months'), !no_fire_event);
+            };
+
+            $scope.applyCustom = function(no_fire_event) {
+                if ($scope.fromCalendarOpen) {
+                    $scope.fromChange();
+                } else if ($scope.toCalendarOpen) {
+                    $scope.toChange()
+                } else {
+                    $scope.fromCalendarOpen = false;
+                    $scope.toCalendarOpen = false;
+
+                    $scope.customClass = 'btn-success';
+                    $scope.oneWeekClass = $scope.oneDayClass = $scope.oneMonthClass = 'btn-info';
+                    $scope.apply({
+                        type: 'custom',
+                        to: $scope.date.to,
+                        from: $scope.date.from
+                    }, !no_fire_event);
+                }
+            };
+
+            // Config custom window
+            $scope.init = function() {
+
+                setTo(new Date());
+                setFrom();
+
+                $scope.toChange = function() {
+                    validateCustomWindow();
+                    $scope.fromMax = fromLimit($scope.date.to);
+                    $scope.fromOptions.datePicker.maxDate = $scope.fromMax;
+                    //$scope.fromOptions.timePicker.max = $scope.fromMax;
+                    $scope.toCalendarOpen = false;
+                };
+                $scope.fromChange = function() {
+                    validateCustomWindow();
+                    $scope.toOptions.datePicker.minDate = toLimit();
+                    //$scope.toOptions.timePicker.min = toLimit();
+
+                    $scope.toMin = toLimit();
+                    $scope.fromCalendarOpen = false;
+                };
+
+                function validateCustomWindow() {
+                    if (window.moment($scope.date.to).diff($scope.date.from) <= 0) {
+                        $scope.errorCustomWindow = 'From date(' + $scope.date.from.toISOString() + ') is bigger than to date(' + $scope.date.to.toISOString() + ')';
+                    } else {
+                        $scope.errorCustomWindow = undefined;
+                    }
+                }
+
+
+                //TODO: enganche con widgets, habría que ver como resolver este problema o hacer que esto sea una directiva propia del angular-dashboard-framework
+                if ($scope.$parent.config && $scope.$parent.config.windowFilter) {
+                    var configWindowFilter = $scope.$parent.config.windowFilter;
+                    /* jshint ignore:start */
+                    if (!window.eval($scope.rawdate)) {
+                        $scope.$parent.config.windowFilter.rawdate = false;
+                    }
+                    /* jshint ignore:end */
+                    switch (configWindowFilter.type) {
+                        case 'days':
+                            $scope.oneDay(true);
+                            break;
+                        case 'weeks':
+                            $scope.oneWeek(true);
+                            break;
+                        case 'months':
+                            $scope.oneMonth(true);
+                            break;
+                        case 'custom':
+                            if (configWindowFilter.to && configWindowFilter.from) {
+                                $scope.date.to = new Date(configWindowFilter.to);
+                                $scope.date.from = new Date(configWindowFilter.from);
+                            }
+                            $scope.applyCustom(true);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            };
+
+            $scope.init();
+
+            function genWindowTime(type) {
+                var from = window.moment().subtract(1, type);
+                return {
+                    from: from._d,
+                    type: type
+                };
+            }
+        }],
+        link: function(scope) {
+            scope.$on('$destroy', function() {
+                scope.fromCalendarOpen = false;
+                scope.toCalendarOpen = false;
+
+                // manual destroy
+                var pickers = angular.element('ul[class*="datetime-picker-dropdown"]')
+
+                if (pickers && pickers.length) {
+                    angular.forEach(pickers, function(element) {
+                        element.remove();
+                    });
+                }
+            });
+        }
+    };
+});
+
+angular.module('opengate-angular-js')
+
+.directive('datetimeSelect', function() { // ['$scope', '$compile'], function($scope, $compile) {
+    return {
+        restrict: 'AE',
+        templateUrl: 'window-time-select/views/datetime.select.view.html',
+        scope: {
+            ngModel: '=',
+            ngValue: '=',
+            ngRequired: '<',
+            placeholder: '@',
+            format: '@',
+            mode: '@',
+            ngChange: '<',
+            dateOptions: '=',
+            timeOptions: '=',
+            min: '=',
+            max: '='
+        },
+        controller: ["$scope", "$element", "$attrs", "$translate", "uibDateParser", function($scope, $element, $attrs, $translate, uibDateParser) {
+            if (!$scope.mode || $scope.mode === 'date-time') {
+                $scope.inputMode = 'datetime';
+            } else {
+                $scope.inputMode = $scope.mode;
+            }
+
+            $scope.required = !$scope.ngRequired ? false : !!$scope.ngRequired;
+
+            $scope.calendarOpen = false;
+            $scope.enableDate = !$scope.inputMode || $scope.inputMode === 'datetime' || $scope.inputMode === 'date';
+            $scope.enableTime = $scope.inputMode && ($scope.inputMode === 'datetime' || $scope.inputMode === 'time');
+
+            if (!$scope.format) {
+                if ($scope.enableDate && !$scope.enableTime) {
+                    $scope.format = 'yyyy-MM-dd';
+                    $scope.visibleFormat = 'dd MMMM yyyy';
+                } else if (!$scope.enableDate && $scope.enableTime) {
+                    $scope.format = 'HH:mm:ss';
+                    $scope.visibleFormat = 'HH:mm';
+                } else {
+                    $scope.format = 'yyyy-MM-ddTHH:mm:ss.sssZ';
+                    $scope.visibleFormat = 'dd MMMM yyyy HH:mm';
+                }
+            } else {
+                $scope.visibleFormat = $scope.format;
+            }
+
+            $scope.outputFormat = $scope.format;
+
+            // Control del valor de entrada
+            if (!angular.isUndefined($scope.ngModel) || !angular.isUndefined($scope.ngValue)) {
+                if ($scope.ngValue) {
+                    $scope.rawdata = $scope.ngValue;
+                } else if ($scope.ngModel) {
+                    $scope.rawdata = uibDateParser.parse($scope.ngModel, $scope.outputFormat);
+                }
+            }
+
+            // General config
+            $scope.customButtonBar = {
+                show: true,
+                now: {
+                    show: false
+                },
+                today: {
+                    show: true,
+                    text: ' ',
+                    cls: 'btn-sm btn-info oux-button-margin fa fa-calendar-o'
+                },
+                clear: {
+                    show: true,
+                    text: ' ',
+                    cls: 'btn-sm btn-success oux-button-margin fa fa-close'
+                },
+                date: {
+                    show: !$scope.inputMode || $scope.inputMode === 'datetime' || $scope.inputMode === 'date',
+                    text: ' ',
+                    cls: 'btn-sm btn-info oux-button-margin fa fa-calendar'
+                },
+                time: {
+                    show: $scope.inputMode && ($scope.inputMode === 'datetime' || $scope.inputMode === 'time'),
+                    text: ' ',
+                    cls: 'btn-sm btn-info oux-button-margin fa fa-clock-o'
+                },
+                close: {
+                    show: true,
+                    text: ' ',
+                    cls: 'btn-sm btn-success oux-button-margin fa fa-check'
+                },
+                cancel: {
+                    show: false
+                }
+            };
+
+            $scope.pickerOptions = {
+                datePicker: {
+                    startingDay: 1,
+                    showWeeks: false,
+                    appendToBody: true
+                },
+                timePicker: {
+                    //max: $scope.fromMax,
+                    showMeridian: false,
+                    appendToBody: true
+                }
+            };
+
+            if ($scope.dateOptions) {
+                angular.merge($scope.pickerOptions.datePicker, $scope.dateOptions);
+            }
+
+            if ($scope.timeOptions) {
+                angular.merge($scope.pickerOptions.timePicker, $scope.timeOptions);
+            }
+
+            $scope.openCalendar = function() {
+                $scope.calendarOpen = true;
+            };
+
+            //$scope.$watch('rawdata', function(newValue) {
+            $scope.changedRawdata = function() {
+                var newValue = $scope.rawdata;
+                if (newValue) {
+                    if (($scope.min && (newValue < $scope.min || newValue < uibDateParser.parse($scope.min, $scope.outputFormat))) ||
+                        ($scope.max && (newValue > $scope.max || newValue > uibDateParser.parse($scope.max, $scope.outputFormat)))) {
+                        $scope.rawdata = undefined;
+
+                        if ($scope.ngModel) {
+                            $scope.ngModel = undefined;
+                            if ($scope.ngChange) {
+                                $scope.ngChange($scope.ngModel);
+                            }
+                        }
+                    } else {
+                        var parsedNewValue;
+                        if ($scope.outputFormat !== 'yyyy-MM-ddTHH:mm:ss.sssZ') {
+                            parsedNewValue = uibDateParser.filter(newValue, $scope.outputFormat);
+                        } else {
+                            parsedNewValue = newValue.toISOString();
+                        }
+
+                        if (parsedNewValue !== $scope.ngModel) {
+                            $scope.ngModel = parsedNewValue;
+                            if ($scope.ngChange) {
+                                $scope.ngChange($scope.ngModel);
+                            }
+                        }
+                    }
+
+                } else {
+                    $scope.rawdata = undefined;
+
+                    if ($scope.ngModel) {
+                        $scope.ngModel = undefined;
+                        if ($scope.ngChange) {
+                            $scope.ngChange($scope.ngModel);
+                        }
+                    }
+
+                }
+                //$scope.ngValue = newValue;
+            };
+
+            $scope.$watch('ngModel', function(newValue) {
+                if (newValue) {
+                    if (uibDateParser.parse(newValue, $scope.outputFormat)) {
+                        $scope.rawdata = uibDateParser.parse(newValue, $scope.outputFormat);
+                    } else {
+                        $scope.rawdata = new Date(newValue);
+                    }
+                } else
+                    $scope.rawdata = undefined;
+
+                if ($scope.ngChange) {
+                    $scope.ngChange($scope.ngModel);
+                }
+            });
+
+            // Config custom window
+            $scope.init = function() {
+
+            };
+
+            $scope.init();
+
+
+        }],
+        link: function(scope) {
+            scope.$on('$destroy', function() {
+                //console.log("destroy");
+                scope.calendarOpen = false;
+            });
+        }
+    };
+});
 angular.module('opengate-angular-js')
     .service('$schemaFormUtils', ['$provisionDatastreamsUtils', '$api', '$q',
         function ($provisionDatastreamsUtils, $api, $q) {
@@ -10341,10 +10341,10 @@ _wizard.controller('helperDialogModalController', ['$scope', '$uibModalInstance'
         };
 
         //config channel
-        $ctrl.channel = {};
+        $ctrl.channelC = {};
         if (helper_selected && helper_selected.channel) {
 
-            $ctrl.channel = {
+            $ctrl.channelC = {
                 selected: helper_selected.channel
             };
         }
@@ -10976,7 +10976,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
                         };
                     }
                 }
-                if (ctrl.organization) {
+                if (ctrl.organization && typeof ctrl.organization === 'string') {
                     if (filter.and) {
                         filter.and.push({
                             'eq': {
@@ -10996,7 +10996,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
                         };
                     }
                 }
-                if (ctrl.channel) {
+                if (ctrl.channel && typeof ctrl.channel === 'string') {
                     if (filter.and) {
                         filter.and.push({
                             'eq': {
