@@ -221,7 +221,6 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
 
                 newFilter[op] = {};
                 var ids = getSimpleValuesFromArray(parse_tree.right);
-                console.log(ids);
                 newFilter[op][id] = ids;
             }
 

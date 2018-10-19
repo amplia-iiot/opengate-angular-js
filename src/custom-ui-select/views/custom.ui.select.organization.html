@@ -1,6 +1,6 @@
 <div class="form-group no-margin" mass-autocomplete ng-if="$ctrl.multiple">
     <label ng-if="$ctrl.label" class="custom-ui-select-label">{{ $ctrl.label | translate }}
-        <field-options required="$ctrl.ngRequired" multiple="$ctrl.multiple" /></label>
+        <field-options multiple="$ctrl.multiple" /></label>
     <ui-select name="organization" custom-ui-select-config="$ctrl.ownConfig" ng-model="$ctrl.organization" theme="bootstrap" title="Choose an organization" custom-ui-select multiple="true" custom-mass-autocomplete-item="$ctrl.ownConfig" on-select="$ctrl.organizationSelected($item, $model)"
         on-remove="$ctrl.organizationRemove($item, $model)" ng-required="$ctrl.required">
         <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.ORGANIZATION' | translate }}" allow-clear="true"> {{$item.name}} </ui-select-match>
@@ -11,7 +11,7 @@
 </div>
 <div class="form-group no-margin" mass-autocomplete ng-if="!$ctrl.multiple">
     <label ng-if="$ctrl.label" class="custom-ui-select-label">{{ $ctrl.label | translate }}
-        <field-options required="$ctrl.ngRequired" multiple="$ctrl.multiple" /></label>
+        <field-options multiple="$ctrl.multiple" /></label>
    
     <ui-select custom-ui-select-config="$ctrl.ownConfig" name="organization" ng-model="$ctrl.organization" theme="bootstrap"
         title="Choose an organization" custom-ui-select multiple="false" custom-mass-autocomplete-item="$ctrl.ownConfig" on-select="$ctrl.organizationSelected($item, $model)"  on-remove="$ctrl.organizationRemove($item, $model)"
