@@ -76,15 +76,17 @@ angular.module('opengate-angular-js')
 
                     $scope._complex = $attrs.$$button.querySelectorAll('.fa-filter').hasClass('text-primary');
                     $scope.complex = function() {
-                        $scope._complex = !$scope._complex;
-                        if ($scope._complex) {
-                            $element.css('display', '').removeClass('custom-ui-select-hide');
-                            $attrs.$$cloneElement.css('display', 'none').addClass('custom-ui-select-hide');
-                            $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-bold').removeClass('text-muted').addClass('fa-font').addClass('text-primary');
-                        } else {
-                            $element.css('display', 'none').addClass('custom-ui-select-hide');
-                            $attrs.$$cloneElement.css('display', '').removeClass('custom-ui-select-hide');
-                            $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-font').addClass('text-muted').addClass('fa-bold').removeClass('text-primary');
+                        if (!uiConfig.simpleMode) {
+                            $scope._complex = !$scope._complex;
+                            if ($scope._complex) {
+                                $element.css('display', '').removeClass('custom-ui-select-hide');
+                                $attrs.$$cloneElement.css('display', 'none').addClass('custom-ui-select-hide');
+                                $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-bold').removeClass('text-muted').addClass('fa-font').addClass('text-primary');
+                            } else {
+                                $element.css('display', 'none').addClass('custom-ui-select-hide');
+                                $attrs.$$cloneElement.css('display', '').removeClass('custom-ui-select-hide');
+                                $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-font').addClass('text-muted').addClass('fa-bold').removeClass('text-primary');
+                            }
                         }
                     };
 

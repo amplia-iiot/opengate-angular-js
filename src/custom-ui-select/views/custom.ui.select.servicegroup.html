@@ -1,0 +1,23 @@
+<div class="form-group no-margin" mass-autocomplete ng-if="$ctrl.multiple">
+    <label ng-if="$ctrl.label" class="custom-ui-select-label">{{ $ctrl.label | translate }}
+        <field-options required="$ctrl.ngRequired" multiple="$ctrl.multiple" /></label>
+    <ui-select name="serviceGroup" custom-ui-select-config="$ctrl.ownConfig" ng-model="$ctrl.serviceGroup" theme="bootstrap" title="{{ 'FORM.PLACEHOLDER.SERVICEGROUP' | translate }}" custom-ui-select multiple="true" custom-mass-autocomplete-item="$ctrl.ownConfig"
+        on-select="$ctrl.serviceGroupSelected($item, $model)" on-remove="$ctrl.serviceGroupRemove($item, $model)" ng-required="$ctrl.required">
+        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.SERVICEGROUP' | translate }}" allow-clear="true"> {{$item.name}} </ui-select-match>
+        <ui-select-choices repeat="serviceGroup in $ctrl.ownConfig.collection track by $index">
+            <span ng-bind-html="serviceGroup.name | highlight: $select.search">
+        </ui-select-choices>
+    </ui-select>
+</div>
+<div class="form-group no-margin" mass-autocomplete ng-if="!$ctrl.multiple">
+    <label ng-if="$ctrl.label" class="custom-ui-select-label">{{ $ctrl.label | translate }}
+        <field-options required="$ctrl.ngRequired" multiple="$ctrl.multiple" /></label>
+   
+    <ui-select custom-ui-select-config="$ctrl.ownConfig" name="serviceGroup" ng-model="$ctrl.serviceGroup" theme="bootstrap" title="{{ 'FORM.PLACEHOLDER.SERVICEGROUP' | translate }}" custom-ui-select multiple="false" custom-mass-autocomplete-item="$ctrl.ownConfig" 
+        on-select="$ctrl.serviceGroupSelected($item, $model)"  on-remove="$ctrl.serviceGroupRemove($item, $model)" ng-required="$ctrl.ngRequired">
+        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.SERVICEGROUP' | translate }}" allow-clear="true"> {{$item.name}} </ui-select-match>
+        <ui-select-choices repeat="serviceGroup in $ctrl.ownConfig.collection track by $index">
+            <span ng-bind-html="serviceGroup.name | highlight: $select.search">
+        </ui-select-choices>
+    </ui-select>
+</div>

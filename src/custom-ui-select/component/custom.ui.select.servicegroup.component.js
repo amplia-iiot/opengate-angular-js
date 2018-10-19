@@ -1,43 +1,54 @@
 'use strict';
 
 
-angular.module('opengate-angular-js').controller('customUiSelectOrganizationController', ['$scope', '$element', '$attrs', '$api', 'Authentication', '$q',
-    function($scope, $element, $attrs, $api, Authentication, $q) {
+angular.module('opengate-angular-js').controller('customUiSelectServiceGroupController', ['$scope', '$element', '$attrs', '$api', '$q',
+    function($scope, $element, $attrs, $api, $q) {
         var ctrl = this;
+
+        var builder = $api().serviceGroupSearchBuilder();
+        if (!!ctrl.entityType && ctrl.entityType.toUpperCase() !== 'DEVICE') {
+            builder.withEntityType(ctrl.entityType.toUpperCase());
+        } else {
+            builder.withEntityType('GATEWAY');
+        }
 
         var savedSearch;
         ctrl.ownConfig = {
-            builder: $api().newOrganizationFinder().findByDomainAndWorkgroup(Authentication.getUser().domain, Authentication.getUser().workgroup),
+            builder: builder,
             filter: function(search) {
                 savedSearch = search;
             },
-            rootKey: undefined,
+            rootKey: 'serviceGroups',
             collection: [],
-            isGet: true,
             simpleMode: true,
-            customSelectors: $api().newOrganizationFinder().findByDomainAndWorkgroup(Authentication.getUser().domain, Authentication.getUser().workgroup),
-            processingData: function(result, organizations) {
-                var organizationsFormatted = organizations;
+            customSelectors: builder,
+            processingData: function(result, serviceGroups) {
+                var serviceGroupsFormatted = serviceGroups.map(function(item) {
+                    return {
+                        name: item
+                    };
+                });
+
                 if (savedSearch) {
-                    organizationsFormatted = organizations.filter(function(tmp) {
+                    serviceGroupsFormatted = serviceGroupsFormatted.filter(function(tmp) {
                         return tmp.name.toLowerCase().indexOf(savedSearch.trim().toLowerCase()) !== -1;
                     });
                 }
 
                 var deferred = $q.defer();
 
-                deferred.resolve(organizationsFormatted);
+                deferred.resolve(serviceGroupsFormatted);
 
                 return deferred.promise;
             }
         };
 
-        ctrl.organizationSelected = function($item, $model) {
+        ctrl.serviceGroupSelected = function($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = [];
 
-                angular.forEach(ctrl.organization, function(organizationTmp) {
-                    identifierTmp.push(organizationTmp.name);
+                angular.forEach(ctrl.serviceGroup, function(sgTmp) {
+                    identifierTmp.push(sgTmp.name);
                 });
 
                 ctrl.ngModel = identifierTmp;
@@ -53,7 +64,7 @@ angular.module('opengate-angular-js').controller('customUiSelectOrganizationCont
             }
         };
 
-        ctrl.organizationRemove = function($item, $model) {
+        ctrl.serviceGroupRemove = function($item, $model) {
             if (ctrl.onRemove) {
                 ctrl.onRemove($item, $model);
             }
@@ -74,10 +85,6 @@ angular.module('opengate-angular-js').controller('customUiSelectOrganizationCont
             }
         };
 
-        if (ctrl.required !== undefined) {
-            ctrl.ngRequired = ctrl.required;
-        }
-
         if (ctrl.identifier) {
             mapIdentifier(ctrl.identifier);
         }
@@ -91,39 +98,39 @@ angular.module('opengate-angular-js').controller('customUiSelectOrganizationCont
 
                 if (ctrl.multiple) {
                     if (angular.isArray(identifier)) {
-                        ctrl.organization = [];
+                        ctrl.serviceGroup = [];
 
                         angular.forEach(identifier, function(idTmp) {
-                            ctrl.organization.push({
+                            ctrl.serviceGroup.push({
                                 name: idTmp
                             });
                         });
                     }
 
                 } else {
-                    ctrl.organization = [{
+                    ctrl.serviceGroup = [{
                         name: ctrl.identifier
                     }];
                 }
             } else {
-                ctrl.organization = [];
+                ctrl.serviceGroup = [];
             }
         }
     }
 ]);
 
-angular.module('opengate-angular-js').component('customUiSelectOrganization', {
+angular.module('opengate-angular-js').component('customUiSelectServiceGroup', {
 
-    templateUrl: 'custom-ui-select/views/custom.ui.select.organization.html',
-    controller: 'customUiSelectOrganizationController',
+    templateUrl: 'custom-ui-select/views/custom.ui.select.servicegroup.html',
+    controller: 'customUiSelectServiceGroupController',
     bindings: {
         onSelectItem: '&',
         onRemove: '&',
-        organization: '=',
+        serviceGroup: '=',
+        entityType: '<?',
         identifier: '<?',
         multiple: '<',
         ngRequired: '<',
-        required: '<',
         label: '<',
         action: '<?',
         disabled: '<?',
