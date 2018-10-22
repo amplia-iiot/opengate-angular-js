@@ -1,11 +1,11 @@
 'use strict';
 
 
-angular.module('opengate-angular-js').controller('customUiSelectOgtypeListController', ['$scope', '$element', '$attrs', '$api', function($scope, $element, $attrs, $api) {
+angular.module('opengate-angular-js').controller('customUiSelectOgtypeListController', ['$scope', '$element', '$attrs', '$api', '$q', function($scope, $element, $attrs, $api, $q) {
     var ctrl = this;
     var builder = $api().basicTypesSearchBuilder();
     if (ctrl.path) {
-        builder = $api().basicTypesSearchBuilder().withPath(ctrl.path);
+        builder = builder.withPath(ctrl.path);
     }
     ctrl.ownConfig = {
         builder: builder.build().execute(),
@@ -13,7 +13,13 @@ angular.module('opengate-angular-js').controller('customUiSelectOgtypeListContro
         rootKey: 'enum',
         collection: [],
         isGet: true,
-        customSelectors: builder.build().execute()
+        customSelectors: builder.build().execute(),
+        processingData: function(p1, p2) {
+            //  console.log(p1);
+            // console.log(p2);
+
+        },
+        path: ctrl.path
     };
 
     ctrl.elementSelected = function($item, $model) {
@@ -98,16 +104,17 @@ angular.module('opengate-angular-js').component('customUiSelectOgtypeList', {
         onRemove: '&',
         element: '=',
         identifier: '<?',
-        path: '=',
+        path: '@?',
         multiple: '<',
         ngRequired: '<',
         required: '<',
-        label: '<',
+        label: '=',
         placeholder: '=',
-        action: '<?',
+        action: '=?',
         disabled: '<?',
         ngModel: '=?',
         uiSelectMatchClass: '@?'
     }
+
 
 });

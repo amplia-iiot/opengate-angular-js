@@ -1,0 +1,6 @@
+<div ng-class="{'has-error': hasError(), 'has-success': hasSuccess(), 'has-feedback': form.feedback !== false }" class="form-group {{form.htmlClass}}">
+    <!-- Surrounding DIV for sfField builder to add a sfField directive to. -->
+    <custom-ui-select-ogtype-list label="form.title" path="{{form.path}}" on-select-item="evalExpr(form.onselectitem, {$item: $item, $model: $model})" on-remove="evalExpr(form.onremove, {$item: $item, $model: $model})" ng-model="$$value$$" identifier="$$value$$"
+        multiple="form.multiple" sf-field-model="replaceAll" ui-select-match-class="form.uiSelectMatchClass" element="form.dummy" ng-required="form.required">
+    </custom-ui-select-ogtype-list>
+</div>
