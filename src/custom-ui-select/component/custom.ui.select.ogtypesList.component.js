@@ -42,7 +42,13 @@ angular.module('opengate-angular-js').controller('customUiSelectOgtypeListContro
         if (ctrl.onRemove) {
             ctrl.onRemove($item, $model);
         }
-        ctrl.ngModel = undefined;
+        if (ctrl.multiple) {
+            if (ctrl.ngModel && ctrl.ngModel.indexOf($item) !== -1) {
+                ctrl.ngModel.splice(ctrl.ngModel.indexOf($item), 1);
+            }
+        } else {
+            ctrl.ngModel = undefined;
+        }
     };
 
 
@@ -73,16 +79,12 @@ angular.module('opengate-angular-js').controller('customUiSelectOgtypeListContro
                     ctrl.element = [];
 
                     angular.forEach(identifier, function(idTmp) {
-                        ctrl.element.push({
-                            name: idTmp
-                        });
+                        ctrl.element.push(idTmp);
                     });
                 }
 
             } else {
-                ctrl.element = [{
-                    name: ctrl.identifier
-                }];
+                ctrl.element = [ctrl.identifier];
             }
         } else {
             ctrl.element = [];
