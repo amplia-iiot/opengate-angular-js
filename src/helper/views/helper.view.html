@@ -205,6 +205,20 @@
                 </div>
             </div>
 
+            <div uib-accordion-group is-open="$ctrl.serviceGroupIsOpen" ng-hide="$ctrl.helper_exclusive ? !$ctrl.serviceGroupIsExclusive: false" class="serviceGroup-option">
+                <div uib-accordion-heading>{{ 'FORM.SERVICE_GROUP' | translate }}</div>
+                <div class="row row-eq-height">
+                    <div class="col-xs-10">
+                        <custom-ui-select-service-group on-select-item="$ctrl.onSelectServiceGroup($item, $model)" on-remove="$ctrl.onDeleteServiceGroup()" service-group="$ctrl.serviceGroupC.selected" multiple="false"></custom-ui-select-service-group>
+                    </div>
+                    <div class="col-xs-2 vcenter no-padding" ng-if="$ctrl.helper_exclusive">
+                        <a class="top-buffer btn btn-default ux-txt-success pointer" ng-class="{'disabled': !$ctrl.helper_keys.serviceGroup}" ng-click="$ctrl.ok('channel')" ng-disabled="!$ctrl.helper_keys.serviceGroup">
+                            <i class="fa fa-lg fa-files-o" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
         </uib-accordion>
     </div>
     <div class="modal-footer">

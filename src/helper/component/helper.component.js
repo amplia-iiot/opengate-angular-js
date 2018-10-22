@@ -457,7 +457,6 @@ _wizard.controller('helperDialogModalController', ['$scope', '$uibModalInstance'
             return Object.keys($ctrl.helper_keys).length > 0;
         };
 
-
         //config bundles
         if (!$ctrl.bundle) {
             $ctrl.bundle = {};
@@ -545,6 +544,25 @@ _wizard.controller('helperDialogModalController', ['$scope', '$uibModalInstance'
 
         $ctrl.onDeleteChannel = function() {
             delete $ctrl.helper_keys.channel;
+        };
+
+        //config service group
+        $ctrl.serviceGroupC = {};
+        if (helper_selected && helper_selected.serviceGroup) {
+
+            $ctrl.serviceGroupC = {
+                selected: helper_selected.serviceGroup
+            };
+        }
+
+        $ctrl.onSelectServiceGroup = function($item, $model) {
+            $ctrl.helper_keys.serviceGroup = {
+                serviceGroupName: $item.name
+            };
+        };
+
+        $ctrl.onDeleteServiceGroup = function() {
+            delete $ctrl.helper_keys.serviceGroup;
         };
 
         //Condicion para botón de aplicar todo lo seleccionado en los helpers
