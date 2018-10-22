@@ -11712,11 +11712,6 @@ angular.module('opengate-angular-js').controller('customUiSelectOgtypeListContro
         collection: [],
         isGet: true,
         customSelectors: builder.build().execute(),
-        processingData: function(p1, p2) {
-            //  console.log(p1);
-            // console.log(p2);
-
-        },
         path: ctrl.path
     };
 
