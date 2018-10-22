@@ -104,7 +104,7 @@ angular.module('opengate-angular-js').component('customUiSelectOgtypeList', {
         ngRequired: '<',
         required: '<',
         label: '=',
-        placeholder: '=',
+        placeholder: '@',
         action: '=?',
         disabled: '<?',
         ngModel: '=?',
