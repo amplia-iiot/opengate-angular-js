@@ -12720,7 +12720,7 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
                     mapIdentifier(changesObj.identifier.currentValue);
                 }
 
-                if (changesObj.organization) {
+                if (changesObj.organization && changesObj.organization.currentValue) {
                     ctrl.ngModel = undefined;
                     ctrl.channel = [];
                 }
