@@ -1,6 +1,6 @@
-angular.module('opengate-angular-js').config(function(schemaFormProvider, schemaFormDecoratorsProvider, sfPathProvider, sfBuilderProvider) {
+angular.module('opengate-angular-js').config(function (schemaFormProvider, schemaFormDecoratorsProvider, sfPathProvider, sfBuilderProvider) {
     'use strict';
-    var helper = function(name, schema, options) {
+    var helper = function (name, schema, options) {
         var f;
         if (schema.type === 'string' && (schema.format === 'helperdialog' || schema.format === 'date' || schema.format === 'time' || schema.format === 'datetime' || schema.format === 'date-time')) {
             f = schemaFormProvider.stdFormObj(name, schema, options);
@@ -130,7 +130,7 @@ angular.module('opengate-angular-js').config(function(schemaFormProvider, schema
     );
     ///////////////////////////////////////////////////////////////
 
-    var customUiSelect = function(name, schema, options) {
+    var customUiSelect = function (name, schema, options) {
         if (schema.type === 'string' && schema.format === 'customuiselect') {
             var f = schemaFormProvider.stdFormObj(name, schema, options);
             f.key = options.path;
@@ -201,6 +201,13 @@ angular.module('opengate-angular-js').config(function(schemaFormProvider, schema
         'bootstrapDecorator', // Name of the decorator you want to add to.
         'hardware', // Form type that should render this add-on
         'schema-form/views/schema.form.hardware.template.html', // Template name in $templateCache
+        sfBuilderProvider.stdBuilders // List of builder functions to apply.
+    );
+
+    schemaFormDecoratorsProvider.defineAddOn(
+        'bootstrapDecorator', // Name of the decorator you want to add to.
+        'subscription', // Form type that should render this add-on
+        'schema-form/views/schema.form.subscription.template.html', // Template name in $templateCache
         sfBuilderProvider.stdBuilders // List of builder functions to apply.
     );
 });
