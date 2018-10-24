@@ -1,0 +1,54 @@
+<div class="form-group no-margin" mass-autocomplete ng-if="$ctrl.multiple">
+    <label ng-if="$ctrl.label" class="custom-ui-select-label">{{ $ctrl.label | translate }}
+        <field-options required="$ctrl.ngRequired" multiple="$ctrl.multiple" /></label>
+    <ui-select name="certificate" custom-ui-select-config="$ctrl.ownConfig" ng-model="$ctrl.certificate" theme="bootstrap" title="{{ 'FORM.PLACEHOLDER.CERTIFICATE' | translate }}" custom-ui-select multiple="true" custom-mass-autocomplete-item="$ctrl.ownConfig"
+        on-select="$ctrl.certificateSelected($item, $model)" on-remove="$ctrl.certificateRemove($item, $model)" ng-required="$ctrl.required">
+        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.CERTIFICATE' | translate }}" allow-clear="true">
+            {{ $item.id }}
+        </ui-select-match>
+        <ui-select-choices repeat="certificate in $ctrl.ownConfig.collection track by $index">
+            <div>
+                <span ng-bind-html="certificate.name | highlight: $select.search"></span> -
+                <span ng-bind-html="''+certificate.version| highlight: $select.search"></span>
+            </div>
+            <small> {{ FORM.LABEL.ENTITY.ID | translate }}
+                <span ng-bind-html="certificate.id | highlight: $select.search"></span>
+                <p></p> {{ FORM.LABEL.ENTITY.STATE | translate }}
+                <span ng-bind-html="certificate.administrativeState | highlight: $select.search"></span> {{ FORM.LABEL.SERIAL_NUMBER | translate:'{ punctuationMark: ":" }'  }}
+                <span ng-bind-html="certificate.serialNumber | highlight: $select.search"></span>
+                <p></p> {{ FORM.LABEL.ENTITY.VALID_FROM | translate }}
+                <span ng-bind-html="certificate.valid.from | highlight: $select.search"></span> {{ FORM.LABEL.ENTITY.UNTIL | translate }}
+                <span ng-bind-html="certificate.valid.until | highlight: $select.search"></span>
+                <p></p>
+            </small>
+        </ui-select-choices>
+    </ui-select>
+</div>
+<div class="form-group no-margin" mass-autocomplete ng-if="!$ctrl.multiple">
+    <label ng-if="$ctrl.label" class="custom-ui-select-label">{{ $ctrl.label | translate }}
+        <field-options required="$ctrl.ngRequired" multiple="$ctrl.multiple" />
+    </label>
+
+    <ui-select custom-ui-select-config="$ctrl.ownConfig" name="certificate" ng-model="$ctrl.certificate" theme="bootstrap" title="{{ 'FORM.PLACEHOLDER.CERTIFICATE' | translate }}" custom-ui-select multiple="false" custom-mass-autocomplete-item="$ctrl.ownConfig"
+        on-select="$ctrl.certificateSelected($item, $model)" on-remove="$ctrl.certificateRemove($item, $model)" ng-required="$ctrl.ngRequired">
+        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.CERTIFICATE' | translate }}" allow-clear="true">
+            {{ $item.id }}
+        </ui-select-match>
+        <ui-select-choices repeat="certificate in $ctrl.ownConfig.collection track by $index">
+            <div>
+                <span ng-bind-html="certificate.name | highlight: $select.search"></span> -
+                <span ng-bind-html="''+certificate.version| highlight: $select.search"></span>
+            </div>
+            <small> {{ FORM.LABEL.ENTITY.ID | translate }}
+                    <span ng-bind-html="certificate.id | highlight: $select.search"></span>
+                    <p></p> {{ FORM.LABEL.ENTITY.STATE | translate }}
+                    <span ng-bind-html="certificate.administrativeState | highlight: $select.search"></span> {{ FORM.LABEL.SERIAL_NUMBER | translate:'{ punctuationMark: ":" }'  }}
+                    <span ng-bind-html="certificate.serialNumber | highlight: $select.search"></span>
+                    <p></p> {{ FORM.LABEL.ENTITY.VALID_FROM | translate }}
+                    <span ng-bind-html="certificate.valid.from | highlight: $select.search"></span> {{ FORM.LABEL.ENTITY.UNTIL | translate }}
+                    <span ng-bind-html="certificate.valid.until | highlight: $select.search"></span>
+                    <p></p>
+                </small>
+        </ui-select-choices>
+    </ui-select>
+</div>
