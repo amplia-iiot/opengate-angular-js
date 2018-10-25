@@ -66,7 +66,10 @@ angular.module('opengate-angular-js').controller('customUiSelectServiceGroupCont
 
         ctrl.serviceGroupRemove = function($item, $model) {
             if (ctrl.onRemove) {
-                ctrl.onRemove($item, $model);
+                var returnObj = {};
+                returnObj.$item = $item;
+                returnObj.$model = $model;
+                ctrl.onRemove(returnObj);
             }
 
             if (ctrl.multiple) {

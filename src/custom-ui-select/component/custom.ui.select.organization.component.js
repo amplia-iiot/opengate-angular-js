@@ -2,13 +2,13 @@
 
 
 angular.module('opengate-angular-js').controller('customUiSelectOrganizationController', ['$scope', '$element', '$attrs', '$api', 'Authentication', '$q',
-    function($scope, $element, $attrs, $api, Authentication, $q) {
+    function ($scope, $element, $attrs, $api, Authentication, $q) {
         var ctrl = this;
 
         var savedSearch;
         ctrl.ownConfig = {
             builder: $api().newOrganizationFinder().findByDomainAndWorkgroup(Authentication.getUser().domain, Authentication.getUser().workgroup),
-            filter: function(search) {
+            filter: function (search) {
                 savedSearch = search;
             },
             rootKey: undefined,
@@ -16,10 +16,10 @@ angular.module('opengate-angular-js').controller('customUiSelectOrganizationCont
             isGet: true,
             simpleMode: true,
             customSelectors: $api().newOrganizationFinder().findByDomainAndWorkgroup(Authentication.getUser().domain, Authentication.getUser().workgroup),
-            processingData: function(result, organizations) {
+            processingData: function (result, organizations) {
                 var organizationsFormatted = organizations;
                 if (savedSearch) {
-                    organizationsFormatted = organizations.filter(function(tmp) {
+                    organizationsFormatted = organizations.filter(function (tmp) {
                         return tmp.name.toLowerCase().indexOf(savedSearch.trim().toLowerCase()) !== -1;
                     });
                 }
@@ -32,11 +32,11 @@ angular.module('opengate-angular-js').controller('customUiSelectOrganizationCont
             }
         };
 
-        ctrl.organizationSelected = function($item, $model) {
+        ctrl.organizationSelected = function ($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = [];
 
-                angular.forEach(ctrl.organization, function(organizationTmp) {
+                angular.forEach(ctrl.organization, function (organizationTmp) {
                     identifierTmp.push(organizationTmp.name);
                 });
 
@@ -53,9 +53,12 @@ angular.module('opengate-angular-js').controller('customUiSelectOrganizationCont
             }
         };
 
-        ctrl.organizationRemove = function($item, $model) {
+        ctrl.organizationRemove = function ($item, $model) {
             if (ctrl.onRemove) {
-                ctrl.onRemove($item, $model);
+                var returnObj = {};
+                returnObj.$item = $item;
+                returnObj.$model = $model;
+                ctrl.onRemove(returnObj);
             }
 
             if (ctrl.multiple) {
@@ -68,7 +71,7 @@ angular.module('opengate-angular-js').controller('customUiSelectOrganizationCont
         };
 
 
-        ctrl.$onChanges = function(changesObj) {
+        ctrl.$onChanges = function (changesObj) {
             if (changesObj && changesObj.identifier) {
                 mapIdentifier(changesObj.identifier.currentValue);
             }
@@ -93,7 +96,7 @@ angular.module('opengate-angular-js').controller('customUiSelectOrganizationCont
                     if (angular.isArray(identifier)) {
                         ctrl.organization = [];
 
-                        angular.forEach(identifier, function(idTmp) {
+                        angular.forEach(identifier, function (idTmp) {
                             ctrl.organization.push({
                                 name: idTmp
                             });

@@ -30,6 +30,7 @@ $templateCache.put("schema-form/views/schema.form.certificate.template.html","<d
 $templateCache.put("schema-form/views/schema.form.channel.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-channel label=form.title on-select-item=\"evalExpr(form.onselectitem, {$item: $item, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $item, $model: $model})\" channel=form.dummy identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll ng-model=$$value$$ organization=evalInScope(form.organization) ng-required=form.required ui-select-match-class=form.uiSelectMatchClass></custom-ui-select-channel></div>");
 $templateCache.put("schema-form/views/schema.form.datastream.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-datastream on-select-item=\"evalExpr(form.onselectitem, {$item: $$value$$, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $$value$$, $model: $model})\" ng-model=$$value$$ datastream=form.dummy identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll ng-required=form.required ui-select-match-class=form.uiSelectMatchClass></custom-ui-select-datastream></div>");
 $templateCache.put("schema-form/views/schema.form.device.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-device label=form.title specific-type={{form.specificType}} on-select-item=\"evalExpr(form.onselectitem, {$item: $$value$$, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $$value$$, $model: $model})\" identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll device=form.dummy ng-model=$$value$$ ng-required=form.required ui-select-match-class=form.uiSelectMatchClass actions=form.actions></custom-ui-select-device></div>");
+$templateCache.put("schema-form/views/schema.form.domain.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-domain label=form.title on-select-item=\"evalExpr(form.onselectitem, {$item: $$value$$, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $$value$$, $model: $model})\" domain=form.dummy identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll ng-model=$$value$$ ng-required=form.required ui-select-match-class=form.uiSelectMatchClass></custom-ui-select-domain></div>");
 $templateCache.put("schema-form/views/schema.form.entity.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-entity label=form.title on-select-item=\"evalExpr(form.onselectitem, {$item: $$value$$, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $$value$$, $model: $model})\" entity=form.dummy identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll ng-model=$$value$$ ng-required=form.required ui-select-match-class=form.uiSelectMatchClass></custom-ui-select-entity></div>");
 $templateCache.put("schema-form/views/schema.form.hardware.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-hardware label=form.title on-select-item=\"evalExpr(form.onselectitem, {$item: $item, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $item, $model: $model})\" hardware=form.dummy identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll ng-model=$$value$$ ng-required=form.required ui-select-match-class=form.uiSelectMatchClass></custom-ui-select-hardware></div>");
 $templateCache.put("schema-form/views/schema.form.helper.boolean.template.html","<div class=form-group><div class=checkbox ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\"><label><input type=checkbox id=$$value$$ name=$$value$$ ng-model=$$value$$ sf-field-model=replaceAll sf-changed=form ng-model-options=form.ngModelOptions schema-validate=form> <span class=checkbox-material><span class=check></span></span> <span ng-bind-html=form.title class=text-left></span></label></div><div class=help-inline sf-message=form.description ng-bind-html=form.description></div></div>");
@@ -9851,6 +9852,12 @@ angular.module('opengate-angular-js').config(["schemaFormProvider", "schemaFormD
         'schema-form/views/schema.form.certificate.template.html', // Template name in $templateCache
         sfBuilderProvider.stdBuilders // List of builder functions to apply.
     );
+    schemaFormDecoratorsProvider.defineAddOn(
+        'bootstrapDecorator', // Name of the decorator you want to add to.
+        'domain', // Form type that should render this add-on
+        'schema-form/views/schema.form.domain.template.html', // Template name in $templateCache
+        sfBuilderProvider.stdBuilders // List of builder functions to apply.
+    );
 }]);
 /**
  * Created by Monica on 12/09/2016.
@@ -10561,26 +10568,310 @@ angular.module('opengate-angular-js').component('helperUiSelect', {
 });
 
 
+angular.module('opengate-angular-js')
+    .directive('customUiSelect', ['$compile', 'Filter',
+        function($compile, Filter) {
+            var button = angular.element('<div title="Toggle Advanced/Basic filter search" ng-click="complex()" style="cursor:pointer" class="custom-ui-select-button input-group-addon"><i class="fa fa-filter"></i><i class="filter-icon fa fa-bold text-muted"></i></div>');
+            var container = angular.element('<div class="custom-ui-select-container input-group"></div>');
+            var style = angular.element('<style title="custom-ui-select-no-multiple">.custom-ui-select-no-multiple .ui-select-search[placeholder=""]{display:none}</style>');
 
-angular.module('opengate-angular-js').controller('uiSelectResourceTypeController', ['$scope', '$element', '$attrs', '$api', function($scope, $element, $attrs, $api) {
+
+            var setRefresh = function(obj, fnc) {
+                var choices = obj.querySelectorAll('ui-select-choices');
+                choices.attr('refresh', fnc);
+                choices.attr('refresh-delay', '0');
+            };
+
+            return {
+                require: 'uiSelect',
+                scope: true,
+                bindToController: true,
+                controller: ["$scope", "$element", "$attrs", "$q", "$timeout", function($scope, $element, $attrs, $q, $timeout) {
+                    var uiConfig = getConfig();
+
+                    function processFilter(_filter) {
+                        if (uiConfig.prefilter) {
+                            var filter = {
+                                and: []
+                            };
+                            filter.and.push(uiConfig.prefilter);
+                            filter.and.push(_filter);
+                            return filter;
+                        }
+                        return _filter;
+                    }
+
+                    function getConfig() {
+                        var configPath = $attrs.customUiSelectConfig.split('.');
+                        if (configPath.length === 1) {
+                            return $scope[$attrs.customUiSelectConfig];
+                        } else {
+                            var config = $scope;
+                            configPath.forEach(function(path) {
+                                config = config[path];
+                            });
+                            return config;
+                        }
+                    }
+
+                    //Filtro asistido con mass-autocomplete
+                    $scope.complexfilter = function(search) {
+                        //console.log(search);
+                        Filter.parseQuery(search || '')
+                            .then(function(data) {
+                                var filter = data.filter;
+                                //Solo filtramos si no se trata de un filtro vacio
+                                if (Object.keys(filter).length > 0) {
+                                    _loadCollection(processFilter(filter));
+                                    // console.log('Final filter: ' + filter);
+                                } else {
+                                    //lo tratamos igual que si fuera un filtro no valido
+                                    uiConfig.collection.splice(0, uiConfig.collection.length);
+                                }
+                            })
+                            .catch(function(err) {
+                                console.error(err);
+                                //Si el filtro no es valido borramos la lista de opciones del ui-select
+                                uiConfig.collection.splice(0, uiConfig.collection.length);
+                                // Tratar el error
+                            });
+                    };
+
+                    //Filtro simple con or-like
+                    $scope.asyncfilter = function(search) {
+                        _loadCollection(processFilter(uiConfig.filter(search)));
+                    };
+
+                    $scope._complex = $attrs.$$button.querySelectorAll('.fa-filter').hasClass('text-primary');
+                    $scope.complex = function() {
+                        if (!uiConfig.simpleMode) {
+                            $scope._complex = !$scope._complex;
+                            if ($scope._complex) {
+                                $element.css('display', '').removeClass('custom-ui-select-hide');
+                                $attrs.$$cloneElement.css('display', 'none').addClass('custom-ui-select-hide');
+                                $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-bold').removeClass('text-muted').addClass('fa-font').addClass('text-primary');
+                            } else {
+                                $element.css('display', 'none').addClass('custom-ui-select-hide');
+                                $attrs.$$cloneElement.css('display', '').removeClass('custom-ui-select-hide');
+                                $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-font').addClass('text-muted').addClass('fa-bold').removeClass('text-primary');
+                            }
+                        }
+                    };
+
+                    $scope.customUiTagTransform = function(value) {
+                        return null;
+                    };
+
+                    // Retraso de la peticion de recarga para no saturar (OUW-431)
+                    var lastTimeout = null;
+
+                    function _loadCollection(filter) {
+                        if (lastTimeout) clearTimeout(lastTimeout);
+
+                        lastTimeout = setTimeout(function() {
+                            _loadCollectionTimeout(filter);
+                        }, 500);
+                    }
+
+                    var lastFilter = null;
+
+                    function _loadCollectionTimeout(filter) {
+                        var builder = uiConfig.builder,
+                            id = uiConfig.rootKey,
+                            limit = uiConfig.limit ? uiConfig.limit : 25,
+                            isGet = uiConfig.isGet ? uiConfig.isGet : false;
+
+                        function _processingData(datas) {
+                            var _collection = [];
+                            if (!angular.isArray(datas)) {
+                                angular.forEach(datas, function(data, key) {
+                                    _collection.push(data);
+                                });
+                            } else {
+                                angular.copy(datas, _collection);
+                            }
+                            angular.copy(_collection, uiConfig.collection);
+
+                        }
+                        if (!lastFilter || !angular.equals(lastFilter, filter)) {
+                            lastFilter = angular.copy(filter);
+                            $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-bold').removeClass('fa-font').addClass('fa-spinner').addClass('fa-spin');
+                            var builderToExecute = isGet ? builder : builder.limit(limit).filter(filter).build().execute();
+                            builderToExecute.then(
+                                function(data) {
+                                    if ($scope._complex) {
+                                        $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-font');
+                                    } else {
+                                        $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-bold');
+                                    }
+
+                                    if (data.statusCode === 200) {
+                                        var datas = id ? data.data[id] : data.data;
+
+                                        if (angular.isFunction(uiConfig.processingData)) {
+                                            uiConfig.processingData(data, datas).then(_processingData);
+                                        } else {
+                                            _processingData(datas);
+                                        }
+
+                                        $scope.$apply();
+                                    } else {
+                                        uiConfig.collection.splice(0, uiConfig.collection.length);
+
+                                        if (data.statusCode !== 204) {
+                                            //toastr.error('Loading error');
+                                            // console.error(JSON.stringify(data));
+                                        } else {
+                                            //   console.log(JSON.stringify(data));
+                                        }
+                                        $scope.$apply();
+                                    }
+
+                                }
+                            ).catch(function(err) {
+                                console.error(err);
+                                $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-filter');
+                            });
+                        }
+
+                    }
+                }],
+                compile: function(templateElement, templateAttributes) {
+                    templateAttributes.$$button = button.clone();
+                    templateAttributes.$$container = container.clone();
+                    var simple = templateAttributes.multiple !== 'true';
+                    var taggFunction = templateAttributes.tagging;
+                    if (simple) {
+                        templateElement.attr('limit', '1');
+                        templateAttributes.limit = '1';
+                        templateAttributes.searchEnabled = '!$select.selected || $select.selected.length === 0';
+                        templateElement.attr('search-enabled', '!$select.selected || $select.selected.length === 0');
+                        templateElement.addClass('custom-ui-select-no-multiple');
+                        templateAttributes.$$style = style.clone();
+                    }
+
+                    if (!taggFunction || taggFunction.trim().length === 0) {
+                        templateElement.attr('tagging', 'customUiTagTransform');
+                        templateAttributes.tagging = 'customUiTagTransform';
+                    }
+
+                    var asyncFilter = 'asyncfilter($select.search);';
+                    var complexFilter = 'complexfilter($select.search);';
+
+
+                    if (templateAttributes.customMassAutocompleteItem) {
+                        setRefresh(templateElement, complexFilter);
+                        var _templateElement = angular.element(templateElement.clone());
+                        _templateElement.removeAttr('custom-ui-select');
+                        setRefresh(_templateElement, asyncFilter);
+                        templateAttributes.$$templateElement = _templateElement;
+                    } else {
+                        setRefresh(templateElement, asyncFilter);
+                    }
+
+                    return function link($scope, $element, $attrs, $select) {
+                        var maus = 'mass-autocomplete-ui-select';
+                        var aus = 'async-ui-select';
+
+                        var head = angular.element('html head');
+                        if ($attrs.$$style && head.find('style[title="custom-ui-select-no-multiple"]').length === 0)
+                            head.append($attrs.$$style);
+
+                        if ($attrs.customMassAutocompleteItem) {
+                            $element.addClass(maus);
+                            var massAutocompleteItem = getAttribute('customMassAutocompleteItem');
+
+                            if (!massAutocompleteItem.suggest) {
+                                massAutocompleteItem.suggest = Filter.suggest_field_delimited;
+                            }
+                            var filterInput = $element.querySelectorAll('input.ui-select-search');
+                            filterInput.attr('mass-autocomplete-item', $attrs.customMassAutocompleteItem);
+                            //filterInput.attr('ng-change', 'debugQuery()');
+                            $compile(filterInput)($scope);
+
+                            $attrs.$$container.empty();
+                            $element.before($attrs.$$container);
+                            $element.detach();
+
+                            $attrs.$$container.append($element);
+                            var template = $attrs.$$templateElement.clone();
+                            var _cloneElement = $compile(template)($scope, function(clonedElement, $scope) {
+                                $attrs.$$container.append(clonedElement);
+                            });
+                            _cloneElement.addClass(aus);
+                            $attrs.$$cloneElement = _cloneElement;
+
+                            $compile($attrs.$$button)($scope);
+                            $attrs.$$container.append($attrs.$$button);
+                            $element.css('display', 'none').addClass('custom-ui-select-hide');
+
+                            var keys = [];
+                            $attrs.$$container.bind('keydown', function(e) {
+                                keys.push(e.keyCode);
+                            });
+                            $attrs.$$container.bind('keyup', function(e) {
+                                if (keys.length > 0) {
+                                    if (angular.equals(keys, [17, 18, 70])) {
+                                        $scope.complex();
+                                    }
+                                    keys.splice(0, keys.length);
+                                }
+                            });
+
+
+                        } else {
+                            $element.addClass(aus);
+                        }
+
+
+
+                        function getAttribute(attr) {
+                            if ($attrs[attr]) {
+
+                                var configPath = $attrs[attr].split('.');
+                                if (configPath.length === 1) {
+                                    return $scope[$attrs[attr]];
+                                } else {
+                                    var config = $scope;
+                                    configPath.forEach(function(path) {
+                                        config = config[path];
+                                    });
+                                    return config;
+                                }
+                            } else {
+                                return;
+                            }
+                        }
+                    };
+                }
+            };
+        }
+    ]);
+
+
+
+angular.module('opengate-angular-js').controller('uiSelectResourceTypeController', ['$scope', '$element', '$attrs', '$api', function ($scope, $element, $attrs, $api) {
     var ctrl = this;
     ctrl.ownConfig = {
         builder: $api().resourceTypeSearchBuilder(),
-        filter: function(search) {},
+        filter: function (search) {},
         rootKey: 'resourceType',
         collection: [],
         customSelectors: $api().resourceTypeSearchBuilder()
     };
 
-    ctrl.resourceTypeSelected = function($item, $model) {
+    ctrl.resourceTypeSelected = function ($item, $model) {
         var returnObj = {};
         returnObj.$item = $item;
         returnObj.$model = $model;
         ctrl.onSelectItem(returnObj);
     };
 
-    ctrl.resourceTypeRemove = function($item, $model) {
-        ctrl.onRemove($item, $model);
+    ctrl.resourceTypeRemove = function ($item, $model) {
+        var returnObj = {};
+        returnObj.$item = $item;
+        returnObj.$model = $model;
+        ctrl.onRemove(returnObj);
     };
 }]);
 
@@ -10629,8 +10920,11 @@ angular.module('opengate-angular-js').controller('uiSelectFaStylesController', [
         ctrl.onSelectItem(returnObj);
     };
 
-    ctrl.iconRemove = function($item, $model) {
-        ctrl.onRemove($item, $model);
+    ctrl.iconRemove = function ($item, $model) {
+        var returnObj = {};
+        returnObj.$item = $item;
+        returnObj.$model = $model;
+        ctrl.onRemove(returnObj);
     };
 }]);
 
@@ -10681,8 +10975,11 @@ angular.module('opengate-angular-js').controller('customUiSelectTicketController
         ctrl.onSelectItem(returnObj);
     };
 
-    ctrl.ticketRemove = function($item, $model) {
-        ctrl.onRemove($item, $model);
+    ctrl.ticketRemove = function ($item, $model) {
+        var returnObj = {};
+        returnObj.$item = $item;
+        returnObj.$model = $model;
+        ctrl.onRemove(returnObj);
     };
 }]);
 
@@ -10815,8 +11112,11 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             ctrl.onSelectItem(returnObj);
         };
 
-        ctrl.entityRemove = function($item, $model) {
-            ctrl.onRemove($item, $model);
+        ctrl.entityRemove = function ($item, $model) {
+            var returnObj = {};
+            returnObj.$item = $item;
+            returnObj.$model = $model;
+            ctrl.onRemove(returnObj);
         };
 
 
@@ -11010,8 +11310,11 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriberContro
             ctrl.onSelectItem(returnObj);
         };
 
-        ctrl.entityRemove = function($item, $model) {
-            ctrl.onRemove($item, $model);
+        ctrl.entityRemove = function ($item, $model) {
+            var returnObj = {};
+            returnObj.$item = $item;
+            returnObj.$model = $model;
+            ctrl.onRemove(returnObj);
         };
 
         if (ctrl.required !== undefined) {
@@ -11107,7 +11410,10 @@ angular.module('opengate-angular-js').controller('customUiSelectServiceGroupCont
 
         ctrl.serviceGroupRemove = function($item, $model) {
             if (ctrl.onRemove) {
-                ctrl.onRemove($item, $model);
+                var returnObj = {};
+                returnObj.$item = $item;
+                returnObj.$model = $model;
+                ctrl.onRemove(returnObj);
             }
 
             if (ctrl.multiple) {
@@ -11310,13 +11616,13 @@ angular.module('opengate-angular-js').component('customUiSelectProvisionDatastre
 
 
 angular.module('opengate-angular-js').controller('customUiSelectOrganizationController', ['$scope', '$element', '$attrs', '$api', 'Authentication', '$q',
-    function($scope, $element, $attrs, $api, Authentication, $q) {
+    function ($scope, $element, $attrs, $api, Authentication, $q) {
         var ctrl = this;
 
         var savedSearch;
         ctrl.ownConfig = {
             builder: $api().newOrganizationFinder().findByDomainAndWorkgroup(Authentication.getUser().domain, Authentication.getUser().workgroup),
-            filter: function(search) {
+            filter: function (search) {
                 savedSearch = search;
             },
             rootKey: undefined,
@@ -11324,10 +11630,10 @@ angular.module('opengate-angular-js').controller('customUiSelectOrganizationCont
             isGet: true,
             simpleMode: true,
             customSelectors: $api().newOrganizationFinder().findByDomainAndWorkgroup(Authentication.getUser().domain, Authentication.getUser().workgroup),
-            processingData: function(result, organizations) {
+            processingData: function (result, organizations) {
                 var organizationsFormatted = organizations;
                 if (savedSearch) {
-                    organizationsFormatted = organizations.filter(function(tmp) {
+                    organizationsFormatted = organizations.filter(function (tmp) {
                         return tmp.name.toLowerCase().indexOf(savedSearch.trim().toLowerCase()) !== -1;
                     });
                 }
@@ -11340,11 +11646,11 @@ angular.module('opengate-angular-js').controller('customUiSelectOrganizationCont
             }
         };
 
-        ctrl.organizationSelected = function($item, $model) {
+        ctrl.organizationSelected = function ($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = [];
 
-                angular.forEach(ctrl.organization, function(organizationTmp) {
+                angular.forEach(ctrl.organization, function (organizationTmp) {
                     identifierTmp.push(organizationTmp.name);
                 });
 
@@ -11361,9 +11667,12 @@ angular.module('opengate-angular-js').controller('customUiSelectOrganizationCont
             }
         };
 
-        ctrl.organizationRemove = function($item, $model) {
+        ctrl.organizationRemove = function ($item, $model) {
             if (ctrl.onRemove) {
-                ctrl.onRemove($item, $model);
+                var returnObj = {};
+                returnObj.$item = $item;
+                returnObj.$model = $model;
+                ctrl.onRemove(returnObj);
             }
 
             if (ctrl.multiple) {
@@ -11376,7 +11685,7 @@ angular.module('opengate-angular-js').controller('customUiSelectOrganizationCont
         };
 
 
-        ctrl.$onChanges = function(changesObj) {
+        ctrl.$onChanges = function (changesObj) {
             if (changesObj && changesObj.identifier) {
                 mapIdentifier(changesObj.identifier.currentValue);
             }
@@ -11401,7 +11710,7 @@ angular.module('opengate-angular-js').controller('customUiSelectOrganizationCont
                     if (angular.isArray(identifier)) {
                         ctrl.organization = [];
 
-                        angular.forEach(identifier, function(idTmp) {
+                        angular.forEach(identifier, function (idTmp) {
                             ctrl.organization.push({
                                 name: idTmp
                             });
@@ -11482,7 +11791,10 @@ angular.module('opengate-angular-js').controller('customUiSelectOgtypeListContro
 
     ctrl.elementRemove = function($item, $model) {
         if (ctrl.onRemove) {
-            ctrl.onRemove($item, $model);
+            var returnObj = {};
+            returnObj.$item = $item;
+            returnObj.$model = $model;
+            ctrl.onRemove(returnObj);
         }
         if (ctrl.multiple) {
             if (ctrl.ngModel && ctrl.ngModel.indexOf($item) !== -1) {
@@ -11662,7 +11974,10 @@ angular.module('opengate-angular-js').controller('customUiSelectHardwareControll
 
         ctrl.hardwareRemove = function($item, $model) {
             if (ctrl.onRemove) {
-                ctrl.onRemove($item, $model);
+                var returnObj = {};
+                returnObj.$item = $item;
+                returnObj.$model = $model;
+                ctrl.onRemove(returnObj);
             }
 
             if (ctrl.multiple) {
@@ -11835,7 +12150,10 @@ angular.module('opengate-angular-js').controller('customUiSelectEntityController
 
         ctrl.entityRemove = function($item, $model) {
             if (ctrl.onRemove) {
-                ctrl.onRemove($item, $model);
+                var returnObj = {};
+                returnObj.$item = $item;
+                returnObj.$model = $model;
+                ctrl.onRemove(returnObj);
             }
 
             if (ctrl.multiple) {
@@ -11957,8 +12275,11 @@ angular.module('opengate-angular-js').controller('customUiSelectDomainController
         ctrl.onSelectItem(returnObj);
     };
 
-    ctrl.domainRemove = function($item, $model) {
-        ctrl.onRemove($item, $model);
+    ctrl.domainRemove = function ($item, $model) {
+        var returnObj = {};
+        returnObj.$item = $item;
+        returnObj.$model = $model;
+        ctrl.onRemove(returnObj);
     };
 }]);
 
@@ -11980,8 +12301,8 @@ angular.module('opengate-angular-js').component('customUiSelectDomain', {
 
 
 
-angular.module('opengate-angular-js').controller('customUiSelectDeviceController', ['$scope', '$element', '$attrs', '$api', '$translate', '$doActions', '$jsonFinderHelper', 'jsonPath', '_',
-    function($scope, $element, $attrs, $api, $translate, $doActions, $jsonFinderHelper, jsonPath, _) {
+angular.module('opengate-angular-js').controller('customUiSelectDeviceController', ['$scope', '$element', '$attrs', '$api', '$translate', '$doActions', '$jsonFinderHelper', 'jsonPath', '_', 'toastr',
+    function ($scope, $element, $attrs, $api, $translate, $doActions, $jsonFinderHelper, jsonPath, _, toastr) {
         var selectBuilder = $api().newSelectBuilder();
         var SE = $api().SE;
 
@@ -12020,7 +12341,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
         var ctrl = this;
         ctrl.ownConfig = {
             builder: $api().devicesSearchBuilder().select(selectBuilder),
-            filter: function(search) {
+            filter: function (search) {
                 var filter = {
                     'or': [{
                             'like': {
@@ -12069,11 +12390,11 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
             specificType: ctrl.specificType
         };
 
-        ctrl.deviceSelected = function($item, $model) {
+        ctrl.deviceSelected = function ($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = [];
 
-                angular.forEach(ctrl.device, function(deviceTmp) {
+                angular.forEach(ctrl.device, function (deviceTmp) {
                     identifierTmp.push(deviceTmp.provision.administration.identifier._current.value);
                 });
 
@@ -12090,9 +12411,12 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
             }
         };
 
-        ctrl.deviceRemove = function($item, $model) {
+        ctrl.deviceRemove = function ($item, $model) {
             if (ctrl.onRemove) {
-                ctrl.onRemove($item, $model);
+                var returnObj = {};
+                returnObj.$item = $item;
+                returnObj.$model = $model;
+                ctrl.onRemove(returnObj);
             }
 
             if (ctrl.multiple) {
@@ -12105,31 +12429,32 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
 
         };
 
-        ctrl.editDevice = function(deviceData) {
+        ctrl.editDevice = function (deviceData) {
+            var entityId = deviceData.provision.administration.identifier._current.value || deviceData.identifier;
             var deviceFinder = $api().devicesSearchBuilder().filter({
                 "and": [{
                     "eq": {
-                        "provision.device.identifier": deviceData.provision.administration.identifier._current.value || deviceData.identifier
+                        "provision.device.identifier": entityId
                     }
                 }]
             });
 
             deviceFinder.build().execute()
-                .then(function(result) {
+                .then(function (result) {
                     if (result.statusCode === 204) {
                         $translate('TOASTR.ENTITY_NOT_FOUND', {
                             identifier: entityId
                         }).
-                        then(function(translatedMessage) {
+                        then(function (translatedMessage) {
                             toastr.error(translatedMessage);
                         });
                     } else {
                         $doActions.executeModal('editDevice', angular.copy(result.data.devices[0]));
                     }
                 })
-                .catch(function(err) {
+                .catch(function (err) {
                     $translate('TOASTR.CANNOT_GET_ENTITY_INFO').
-                    then(function(translatedMessage) {
+                    then(function (translatedMessage) {
                         toastr.error(translatedMessage);
                     });
                 });
@@ -12139,7 +12464,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
         ctrl._actions = [{
             title: $translate.instant('FORM.LABEL.NEW'),
             icon: 'glyphicon glyphicon-plus-sign',
-            action: function() {
+            action: function () {
                 var actionData = {};
                 if (!!ctrl.specificType) {
                     actionData = {
@@ -12159,7 +12484,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
                         }
                     };
                 }
-                $doActions.executeModal('createDevice', actionData, function(result) {
+                $doActions.executeModal('createDevice', actionData, function (result) {
                     if (result && result.length > 0) {
                         ctrl.device = !ctrl.device ? [] : ctrl.device;
                         ctrl.device.push({
@@ -12190,37 +12515,37 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
             ctrl._actions.push({
                 title: $translate.instant('BUTTON.TITLE.EXECUTE_OPERATION'),
                 icon: 'glyphicon glyphicon-flash',
-                action: function() {
+                action: function () {
                     $doActions.executeModal('executeOperation', {
                         keys: jsonPath(ctrl.device, '$..' + $jsonFinderHelper.provisioned.getPath('identifier') + '._current.value') || [],
                         entityType: 'GATEWAY'
                     });
                 },
-                disable: function() {
+                disable: function () {
                     return !ctrl.device || ctrl.device.length === 0;
                 },
                 permissions: 'executeOperation'
             });
         } else {
-            var operationTemplateBuilder = function(operationSelected) {
+            var operationTemplateBuilder = function (operationSelected) {
                 return {
                     title: $translate.instant('BUTTON.TITLE.EXECUTE_OPERATION'),
                     icon: 'glyphicon glyphicon-flash',
-                    action: function() {
+                    action: function () {
                         $doActions.executeModal('executeOperation', {
                             keys: jsonPath(ctrl.device, '$..' + $jsonFinderHelper.provisioned.getPath('identifier') + '._current.value') || [],
                             entityType: 'GATEWAY',
                             operation: operationSelected ? operationSelected.trim().toUpperCase() : undefined
                         });
                     },
-                    disable: function() {
+                    disable: function () {
                         return !ctrl.device || ctrl.device.length === 0;
                     },
                     permissions: 'executeOperation'
                 };
             };
 
-            angular.forEach(ctrl.actions, function(operationAction) {
+            angular.forEach(ctrl.actions, function (operationAction) {
                 var operationActionFinal = operationTemplateBuilder(operationAction.operation);
                 operationActionFinal.title = operationAction.title || operationActionFinal.title;
                 operationActionFinal.icon = operationAction.icon || operationActionFinal.icon;
@@ -12229,7 +12554,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
             });
         }
 
-        ctrl.$onChanges = function(changesObj) {
+        ctrl.$onChanges = function (changesObj) {
             if (changesObj && changesObj.identifier) {
                 mapIdentifier(changesObj.identifier.currentValue);
             }
@@ -12254,7 +12579,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
                     if (angular.isArray(identifier)) {
                         ctrl.device = [];
 
-                        angular.forEach(identifier, function(idTmp) {
+                        angular.forEach(identifier, function (idTmp) {
                             ctrl.device.push({
                                 provision: {
                                     administration: {
@@ -12581,11 +12906,11 @@ angular.module('opengate-angular-js').component('customUiSelectDatastream', {
 
 
 angular.module('opengate-angular-js').controller('customUiSelectChannelController', ['$scope', '$element', '$attrs', '$api',
-    function($scope, $element, $attrs, $api) {
+    function ($scope, $element, $attrs, $api) {
         var ctrl = this;
         ctrl.ownConfig = {
             builder: $api().channelsSearchBuilder(),
-            filter: function(search) {
+            filter: function (search) {
                 var filter = {
                     'or': [{
                         'like': {
@@ -12622,11 +12947,11 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
             customSelectors: $api().channelsSearchBuilder()
         };
 
-        ctrl.channelSelected = function($item, $model) {
+        ctrl.channelSelected = function ($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = [];
 
-                angular.forEach(ctrl.channel, function(channelTmp) {
+                angular.forEach(ctrl.channel, function (channelTmp) {
                     identifierTmp.push(channelTmp.provision.administration.identifier._current.value);
                 });
 
@@ -12643,9 +12968,12 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
             }
         };
 
-        ctrl.channelRemove = function($item, $model) {
+        ctrl.channelRemove = function ($item, $model) {
             if (ctrl.onRemove) {
-                ctrl.onRemove($item, $model);
+                var returnObj = {};
+                returnObj.$item = $item;
+                returnObj.$model = $model;
+                ctrl.onRemove(returnObj);
             }
 
             if (ctrl.multiple) {
@@ -12658,7 +12986,7 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
         };
 
 
-        ctrl.$onChanges = function(changesObj) {
+        ctrl.$onChanges = function (changesObj) {
             if (changesObj) {
                 if (changesObj.identifier) {
                     mapIdentifier(changesObj.identifier.currentValue);
@@ -12686,7 +13014,7 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
                     if (angular.isArray(identifier)) {
                         ctrl.channel = [];
 
-                        angular.forEach(identifier, function(idTmp) {
+                        angular.forEach(identifier, function (idTmp) {
                             ctrl.channel.push({
                                 provision: {
                                     administration: {
@@ -12769,13 +13097,13 @@ angular.module('opengate-angular-js').component('customUiSelectChannel', {
 
 
 angular.module('opengate-angular-js').controller('customUiSelectCertificateController', ['$scope', '$element', '$attrs', '$api',
-    function($scope, $element, $attrs, $api) {
+    function ($scope, $element, $attrs, $api) {
         var ctrl = this;
 
         var builder = $api().certificatesSearchBuilder().assignable();
         ctrl.ownConfig = {
             builder: builder,
-            filter: function(search) {
+            filter: function (search) {
                 return {
                     'or': [{
                             'like': {
@@ -12815,11 +13143,11 @@ angular.module('opengate-angular-js').controller('customUiSelectCertificateContr
             customSelectors: builder
         };
 
-        ctrl.certificateSelected = function($item, $model) {
+        ctrl.certificateSelected = function ($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = [];
 
-                angular.forEach(ctrl.certificate, function(sgTmp) {
+                angular.forEach(ctrl.certificate, function (sgTmp) {
                     if (sgTmp.id) {
                         identifierTmp.push(sgTmp.id);
                     } else {
@@ -12840,9 +13168,12 @@ angular.module('opengate-angular-js').controller('customUiSelectCertificateContr
             }
         };
 
-        ctrl.certificateRemove = function($item, $model) {
+        ctrl.certificateRemove = function ($item, $model) {
             if (ctrl.onRemove) {
-                ctrl.onRemove($item, $model);
+                var returnObj = {};
+                returnObj.$item = $item;
+                returnObj.$model = $model;
+                ctrl.onRemove(returnObj);
             }
 
             if (ctrl.multiple) {
@@ -12855,7 +13186,7 @@ angular.module('opengate-angular-js').controller('customUiSelectCertificateContr
         };
 
 
-        ctrl.$onChanges = function(changesObj) {
+        ctrl.$onChanges = function (changesObj) {
             if (changesObj && changesObj.identifier) {
                 mapIdentifier(changesObj.identifier.currentValue);
             }
@@ -12876,7 +13207,7 @@ angular.module('opengate-angular-js').controller('customUiSelectCertificateContr
                     if (angular.isArray(identifier)) {
                         ctrl.certificate = [];
 
-                        angular.forEach(identifier, function(idTmp) {
+                        angular.forEach(identifier, function (idTmp) {
                             ctrl.certificate.push({
                                 id: idTmp
                             });
@@ -12973,7 +13304,7 @@ angular.module('opengate-angular-js').component('customUiSelectBundle', {
 
 
 angular.module('opengate-angular-js').controller('customUiSelectAssetController', ['$scope', '$element', '$attrs', '$api', '$doActions', '$translate', '$jsonFinderHelper', 'jsonPath',
-    function($scope, $element, $attrs, $api, $doActions, $translate, $jsonFinderHelper, jsonPath) {
+    function ($scope, $element, $attrs, $api, $doActions, $translate, $jsonFinderHelper, jsonPath) {
         var selectBuilder = $api().newSelectBuilder();
         var SE = $api().SE;
 
@@ -13002,7 +13333,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
         var ctrl = this;
         ctrl.ownConfig = {
             builder: $api().assetsSearchBuilder().select(selectBuilder),
-            filter: function(search) {
+            filter: function (search) {
                 var filter = {
                     'or': [{
                             'like': {
@@ -13051,11 +13382,11 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
             specificType: ctrl.specificType
         };
 
-        ctrl.assetSelected = function($item, $model) {
+        ctrl.assetSelected = function ($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = [];
 
-                angular.forEach(ctrl.asset, function(assetTmp) {
+                angular.forEach(ctrl.asset, function (assetTmp) {
                     identifierTmp.push(assetTmp.provision.administration.identifier._current.value);
                 });
 
@@ -13072,9 +13403,12 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
             }
         };
 
-        ctrl.assetRemove = function($item, $model) {
+        ctrl.assetRemove = function ($item, $model) {
             if (ctrl.onRemove) {
-                ctrl.onRemove($item, $model);
+                var returnObj = {};
+                returnObj.$item = $item;
+                returnObj.$model = $model;
+                ctrl.onRemove(returnObj);
             }
 
             if (ctrl.multiple) {
@@ -13090,7 +13424,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
             ctrl.actions = [{
                 title: $translate.instant('FORM.LABEL.NEW'),
                 icon: 'glyphicon glyphicon-plus-sign',
-                action: function() {
+                action: function () {
                     var actionData = {};
                     if (!!ctrl.specificType) {
                         actionData = {
@@ -13110,7 +13444,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
                             }
                         };
                     }
-                    $doActions.executeModal('createAsset', actionData, function(result) {
+                    $doActions.executeModal('createAsset', actionData, function (result) {
                         if (result && result.length > 0) {
                             ctrl.asset = !ctrl.asset ? [] : ctrl.asset;
                             ctrl.asset.push({
@@ -13138,7 +13472,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
             }];
         }
 
-        ctrl.$onChanges = function(changesObj) {
+        ctrl.$onChanges = function (changesObj) {
             if (changesObj && changesObj.identifier) {
                 mapIdentifier(changesObj.identifier.currentValue);
             }
@@ -13163,7 +13497,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
                     if (angular.isArray(identifier)) {
                         ctrl.asset = [];
 
-                        angular.forEach(identifier, function(idTmp) {
+                        angular.forEach(identifier, function (idTmp) {
                             ctrl.asset.push({
                                 provision: {
                                     administration: {
@@ -13308,287 +13642,6 @@ angular.module('opengate-angular-js').component('customUiSelectArea', {
         uiSelectMatchClass: '@?'
     }
 });
-
-
-angular.module('opengate-angular-js')
-    .directive('customUiSelect', ['$compile', 'Filter',
-        function($compile, Filter) {
-            var button = angular.element('<div title="Toggle Advanced/Basic filter search" ng-click="complex()" style="cursor:pointer" class="custom-ui-select-button input-group-addon"><i class="fa fa-filter"></i><i class="filter-icon fa fa-bold text-muted"></i></div>');
-            var container = angular.element('<div class="custom-ui-select-container input-group"></div>');
-            var style = angular.element('<style title="custom-ui-select-no-multiple">.custom-ui-select-no-multiple .ui-select-search[placeholder=""]{display:none}</style>');
-
-
-            var setRefresh = function(obj, fnc) {
-                var choices = obj.querySelectorAll('ui-select-choices');
-                choices.attr('refresh', fnc);
-                choices.attr('refresh-delay', '0');
-            };
-
-            return {
-                require: 'uiSelect',
-                scope: true,
-                bindToController: true,
-                controller: ["$scope", "$element", "$attrs", "$q", "$timeout", function($scope, $element, $attrs, $q, $timeout) {
-                    var uiConfig = getConfig();
-
-                    function processFilter(_filter) {
-                        if (uiConfig.prefilter) {
-                            var filter = {
-                                and: []
-                            };
-                            filter.and.push(uiConfig.prefilter);
-                            filter.and.push(_filter);
-                            return filter;
-                        }
-                        return _filter;
-                    }
-
-                    function getConfig() {
-                        var configPath = $attrs.customUiSelectConfig.split('.');
-                        if (configPath.length === 1) {
-                            return $scope[$attrs.customUiSelectConfig];
-                        } else {
-                            var config = $scope;
-                            configPath.forEach(function(path) {
-                                config = config[path];
-                            });
-                            return config;
-                        }
-                    }
-
-                    //Filtro asistido con mass-autocomplete
-                    $scope.complexfilter = function(search) {
-                        //console.log(search);
-                        Filter.parseQuery(search || '')
-                            .then(function(data) {
-                                var filter = data.filter;
-                                //Solo filtramos si no se trata de un filtro vacio
-                                if (Object.keys(filter).length > 0) {
-                                    _loadCollection(processFilter(filter));
-                                    // console.log('Final filter: ' + filter);
-                                } else {
-                                    //lo tratamos igual que si fuera un filtro no valido
-                                    uiConfig.collection.splice(0, uiConfig.collection.length);
-                                }
-                            })
-                            .catch(function(err) {
-                                console.error(err);
-                                //Si el filtro no es valido borramos la lista de opciones del ui-select
-                                uiConfig.collection.splice(0, uiConfig.collection.length);
-                                // Tratar el error
-                            });
-                    };
-
-                    //Filtro simple con or-like
-                    $scope.asyncfilter = function(search) {
-                        _loadCollection(processFilter(uiConfig.filter(search)));
-                    };
-
-                    $scope._complex = $attrs.$$button.querySelectorAll('.fa-filter').hasClass('text-primary');
-                    $scope.complex = function() {
-                        if (!uiConfig.simpleMode) {
-                            $scope._complex = !$scope._complex;
-                            if ($scope._complex) {
-                                $element.css('display', '').removeClass('custom-ui-select-hide');
-                                $attrs.$$cloneElement.css('display', 'none').addClass('custom-ui-select-hide');
-                                $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-bold').removeClass('text-muted').addClass('fa-font').addClass('text-primary');
-                            } else {
-                                $element.css('display', 'none').addClass('custom-ui-select-hide');
-                                $attrs.$$cloneElement.css('display', '').removeClass('custom-ui-select-hide');
-                                $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-font').addClass('text-muted').addClass('fa-bold').removeClass('text-primary');
-                            }
-                        }
-                    };
-
-                    $scope.customUiTagTransform = function(value) {
-                        return null;
-                    };
-
-                    // Retraso de la peticion de recarga para no saturar (OUW-431)
-                    var lastTimeout = null;
-
-                    function _loadCollection(filter) {
-                        if (lastTimeout) clearTimeout(lastTimeout);
-
-                        lastTimeout = setTimeout(function() {
-                            _loadCollectionTimeout(filter);
-                        }, 500);
-                    }
-
-                    var lastFilter = null;
-
-                    function _loadCollectionTimeout(filter) {
-                        var builder = uiConfig.builder,
-                            id = uiConfig.rootKey,
-                            limit = uiConfig.limit ? uiConfig.limit : 25,
-                            isGet = uiConfig.isGet ? uiConfig.isGet : false;
-
-                        function _processingData(datas) {
-                            var _collection = [];
-                            if (!angular.isArray(datas)) {
-                                angular.forEach(datas, function(data, key) {
-                                    _collection.push(data);
-                                });
-                            } else {
-                                angular.copy(datas, _collection);
-                            }
-                            angular.copy(_collection, uiConfig.collection);
-
-                        }
-                        if (!lastFilter || !angular.equals(lastFilter, filter)) {
-                            lastFilter = angular.copy(filter);
-                            $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-bold').removeClass('fa-font').addClass('fa-spinner').addClass('fa-spin');
-                            var builderToExecute = isGet ? builder : builder.limit(limit).filter(filter).build().execute();
-                            builderToExecute.then(
-                                function(data) {
-                                    if ($scope._complex) {
-                                        $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-font');
-                                    } else {
-                                        $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-bold');
-                                    }
-
-                                    if (data.statusCode === 200) {
-                                        var datas = id ? data.data[id] : data.data;
-
-                                        if (angular.isFunction(uiConfig.processingData)) {
-                                            uiConfig.processingData(data, datas).then(_processingData);
-                                        } else {
-                                            _processingData(datas);
-                                        }
-
-                                        $scope.$apply();
-                                    } else {
-                                        uiConfig.collection.splice(0, uiConfig.collection.length);
-
-                                        if (data.statusCode !== 204) {
-                                            //toastr.error('Loading error');
-                                            // console.error(JSON.stringify(data));
-                                        } else {
-                                            //   console.log(JSON.stringify(data));
-                                        }
-                                        $scope.$apply();
-                                    }
-
-                                }
-                            ).catch(function(err) {
-                                console.error(err);
-                                $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-filter');
-                            });
-                        }
-
-                    }
-                }],
-                compile: function(templateElement, templateAttributes) {
-                    templateAttributes.$$button = button.clone();
-                    templateAttributes.$$container = container.clone();
-                    var simple = templateAttributes.multiple !== 'true';
-                    var taggFunction = templateAttributes.tagging;
-                    if (simple) {
-                        templateElement.attr('limit', '1');
-                        templateAttributes.limit = '1';
-                        templateAttributes.searchEnabled = '!$select.selected || $select.selected.length === 0';
-                        templateElement.attr('search-enabled', '!$select.selected || $select.selected.length === 0');
-                        templateElement.addClass('custom-ui-select-no-multiple');
-                        templateAttributes.$$style = style.clone();
-                    }
-
-                    if (!taggFunction || taggFunction.trim().length === 0) {
-                        templateElement.attr('tagging', 'customUiTagTransform');
-                        templateAttributes.tagging = 'customUiTagTransform';
-                    }
-
-                    var asyncFilter = 'asyncfilter($select.search);';
-                    var complexFilter = 'complexfilter($select.search);';
-
-
-                    if (templateAttributes.customMassAutocompleteItem) {
-                        setRefresh(templateElement, complexFilter);
-                        var _templateElement = angular.element(templateElement.clone());
-                        _templateElement.removeAttr('custom-ui-select');
-                        setRefresh(_templateElement, asyncFilter);
-                        templateAttributes.$$templateElement = _templateElement;
-                    } else {
-                        setRefresh(templateElement, asyncFilter);
-                    }
-
-                    return function link($scope, $element, $attrs, $select) {
-                        var maus = 'mass-autocomplete-ui-select';
-                        var aus = 'async-ui-select';
-
-                        var head = angular.element('html head');
-                        if ($attrs.$$style && head.find('style[title="custom-ui-select-no-multiple"]').length === 0)
-                            head.append($attrs.$$style);
-
-                        if ($attrs.customMassAutocompleteItem) {
-                            $element.addClass(maus);
-                            var massAutocompleteItem = getAttribute('customMassAutocompleteItem');
-
-                            if (!massAutocompleteItem.suggest) {
-                                massAutocompleteItem.suggest = Filter.suggest_field_delimited;
-                            }
-                            var filterInput = $element.querySelectorAll('input.ui-select-search');
-                            filterInput.attr('mass-autocomplete-item', $attrs.customMassAutocompleteItem);
-                            //filterInput.attr('ng-change', 'debugQuery()');
-                            $compile(filterInput)($scope);
-
-                            $attrs.$$container.empty();
-                            $element.before($attrs.$$container);
-                            $element.detach();
-
-                            $attrs.$$container.append($element);
-                            var template = $attrs.$$templateElement.clone();
-                            var _cloneElement = $compile(template)($scope, function(clonedElement, $scope) {
-                                $attrs.$$container.append(clonedElement);
-                            });
-                            _cloneElement.addClass(aus);
-                            $attrs.$$cloneElement = _cloneElement;
-
-                            $compile($attrs.$$button)($scope);
-                            $attrs.$$container.append($attrs.$$button);
-                            $element.css('display', 'none').addClass('custom-ui-select-hide');
-
-                            var keys = [];
-                            $attrs.$$container.bind('keydown', function(e) {
-                                keys.push(e.keyCode);
-                            });
-                            $attrs.$$container.bind('keyup', function(e) {
-                                if (keys.length > 0) {
-                                    if (angular.equals(keys, [17, 18, 70])) {
-                                        $scope.complex();
-                                    }
-                                    keys.splice(0, keys.length);
-                                }
-                            });
-
-
-                        } else {
-                            $element.addClass(aus);
-                        }
-
-
-
-                        function getAttribute(attr) {
-                            if ($attrs[attr]) {
-
-                                var configPath = $attrs[attr].split('.');
-                                if (configPath.length === 1) {
-                                    return $scope[$attrs[attr]];
-                                } else {
-                                    var config = $scope;
-                                    configPath.forEach(function(path) {
-                                        config = config[path];
-                                    });
-                                    return config;
-                                }
-                            } else {
-                                return;
-                            }
-                        }
-                    };
-                }
-            };
-        }
-    ]);
 angular.module('opengate-angular-js')
     .service('$provisionDatastreamsUtils', [function() {
         

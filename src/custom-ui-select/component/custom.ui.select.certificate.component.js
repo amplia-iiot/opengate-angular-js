@@ -2,13 +2,13 @@
 
 
 angular.module('opengate-angular-js').controller('customUiSelectCertificateController', ['$scope', '$element', '$attrs', '$api',
-    function($scope, $element, $attrs, $api) {
+    function ($scope, $element, $attrs, $api) {
         var ctrl = this;
 
         var builder = $api().certificatesSearchBuilder().assignable();
         ctrl.ownConfig = {
             builder: builder,
-            filter: function(search) {
+            filter: function (search) {
                 return {
                     'or': [{
                             'like': {
@@ -48,11 +48,11 @@ angular.module('opengate-angular-js').controller('customUiSelectCertificateContr
             customSelectors: builder
         };
 
-        ctrl.certificateSelected = function($item, $model) {
+        ctrl.certificateSelected = function ($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = [];
 
-                angular.forEach(ctrl.certificate, function(sgTmp) {
+                angular.forEach(ctrl.certificate, function (sgTmp) {
                     if (sgTmp.id) {
                         identifierTmp.push(sgTmp.id);
                     } else {
@@ -73,9 +73,12 @@ angular.module('opengate-angular-js').controller('customUiSelectCertificateContr
             }
         };
 
-        ctrl.certificateRemove = function($item, $model) {
+        ctrl.certificateRemove = function ($item, $model) {
             if (ctrl.onRemove) {
-                ctrl.onRemove($item, $model);
+                var returnObj = {};
+                returnObj.$item = $item;
+                returnObj.$model = $model;
+                ctrl.onRemove(returnObj);
             }
 
             if (ctrl.multiple) {
@@ -88,7 +91,7 @@ angular.module('opengate-angular-js').controller('customUiSelectCertificateContr
         };
 
 
-        ctrl.$onChanges = function(changesObj) {
+        ctrl.$onChanges = function (changesObj) {
             if (changesObj && changesObj.identifier) {
                 mapIdentifier(changesObj.identifier.currentValue);
             }
@@ -109,7 +112,7 @@ angular.module('opengate-angular-js').controller('customUiSelectCertificateContr
                     if (angular.isArray(identifier)) {
                         ctrl.certificate = [];
 
-                        angular.forEach(identifier, function(idTmp) {
+                        angular.forEach(identifier, function (idTmp) {
                             ctrl.certificate.push({
                                 id: idTmp
                             });

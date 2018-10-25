@@ -116,8 +116,11 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriberContro
             ctrl.onSelectItem(returnObj);
         };
 
-        ctrl.entityRemove = function($item, $model) {
-            ctrl.onRemove($item, $model);
+        ctrl.entityRemove = function ($item, $model) {
+            var returnObj = {};
+            returnObj.$item = $item;
+            returnObj.$model = $model;
+            ctrl.onRemove(returnObj);
         };
 
         if (ctrl.required !== undefined) {

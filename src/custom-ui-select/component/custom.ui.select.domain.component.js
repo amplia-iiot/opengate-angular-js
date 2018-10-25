@@ -32,8 +32,11 @@ angular.module('opengate-angular-js').controller('customUiSelectDomainController
         ctrl.onSelectItem(returnObj);
     };
 
-    ctrl.domainRemove = function($item, $model) {
-        ctrl.onRemove($item, $model);
+    ctrl.domainRemove = function ($item, $model) {
+        var returnObj = {};
+        returnObj.$item = $item;
+        returnObj.$model = $model;
+        ctrl.onRemove(returnObj);
     };
 }]);
 

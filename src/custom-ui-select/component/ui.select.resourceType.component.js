@@ -1,25 +1,28 @@
 'use strict';
 
 
-angular.module('opengate-angular-js').controller('uiSelectResourceTypeController', ['$scope', '$element', '$attrs', '$api', function($scope, $element, $attrs, $api) {
+angular.module('opengate-angular-js').controller('uiSelectResourceTypeController', ['$scope', '$element', '$attrs', '$api', function ($scope, $element, $attrs, $api) {
     var ctrl = this;
     ctrl.ownConfig = {
         builder: $api().resourceTypeSearchBuilder(),
-        filter: function(search) {},
+        filter: function (search) {},
         rootKey: 'resourceType',
         collection: [],
         customSelectors: $api().resourceTypeSearchBuilder()
     };
 
-    ctrl.resourceTypeSelected = function($item, $model) {
+    ctrl.resourceTypeSelected = function ($item, $model) {
         var returnObj = {};
         returnObj.$item = $item;
         returnObj.$model = $model;
         ctrl.onSelectItem(returnObj);
     };
 
-    ctrl.resourceTypeRemove = function($item, $model) {
-        ctrl.onRemove($item, $model);
+    ctrl.resourceTypeRemove = function ($item, $model) {
+        var returnObj = {};
+        returnObj.$item = $item;
+        returnObj.$model = $model;
+        ctrl.onRemove(returnObj);
     };
 }]);
 

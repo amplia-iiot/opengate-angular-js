@@ -28,8 +28,11 @@ angular.module('opengate-angular-js').controller('customUiSelectTicketController
         ctrl.onSelectItem(returnObj);
     };
 
-    ctrl.ticketRemove = function($item, $model) {
-        ctrl.onRemove($item, $model);
+    ctrl.ticketRemove = function ($item, $model) {
+        var returnObj = {};
+        returnObj.$item = $item;
+        returnObj.$model = $model;
+        ctrl.onRemove(returnObj);
     };
 }]);
 

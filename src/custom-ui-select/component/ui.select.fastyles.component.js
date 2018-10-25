@@ -29,8 +29,11 @@ angular.module('opengate-angular-js').controller('uiSelectFaStylesController', [
         ctrl.onSelectItem(returnObj);
     };
 
-    ctrl.iconRemove = function($item, $model) {
-        ctrl.onRemove($item, $model);
+    ctrl.iconRemove = function ($item, $model) {
+        var returnObj = {};
+        returnObj.$item = $item;
+        returnObj.$model = $model;
+        ctrl.onRemove(returnObj);
     };
 }]);
 

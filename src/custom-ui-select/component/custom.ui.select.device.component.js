@@ -1,8 +1,8 @@
 'use strict';
 
 
-angular.module('opengate-angular-js').controller('customUiSelectDeviceController', ['$scope', '$element', '$attrs', '$api', '$translate', '$doActions', '$jsonFinderHelper', 'jsonPath', '_',
-    function($scope, $element, $attrs, $api, $translate, $doActions, $jsonFinderHelper, jsonPath, _) {
+angular.module('opengate-angular-js').controller('customUiSelectDeviceController', ['$scope', '$element', '$attrs', '$api', '$translate', '$doActions', '$jsonFinderHelper', 'jsonPath', '_', 'toastr',
+    function ($scope, $element, $attrs, $api, $translate, $doActions, $jsonFinderHelper, jsonPath, _, toastr) {
         var selectBuilder = $api().newSelectBuilder();
         var SE = $api().SE;
 
@@ -41,7 +41,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
         var ctrl = this;
         ctrl.ownConfig = {
             builder: $api().devicesSearchBuilder().select(selectBuilder),
-            filter: function(search) {
+            filter: function (search) {
                 var filter = {
                     'or': [{
                             'like': {
@@ -90,11 +90,11 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
             specificType: ctrl.specificType
         };
 
-        ctrl.deviceSelected = function($item, $model) {
+        ctrl.deviceSelected = function ($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = [];
 
-                angular.forEach(ctrl.device, function(deviceTmp) {
+                angular.forEach(ctrl.device, function (deviceTmp) {
                     identifierTmp.push(deviceTmp.provision.administration.identifier._current.value);
                 });
 
@@ -111,9 +111,12 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
             }
         };
 
-        ctrl.deviceRemove = function($item, $model) {
+        ctrl.deviceRemove = function ($item, $model) {
             if (ctrl.onRemove) {
-                ctrl.onRemove($item, $model);
+                var returnObj = {};
+                returnObj.$item = $item;
+                returnObj.$model = $model;
+                ctrl.onRemove(returnObj);
             }
 
             if (ctrl.multiple) {
@@ -126,31 +129,32 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
 
         };
 
-        ctrl.editDevice = function(deviceData) {
+        ctrl.editDevice = function (deviceData) {
+            var entityId = deviceData.provision.administration.identifier._current.value || deviceData.identifier;
             var deviceFinder = $api().devicesSearchBuilder().filter({
                 "and": [{
                     "eq": {
-                        "provision.device.identifier": deviceData.provision.administration.identifier._current.value || deviceData.identifier
+                        "provision.device.identifier": entityId
                     }
                 }]
             });
 
             deviceFinder.build().execute()
-                .then(function(result) {
+                .then(function (result) {
                     if (result.statusCode === 204) {
                         $translate('TOASTR.ENTITY_NOT_FOUND', {
                             identifier: entityId
                         }).
-                        then(function(translatedMessage) {
+                        then(function (translatedMessage) {
                             toastr.error(translatedMessage);
                         });
                     } else {
                         $doActions.executeModal('editDevice', angular.copy(result.data.devices[0]));
                     }
                 })
-                .catch(function(err) {
+                .catch(function (err) {
                     $translate('TOASTR.CANNOT_GET_ENTITY_INFO').
-                    then(function(translatedMessage) {
+                    then(function (translatedMessage) {
                         toastr.error(translatedMessage);
                     });
                 });
@@ -160,7 +164,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
         ctrl._actions = [{
             title: $translate.instant('FORM.LABEL.NEW'),
             icon: 'glyphicon glyphicon-plus-sign',
-            action: function() {
+            action: function () {
                 var actionData = {};
                 if (!!ctrl.specificType) {
                     actionData = {
@@ -180,7 +184,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
                         }
                     };
                 }
-                $doActions.executeModal('createDevice', actionData, function(result) {
+                $doActions.executeModal('createDevice', actionData, function (result) {
                     if (result && result.length > 0) {
                         ctrl.device = !ctrl.device ? [] : ctrl.device;
                         ctrl.device.push({
@@ -211,37 +215,37 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
             ctrl._actions.push({
                 title: $translate.instant('BUTTON.TITLE.EXECUTE_OPERATION'),
                 icon: 'glyphicon glyphicon-flash',
-                action: function() {
+                action: function () {
                     $doActions.executeModal('executeOperation', {
                         keys: jsonPath(ctrl.device, '$..' + $jsonFinderHelper.provisioned.getPath('identifier') + '._current.value') || [],
                         entityType: 'GATEWAY'
                     });
                 },
-                disable: function() {
+                disable: function () {
                     return !ctrl.device || ctrl.device.length === 0;
                 },
                 permissions: 'executeOperation'
             });
         } else {
-            var operationTemplateBuilder = function(operationSelected) {
+            var operationTemplateBuilder = function (operationSelected) {
                 return {
                     title: $translate.instant('BUTTON.TITLE.EXECUTE_OPERATION'),
                     icon: 'glyphicon glyphicon-flash',
-                    action: function() {
+                    action: function () {
                         $doActions.executeModal('executeOperation', {
                             keys: jsonPath(ctrl.device, '$..' + $jsonFinderHelper.provisioned.getPath('identifier') + '._current.value') || [],
                             entityType: 'GATEWAY',
                             operation: operationSelected ? operationSelected.trim().toUpperCase() : undefined
                         });
                     },
-                    disable: function() {
+                    disable: function () {
                         return !ctrl.device || ctrl.device.length === 0;
                     },
                     permissions: 'executeOperation'
                 };
             };
 
-            angular.forEach(ctrl.actions, function(operationAction) {
+            angular.forEach(ctrl.actions, function (operationAction) {
                 var operationActionFinal = operationTemplateBuilder(operationAction.operation);
                 operationActionFinal.title = operationAction.title || operationActionFinal.title;
                 operationActionFinal.icon = operationAction.icon || operationActionFinal.icon;
@@ -250,7 +254,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
             });
         }
 
-        ctrl.$onChanges = function(changesObj) {
+        ctrl.$onChanges = function (changesObj) {
             if (changesObj && changesObj.identifier) {
                 mapIdentifier(changesObj.identifier.currentValue);
             }
@@ -275,7 +279,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
                     if (angular.isArray(identifier)) {
                         ctrl.device = [];
 
-                        angular.forEach(identifier, function(idTmp) {
+                        angular.forEach(identifier, function (idTmp) {
                             ctrl.device.push({
                                 provision: {
                                     administration: {
