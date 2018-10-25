@@ -1,12 +1,9 @@
 <div class="form-group no-margin" mass-autocomplete ng-if="$ctrl.multiple">
     <label class="custom-ui-select-label">{{ 'FORM.LABEL.DATASTREAM_ID' | translate }}
         <field-options required="$ctrl.ngRequired" multiple="$ctrl.multiple" /></label>
-    <ui-select custom-ui-select-config="$ctrl.ownConfig" ng-disabled="$ctrl.disabled" name="datastream" ng-model="$ctrl.datastream"
-        theme="bootstrap" title="{{ ($ctrl.placeholder?$ctrl.placeholder:'FORM.PLACEHOLDER.DATASTREAM') | translate }}"
-        custom-ui-select multiple="true" custom-mass-autocomplete-item="$ctrl.ownConfig" on-select="$ctrl.datastreamSelected($item, $model)"
-        on-remove="$ctrl.datastreamRemove($item, $model)" ng-required="$ctrl.ngRequired">
-        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ ($ctrl.placeholder?$ctrl.placeholder:'FORM.PLACEHOLDER.DATASTREAM')  | translate }}"
-            allow-clear="true"> {{$item.identifier}} </ui-select-match>
+    <ui-select custom-ui-select-config="$ctrl.ownConfig" ng-disabled="$ctrl.disabled" name="datastream" ng-model="$ctrl.datastream" theme="bootstrap" title="{{ ($ctrl.placeholder?$ctrl.placeholder:'FORM.PLACEHOLDER.DATASTREAM') | translate }}" custom-ui-select
+        multiple="true" custom-mass-autocomplete-item="$ctrl.ownConfig" on-select="$ctrl.datastreamSelected($item, $model)" on-remove="$ctrl.datastreamRemove($item, $model)" ng-required="$ctrl.ngRequired">
+        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ ($ctrl.placeholder?$ctrl.placeholder:'FORM.PLACEHOLDER.DATASTREAM')  | translate }}" allow-clear="true"> {{$item.identifier}} </ui-select-match>
         <ui-select-choices repeat="ds in $ctrl.ownConfig.collection | limitTo:$ctrl.maxResults track by $index">
             <div>
                 <span ng-bind-html="ds.identifier | highlight: $select.search"></span> - <span ng-bind-html="ds.name | highlight: $select.search"></span>
@@ -32,12 +29,9 @@
 <div class="form-group no-margin" mass-autocomplete ng-if="!$ctrl.multiple">
     <label class="custom-ui-select-label">{{'FORM.LABEL.DATASTREAM_ID' | translate}}
         <field-options required="$ctrl.ngRequired" multiple="$ctrl.multiple" /></label>
-    <ui-select custom-ui-select-config="$ctrl.ownConfig" ng-disabled="$ctrl.disabled" name="datastream" ng-model="$ctrl.datastream"
-        theme="bootstrap" title="{{ ($ctrl.placeholder?$ctrl.placeholder:'FORM.PLACEHOLDER.DATASTREAM') | translate }}"
-        custom-ui-select multiple="false" custom-mass-autocomplete-item="$ctrl.ownConfig" on-select="$ctrl.datastreamSelected($item, $model)"
-        on-remove="$ctrl.datastreamRemove($item, $model)" ng-required="$ctrl.ngRequired">
-        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ ($ctrl.placeholder?$ctrl.placeholder:'FORM.PLACEHOLDER.DATASTREAM')  | translate }}"
-            allow-clear="true"> {{$item.identifier}} </ui-select-match>
+    <ui-select custom-ui-select-config="$ctrl.ownConfig" ng-disabled="$ctrl.disabled" name="datastream" ng-model="$ctrl.datastream" theme="bootstrap" title="{{ ($ctrl.placeholder?$ctrl.placeholder:'FORM.PLACEHOLDER.DATASTREAM') | translate }}" custom-ui-select
+        multiple="false" custom-mass-autocomplete-item="$ctrl.ownConfig" on-select="$ctrl.datastreamSelected($item, $model)" on-remove="$ctrl.datastreamRemove($item, $model)" ng-required="$ctrl.ngRequired">
+        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ ($ctrl.placeholder?$ctrl.placeholder:'FORM.PLACEHOLDER.DATASTREAM')  | translate }}" allow-clear="true"> {{$item.identifier}} </ui-select-match>
         <ui-select-choices repeat="ds in $ctrl.ownConfig.collection | limitTo:$ctrl.maxResults track by $index">
             <div>
                 <span ng-bind-html="ds.identifier | highlight: $select.search"></span> - <span ng-bind-html="ds.name | highlight: $select.search"></span>

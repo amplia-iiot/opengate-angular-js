@@ -3,11 +3,22 @@
 
 angular.module('opengate-angular-js').controller('customUiSelectDatastreamController', ['$api', '$q', 'Authentication', function($api, $q, Authentication) {
     var ctrl = this;
+
+    // special chars to be replaced/escaped when the api is called
+    var specialCharsApi = ['\\', '[', '{'];
+
     ctrl.ownConfig = {
         builder: $api().datamodelsSearchBuilder(),
         limit: 5,
         filter: function(search) {
             ctrl.lastSearch = search;
+
+            // Escape characters para compatibilidad en api
+            if (search) {
+                specialCharsApi.forEach(function(specialchar) {
+                    search = search.replace(specialchar, '\\' + specialchar);
+                });
+            }
 
             var finalFilter = {};
             if (ctrl.resourceTypes && angular.isArray(ctrl.resourceTypes) && ctrl.resourceTypes.length > 0) {
