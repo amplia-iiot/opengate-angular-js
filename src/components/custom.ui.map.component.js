@@ -2,7 +2,7 @@
 
 
 angular.module('opengate-angular-js').controller('customUiMapController', ['$scope', 'mapUxService', 'geocodingService', 'Authentication', '$timeout',
-    function ($scope, mapUxService, geocodingService, Authentication, $timeout) {
+    function($scope, mapUxService, geocodingService, Authentication, $timeout) {
         var $ctrl = this;
 
         $ctrl.coordsObj = {
@@ -17,7 +17,7 @@ angular.module('opengate-angular-js').controller('customUiMapController', ['$sco
         };
 
         $ctrl.reloadingInfo = false;
-        $ctrl.getInfo = function () {
+        $ctrl.getInfo = function() {
             $ctrl.reloadingInfo = true;
             $ctrl.location.country = undefined; // Pais
             $ctrl.location.region = undefined; // Comunidad
@@ -28,7 +28,7 @@ angular.module('opengate-angular-js').controller('customUiMapController', ['$sco
             $ctrl.display_name = undefined;
             if ($ctrl.map.markers.marker) {
                 geocodingService.reverseSearch($ctrl.map.markers.marker.lat, $ctrl.map.markers.marker.lng, 18,
-                    function (err, data) {
+                    function(err, data) {
                         $ctrl.reloadingInfo = false;
                         if (data && data.address) {
                             $ctrl.location.country = data.address.country || undefined; // Pais
@@ -83,7 +83,7 @@ angular.module('opengate-angular-js').controller('customUiMapController', ['$sco
         $ctrl.map.id = $scope.$id;
 
 
-        $ctrl.searchCoords = function () {
+        $ctrl.searchCoords = function() {
             $ctrl.map.center = {
                 lat: $ctrl.coordsObj.new.lat,
                 lng: $ctrl.coordsObj.new.lng,
@@ -101,13 +101,13 @@ angular.module('opengate-angular-js').controller('customUiMapController', ['$sco
                 }
             };
 
-            mapUxService.getMapWithId($ctrl.map.id, function (map) {
+            mapUxService.getMapWithId($ctrl.map.id, function(map) {
                 map.invalidateSize();
                 map.fireEvent('focus');
             });
         };
 
-        $ctrl.applyCoords = function () {
+        $ctrl.applyCoords = function() {
             $ctrl.coordsObj = {
                 current: {
                     lat: $ctrl.coordsObj.new.lat,
@@ -119,7 +119,7 @@ angular.module('opengate-angular-js').controller('customUiMapController', ['$sco
                 }
             };
 
-            mapUxService.getMapWithId($ctrl.map.id, function (map) {
+            mapUxService.getMapWithId($ctrl.map.id, function(map) {
                 map.invalidateSize();
                 map.fireEvent('focus');
             });
@@ -135,7 +135,7 @@ angular.module('opengate-angular-js').controller('customUiMapController', ['$sco
         var events = [];
 
         events.push(
-            $scope.$on('leafletDirectiveMarker.' + $ctrl.map.id + '.click', function (event, args) {
+            $scope.$on('leafletDirectiveMarker.' + $ctrl.map.id + '.click', function(event, args) {
                 args.leafletObject._map.invalidateSize();
 
                 if (!args.leafletObject.getPopup()._isOpen) {
@@ -145,12 +145,12 @@ angular.module('opengate-angular-js').controller('customUiMapController', ['$sco
             }));
 
         events.push(
-            $scope.$on('leafletDirectiveMap.' + $ctrl.map.id + '.focus', function (event, args) {
+            $scope.$on('leafletDirectiveMap.' + $ctrl.map.id + '.focus', function(event, args) {
                 args.leafletObject.invalidateSize();
             }));
 
         events.push(
-            $scope.$on('leafletDirectiveMap.' + $ctrl.map.id + '.click', function (event, args) {
+            $scope.$on('leafletDirectiveMap.' + $ctrl.map.id + '.click', function(event, args) {
                 args.leafletObject.invalidateSize();
 
                 if (!$ctrl.disabled) {
@@ -163,7 +163,7 @@ angular.module('opengate-angular-js').controller('customUiMapController', ['$sco
             }));
 
         events.push(
-            $scope.$on('leafletDirectiveMarker.' + $ctrl.map.id + '.dragend', function (event, args) {
+            $scope.$on('leafletDirectiveMarker.' + $ctrl.map.id + '.dragend', function(event, args) {
                 var point = args.leafletEvent.target._leaflet_events.dragend[0].context._latlng;
                 delete $ctrl.map.markers.marker;
                 setPosition(point.lat, point.lng, args.leafletObject._zoom);
@@ -173,7 +173,9 @@ angular.module('opengate-angular-js').controller('customUiMapController', ['$sco
         );
 
         function setPosition(lat, lng, zoom) {
-            if (!$ctrl.location.position) {
+            if (!$ctrl.location) {
+                $ctrl.location = {};
+            } else if (!$ctrl.location.position) {
                 $ctrl.location.position = {
                     type: 'Point'
                 };
@@ -207,7 +209,7 @@ angular.module('opengate-angular-js').controller('customUiMapController', ['$sco
                         draggable: $ctrl.disabled ? false : true,
                         message: buildCompleteAddress($ctrl.location, true),
                         compileMessage: true,
-                        getMessageScope: function () {
+                        getMessageScope: function() {
                             $scope.removeMarker = removeMarker;
                             return $scope;
                         }
@@ -220,9 +222,8 @@ angular.module('opengate-angular-js').controller('customUiMapController', ['$sco
         function removeMarker() {
             if (!$ctrl.disabled) {
                 $ctrl.map.markers = {};
-                if ($ctrl.location.position) {
-                    delete $ctrl.location.position;
-                }
+
+                delete $ctrl.location.position;
 
                 $ctrl.getInfo();
             }
@@ -246,18 +247,18 @@ angular.module('opengate-angular-js').controller('customUiMapController', ['$sco
         }
 
         $ctrl.showMap = false;
-        $timeout(function () {
+        $timeout(function() {
             $ctrl.showMap = true;
             $scope.$apply();
-            mapUxService.getMapWithId($ctrl.map.id, function (map) {
+            mapUxService.getMapWithId($ctrl.map.id, function(map) {
                 map.invalidateSize();
                 map.fireEvent('focus');
             });
-        }, 500);
+        }, 1000);
 
         //clear events
-        $ctrl.$onDestroy = function () {
-            angular.forEach(events, function (eventToDestroy) {
+        $ctrl.$onDestroy = function() {
+            angular.forEach(events, function(eventToDestroy) {
                 eventToDestroy();
             });
         };
