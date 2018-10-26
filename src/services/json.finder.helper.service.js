@@ -105,6 +105,7 @@ function CollectedJsonFinderHelper() {
             'subscriptionIdentifier': 'device.communicationModules[].subscription.identifier',
             'subscriptionSpecificType': 'device.communicationModules[].subscription.specificType',
             'subscriptionName': 'device.communicationModules[].subscription.name',
+            'subscriptionIcc': 'device.communicationModules[].subscription.mobile.icc',
             'subscriptionDescription': 'device.communicationModules[].subscription.description',
             'subscriptionImsi': 'device.communicationModules[].subscription.mobile.imsi',
             'imsi': 'device.communicationModules[].subscription.mobile.imsi',
