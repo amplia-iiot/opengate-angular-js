@@ -21,6 +21,10 @@ action-button>div>div>.btn {
     transition: all linear 0.2s;
     cursor: context-menu;
 }
+
+.custom-ui-select-no-multiple .ui-select-search[placeholder=""] {
+    display: none
+}
 /* esri-leaflet-geocoder */
 .geocoder-control-input{
     position:absolute;left:0;top:0;
