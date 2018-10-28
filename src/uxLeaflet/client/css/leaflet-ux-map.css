@@ -147,3 +147,8 @@ table.device-tooltip td.dev-key-value {
 .light.theme-core .leaflet-container .leaflet-popup-content strong {
     color: #999;
 }
+
+.leaflet-control-minimap p.sleep-note,
+.leaflet-fullscreen-on p.sleep-note {
+    display: none !important;
+}

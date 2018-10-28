@@ -173,10 +173,12 @@ angular.module('uxleaflet')
         // opacity for the sleeping map
         sleepOpacity: .9,
         sleepNoteStyle: {
-            background: 'black',
-            color: 'white',
+            background: 'white',
+            color: 'black',
             maxWidth: '50%',
-            top: '5px'
+            top: '5px',
+            border: 'none',
+            opacity: 0.8
         }
     });
 
@@ -425,11 +427,11 @@ angular.module('uxleaflet')
                     },
                     position: 'bottomright',
                     toggleDisplay: true,
-                    autoToggleDisplay: true,
+                    autoToggleDisplay: false,
                     minimized: true,
                     width: 100,
                     height: 100,
-                    strings: { hideText: 'Hide Mini Map asdfasdfasdf', showText: 'Show Mini Map' },
+                    strings: { hideText: '-', showText: '+' },
                 },
                 createControlInstance: function(opts) {
                     // minimap has a special constructor: (url, options)
