@@ -4,24 +4,31 @@
 angular.module('opengate-angular-js').controller('customUiSelectChannelController', ['$scope', '$element', '$attrs', '$api',
     function ($scope, $element, $attrs, $api) {
         var ctrl = this;
+        var defaultQuickSearchFields = 'provision.channel.identifier,provision.channel.description';
+
+        function _getQuickSerachFields(search) {
+            var _quickSerachFields = ctrl.quickSearchFields || defaultQuickSearchFields;
+            var fields = _quickSerachFields.split(/[,|, ]+/);
+            if (!ctrl.organization) {
+                fields.push('provision.administration.organization');
+            }
+            var filter = {
+                or: []
+            };
+            fields.forEach(function (field) {
+                var _like = {
+                    like: {}
+                };
+                _like.like[field] = search;
+                filter.or.push(_like);
+            });
+            return filter;
+        }
+
         ctrl.ownConfig = {
             builder: $api().channelsSearchBuilder(),
             filter: function (search) {
-                var filter = {
-                    'or': [{
-                        'like': {
-                            'provision.channel.identifier': search
-                        }
-                    }, {
-                        'like': {
-                            'provision.channel.description': search
-                        }
-                    }, {
-                        'like': {
-                            'provision.administration.organization': search
-                        }
-                    }]
-                };
+                var filter = _getQuickSerachFields(search);
 
                 if (!!ctrl.organization) {
                     filter = {

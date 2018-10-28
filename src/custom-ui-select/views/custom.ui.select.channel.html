@@ -1,6 +1,6 @@
 <div class="form-group no-margin" mass-autocomplete ng-if="$ctrl.multiple">
     <label ng-if="$ctrl.label" class="custom-ui-select-label">{{ $ctrl.label | translate }}
-        <field-options required="$ctrl.ngRequired" multiple="$ctrl.multiple" /></label>
+        <field-options required="$ctrl.ngRequired" multiple="true" /></label>
     <ui-select name="channel" custom-ui-select-config="$ctrl.ownConfig" ng-model="$ctrl.channel" theme="bootstrap" title="Choose a channel" custom-ui-select multiple="true" custom-mass-autocomplete-item="$ctrl.ownConfig" on-select="$ctrl.channelSelected($item, $model)"
         on-remove="$ctrl.channelRemove($item, $model)" ng-required="$ctrl.ngRequired">
         <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.CHOOSE_A_CHANNEL' | translate }}" allow-clear="true">
@@ -16,7 +16,7 @@
 </div>
 <div class="form-group no-margin" mass-autocomplete ng-if="!$ctrl.multiple">
     <label ng-if="$ctrl.label" class="custom-ui-select-label">{{ $ctrl.label | translate }}
-        <field-options required="$ctrl.ngRequired" multiple="$ctrl.multiple" /></label>
+        <field-options required="$ctrl.ngRequired" multiple="false" /></label>
 
     <ui-select custom-ui-select-config="$ctrl.ownConfig" name="channel" ng-model="$ctrl.channel" theme="bootstrap" title="Choose a channel" custom-ui-select multiple="false" custom-mass-autocomplete-item="$ctrl.ownConfig" on-select="$ctrl.channelSelected($item, $model)"
         on-remove="$ctrl.channelRemove($item, $model)" ng-required="$ctrl.ngRequired">
