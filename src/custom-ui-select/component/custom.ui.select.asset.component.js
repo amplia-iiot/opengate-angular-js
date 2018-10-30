@@ -118,8 +118,8 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
             }
         };
 
-        if (!ctrl.actions) {
-            ctrl.actions = [{
+        var uiSelectActionsDefinition = {
+            create: {
                 title: $translate.instant('FORM.LABEL.NEW'),
                 icon: 'glyphicon glyphicon-plus-sign',
                 action: function () {
@@ -167,7 +167,28 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
                     });
                 },
                 permissions: 'manageEntity'
-            }];
+            }
+        };
+        // Actions que finalmente se mostrarán en el control
+        ctrl.uiSelectActions = [];
+
+        if (!ctrl.actions) {
+            angular.forEach(uiSelectActionsDefinition, function (action) {
+                ctrl.uiSelectActions.push(action);
+            });
+        } else {
+            angular.forEach(ctrl.actions, function (action) {
+                var finalAction;
+                switch (action.type) {
+                    case 'create':
+                        finalAction = uiSelectActionsDefinition.create;
+                        break;
+                }
+                finalAction.title = action.title || finalAction.title;
+                finalAction.icon = action.icon || finalAction.icon;
+                ctrl.uiSelectActions.push(finalAction);
+            });
+
         }
 
         ctrl.$onChanges = function (changesObj) {

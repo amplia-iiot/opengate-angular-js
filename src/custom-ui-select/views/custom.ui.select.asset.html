@@ -5,7 +5,8 @@
         theme="bootstrap" title="Choose a asset" custom-ui-select custom-ui-select-action="$ctrl.action" multiple="true"
         custom-mass-autocomplete-item="$ctrl.ownConfig" on-select="$ctrl.assetSelected($item, $model)" on-remove="$ctrl.assetRemove($item, $model)"
         ng-required="$ctrl.ngRequired">
-        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.ENTITY' | translate }}" allow-clear="true">
+        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.ENTITY' | translate }}"
+            allow-clear="true">
             {{$item.provision.administration.identifier._current.value || $item.identifier}}
         </ui-select-match>
         <ui-select-choices repeat="assetData in $ctrl.ownConfig.collection track by $index">
@@ -23,10 +24,10 @@
     <label ng-if="$ctrl.label" class="custom-ui-select-label">{{ $ctrl.label | translate }}
         <field-options required="$ctrl.ngRequired" multiple="$ctrl.multiple" /></label>
     <ui-select custom-ui-select-config="$ctrl.ownConfig" ng-disabled="$ctrl.disabled" name="asset" ng-model="$ctrl.asset"
-        theme="bootstrap" title="Choose an asset" custom-ui-select multiple="false"
-        custom-mass-autocomplete-item="$ctrl.ownConfig" on-select="$ctrl.assetSelected($item, $model)" on-remove="$ctrl.assetRemove($item, $model)"
-        ng-required="$ctrl.ngRequired">
-        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.ENTITY' | translate }}" allow-clear="true">
+        theme="bootstrap" title="Choose an asset" custom-ui-select multiple="false" custom-mass-autocomplete-item="$ctrl.ownConfig"
+        on-select="$ctrl.assetSelected($item, $model)" on-remove="$ctrl.assetRemove($item, $model)" ng-required="$ctrl.ngRequired">
+        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.ENTITY' | translate }}"
+            allow-clear="true">
             {{$item.provision.administration.identifier._current.value || $item.identifier}}
         </ui-select-match>
         <ui-select-choices repeat="assetData in $ctrl.ownConfig.collection track by $index">
@@ -40,5 +41,5 @@
         </ui-select-choices>
     </ui-select>
 </div>
-<action-button ng-if="$ctrl.actions && !$ctrl.disabled" actions="$ctrl.actions">
+<action-button ng-if="!$ctrl.disabled" actions="$ctrl.uiSelectActions">
 </action-button>
