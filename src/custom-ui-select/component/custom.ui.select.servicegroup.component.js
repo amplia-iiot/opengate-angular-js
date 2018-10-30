@@ -2,9 +2,10 @@
 
 
 angular.module('opengate-angular-js').controller('customUiSelectServiceGroupController', ['$scope', '$element', '$attrs', '$api', '$q',
-    function($scope, $element, $attrs, $api, $q) {
+    function ($scope, $element, $attrs, $api, $q) {
         var ctrl = this;
 
+        var firstLoad = true;
         var builder = $api().serviceGroupSearchBuilder();
         if (!!ctrl.entityType && ctrl.entityType.toUpperCase() !== 'DEVICE') {
             builder.withEntityType(ctrl.entityType.toUpperCase());
@@ -15,22 +16,31 @@ angular.module('opengate-angular-js').controller('customUiSelectServiceGroupCont
         var savedSearch;
         ctrl.ownConfig = {
             builder: builder,
-            filter: function(search) {
+            filter: function (search) {
                 savedSearch = search;
             },
             rootKey: 'serviceGroups',
             collection: [],
             simpleMode: true,
             customSelectors: builder,
-            processingData: function(result, serviceGroups) {
-                var serviceGroupsFormatted = serviceGroups.map(function(item) {
+            processingData: function (result, serviceGroups) {
+
+                if (firstLoad) {
+                    var item = {
+                        name: serviceGroups.indexOf('emptyServiceGroup') === -1 ? ctrl.serviceGroup[0] : 'emptyServiceGroup'
+                    };
+                    ctrl.serviceGroup = Array.isArray(ctrl.serviceGroup) ? ctrl.serviceGroup : [item];
+                    firstLoad = false;
+                }
+
+                var serviceGroupsFormatted = serviceGroups.map(function (item) {
                     return {
                         name: item
                     };
                 });
 
                 if (savedSearch) {
-                    serviceGroupsFormatted = serviceGroupsFormatted.filter(function(tmp) {
+                    serviceGroupsFormatted = serviceGroupsFormatted.filter(function (tmp) {
                         return tmp.name.toLowerCase().indexOf(savedSearch.trim().toLowerCase()) !== -1;
                     });
                 }
@@ -43,11 +53,11 @@ angular.module('opengate-angular-js').controller('customUiSelectServiceGroupCont
             }
         };
 
-        ctrl.serviceGroupSelected = function($item, $model) {
+        ctrl.serviceGroupSelected = function ($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = [];
 
-                angular.forEach(ctrl.serviceGroup, function(sgTmp) {
+                angular.forEach(ctrl.serviceGroup, function (sgTmp) {
                     identifierTmp.push(sgTmp.name);
                 });
 
@@ -64,7 +74,7 @@ angular.module('opengate-angular-js').controller('customUiSelectServiceGroupCont
             }
         };
 
-        ctrl.serviceGroupRemove = function($item, $model) {
+        ctrl.serviceGroupRemove = function ($item, $model) {
             if (ctrl.onRemove) {
                 var returnObj = {};
                 returnObj.$item = $item;
@@ -82,7 +92,7 @@ angular.module('opengate-angular-js').controller('customUiSelectServiceGroupCont
         };
 
 
-        ctrl.$onChanges = function(changesObj) {
+        ctrl.$onChanges = function (changesObj) {
             if (changesObj && changesObj.identifier) {
                 mapIdentifier(changesObj.identifier.currentValue);
             }
@@ -103,7 +113,7 @@ angular.module('opengate-angular-js').controller('customUiSelectServiceGroupCont
                     if (angular.isArray(identifier)) {
                         ctrl.serviceGroup = [];
 
-                        angular.forEach(identifier, function(idTmp) {
+                        angular.forEach(identifier, function (idTmp) {
                             ctrl.serviceGroup.push({
                                 name: idTmp
                             });
@@ -135,7 +145,6 @@ angular.module('opengate-angular-js').component('customUiSelectServiceGroup', {
         multiple: '<',
         ngRequired: '<',
         label: '<',
-        action: '<?',
         disabled: '<?',
         ngModel: '=?',
         uiSelectMatchClass: '@?'

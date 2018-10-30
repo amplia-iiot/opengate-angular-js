@@ -1,10 +1,12 @@
 'use strict';
 
 
-angular.module('opengate-angular-js').controller('customUiSelectChannelController', ['$scope', '$element', '$attrs', '$api',
-    function ($scope, $element, $attrs, $api) {
+angular.module('opengate-angular-js').controller('customUiSelectChannelController', ['$scope', '$element', '$attrs', '$api', '$q',
+    function ($scope, $element, $attrs, $api, $q) {
         var ctrl = this;
+        var firstLoad = true;
         var defaultQuickSearchFields = 'provision.channel.identifier,provision.channel.description';
+        ctrl.organization = ctrl.organization === 'LOG.LOADING' && undefined;
 
         function _getQuickSerachFields(search) {
             var _quickSerachFields = ctrl.quickSearchFields || defaultQuickSearchFields;
@@ -47,7 +49,25 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
             },
             rootKey: 'channels',
             collection: [],
-            customSelectors: $api().channelsSearchBuilder()
+            customSelectors: $api().channelsSearchBuilder(),
+            processingData: function (result, channels) {
+                if (firstLoad) {
+                    var _selectedChannel = ctrl.channel && ctrl.channel.selected && ctrl.channel.selected.length === 1;
+                    if (!_selectedChannel && ctrl.organization) {
+
+                        ctrl.channel = channels.filter(function (channel) {
+                            return channel.provision.administration.organization._current.value === ctrl.organization;
+                        });
+                    }
+                    firstLoad = false;
+                }
+
+                var deferred = $q.defer();
+
+                deferred.resolve(channels);
+
+                return deferred.promise;
+            }
         };
 
         ctrl.channelSelected = function ($item, $model) {
@@ -95,7 +115,11 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
                     mapIdentifier(changesObj.identifier.currentValue);
                 }
 
-                if (changesObj.organization && changesObj.organization.currentValue) {
+                var organization = changesObj.organization;
+                var currentValue = organization && organization.currentValue && (Object.keys(organization.currentValue).length > 0 ? organization.currentValue : null);
+                var previousValue = organization && organization.previousValue && (Object.keys(organization.previousValue).length > 0 ? organization.previousValue : null);
+                previousValue = (previousValue === 'LOG.LOADING' && null);
+                if (!currentValue || (previousValue && currentValue !== previousValue)) {
                     ctrl.ngModel = undefined;
                     ctrl.channel = [];
                 }

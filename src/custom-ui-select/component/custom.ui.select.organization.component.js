@@ -4,7 +4,7 @@
 angular.module('opengate-angular-js').controller('customUiSelectOrganizationController', ['$scope', '$element', '$attrs', '$api', 'Authentication', '$q',
     function ($scope, $element, $attrs, $api, Authentication, $q) {
         var ctrl = this;
-
+        var firstLoad = true;
         var savedSearch;
         ctrl.ownConfig = {
             builder: $api().newOrganizationFinder().findByDomainAndWorkgroup(Authentication.getUser().domain, Authentication.getUser().workgroup),
@@ -18,10 +18,18 @@ angular.module('opengate-angular-js').controller('customUiSelectOrganizationCont
             customSelectors: $api().newOrganizationFinder().findByDomainAndWorkgroup(Authentication.getUser().domain, Authentication.getUser().workgroup),
             processingData: function (result, organizations) {
                 var organizationsFormatted = organizations;
+
                 if (savedSearch) {
                     organizationsFormatted = organizations.filter(function (tmp) {
                         return tmp.name.toLowerCase().indexOf(savedSearch.trim().toLowerCase()) !== -1;
                     });
+                }
+
+                var _selectedOrganization = ctrl.organization && ctrl.organization.selected && ctrl.organization.selected.length === 1;
+
+                if (firstLoad && !_selectedOrganization) {
+                    ctrl.organization = [organizationsFormatted[0]];
+                    firstLoad = false;
                 }
 
                 var deferred = $q.defer();
