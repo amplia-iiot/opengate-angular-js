@@ -1,10 +1,7 @@
 <div ng-class="{'has-error': hasError(), 'has-success': hasSuccess(), 'has-feedback': form.feedback !== false }" class="form-group {{form.htmlClass}}">
     <!-- Surrounding DIV for sfField builder to add a sfField directive to. -->
-    <custom-ui-select-subscription label="form.title" specific-type="{{form.specificType}}" on-select-item="evalExpr(form.onselectitem, {$item: $$value$$, $model: $model})"
-        on-remove="evalExpr(form.onremove, {$item: $$value$$, $model: $model})" identifier="$$value$$" multiple="form.multiple"
-        sf-field-model="replaceAll" entity="form.dummy" ng-model="$$value$$" placeholder="{{form.placeholder || 'FORM.PLACEHOLDER.ELEMENT' | translate }}"
-        ng-required="form.required" exclude-devices="form.excludeDevices" organization="{{form.organization}}" channel="{{form.channel}}"
-        oql="{{form.oql}}" quick-search-fields="{{form.quickSearchFields}}" ui-select-match-class="form.uiSelectMatchClass"
-        actions="form.actions">
+    <custom-ui-select-subscription label="form.title" specific-type="{{form.specificType}}" on-select-item="evalExpr(form.onselectitem, {$item: $$value$$, $model: $model})" on-remove="evalExpr(form.onremove, {$item: $$value$$, $model: $model})" identifier="$$value$$"
+        multiple="form.multiple" sf-field-model="replaceAll" entity="form.dummy" ng-model="$$value$$" placeholder="{{form.placeholder || 'FORM.PLACEHOLDER.ELEMENT' | translate }}" title="{{form.title || 'ENTITY.SUBSCRIPTON' | translate }}" ng-required="form.required"
+        exclude-devices="form.excludeDevices" organization="{{form.organization}}" channel="{{form.channel}}" oql="{{form.oql}}" quick-search-fields="{{form.quickSearchFields}}" ui-select-match-class="form.uiSelectMatchClass" actions="form.actions">
     </custom-ui-select-subscription>
 </div>
