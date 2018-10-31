@@ -249,6 +249,7 @@ angular.module('opengate-angular-js').component('customUiSelectDatastream', {
         placeholder: '=',
         uiSelectMatchClass: '@?',
         identifier: '<?',
+        label: '=?',
         ngModel: '=?'
     }
 });
