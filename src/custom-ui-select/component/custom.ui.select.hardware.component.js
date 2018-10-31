@@ -186,6 +186,7 @@ angular.module('opengate-angular-js').component('customUiSelectHardware', {
         action: '<?',
         disabled: '<?',
         ngModel: '=?',
+        title: '@',
         uiSelectMatchClass: '@?'
     }
 
