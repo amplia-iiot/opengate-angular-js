@@ -227,7 +227,8 @@ angular.module('uxleaflet')
             maxWidth: '50%',
             top: '5px',
             border: 'none',
-            opacity: 0.8
+            opacity: 0.8,
+            padding: 0
         }
     });
 
