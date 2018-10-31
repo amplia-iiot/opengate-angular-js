@@ -160,98 +160,99 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
                 });
         };
 
-        // Actions que finalmente se mostrarán en el control
-        ctrl._actions = [{
-            title: $translate.instant('FORM.LABEL.NEW'),
-            icon: 'glyphicon glyphicon-plus-sign',
-            action: function () {
-                var actionData = {};
-                if (!!ctrl.specificType) {
-                    actionData = {
-                        resourceType: {
-                            _current: {
-                                value: 'entity.device'
-                            }
-                        },
-                        provision: {
-                            device: {
-                                specificType: {
-                                    _current: {
-                                        value: ctrl.specificType
-                                    }
-                                }
-                            }
-                        }
-                    };
-                }
-                $doActions.executeModal('createDevice', actionData, function (result) {
-                    if (result && result.length > 0) {
-                        ctrl.device = !ctrl.device ? [] : ctrl.device;
-                        ctrl.device.push({
-                            provision: {
-                                administration: {
-                                    identifier: {
-                                        _current: {
-                                            value: result[0].identifier
-                                        }
-                                    }
-                                },
-                                device: {
-                                    identifier: {
-                                        _current: {
-                                            value: result[0].identifier
-                                        }
-                                    }
-                                }
-                            }
-                        });
-                    }
-                });
-            },
-            permissions: 'manageEntity'
-        }];
-
-        if (!ctrl.actions) {
-            ctrl._actions.push({
+        function _getOperationActionTemplate(operationSelected) {
+            return {
                 title: $translate.instant('BUTTON.TITLE.EXECUTE_OPERATION'),
                 icon: 'glyphicon glyphicon-flash',
                 action: function () {
                     $doActions.executeModal('executeOperation', {
                         keys: jsonPath(ctrl.device, '$..' + $jsonFinderHelper.provisioned.getPath('identifier') + '._current.value') || [],
-                        entityType: 'GATEWAY'
+                        entityType: 'GATEWAY',
+                        operation: operationSelected ? operationSelected.trim().toUpperCase() : undefined
                     });
                 },
                 disable: function () {
                     return !ctrl.device || ctrl.device.length === 0;
                 },
                 permissions: 'executeOperation'
+            };
+        }
+
+        var uiSelectActionsDefinition = {
+            operation: _getOperationActionTemplate(),
+            create: {
+                title: $translate.instant('FORM.LABEL.NEW'),
+                icon: 'glyphicon glyphicon-plus-sign',
+                action: function () {
+                    var actionData = {};
+                    if (!!ctrl.specificType) {
+                        actionData = {
+                            resourceType: {
+                                _current: {
+                                    value: 'entity.device'
+                                }
+                            },
+                            provision: {
+                                device: {
+                                    specificType: {
+                                        _current: {
+                                            value: ctrl.specificType
+                                        }
+                                    }
+                                }
+                            }
+                        };
+                    }
+                    $doActions.executeModal('createDevice', actionData, function (result) {
+                        if (result && result.length > 0) {
+                            ctrl.device = !ctrl.device ? [] : ctrl.device;
+                            ctrl.device.push({
+                                provision: {
+                                    administration: {
+                                        identifier: {
+                                            _current: {
+                                                value: result[0].identifier
+                                            }
+                                        }
+                                    },
+                                    device: {
+                                        identifier: {
+                                            _current: {
+                                                value: result[0].identifier
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                },
+                permissions: 'manageEntity'
+            }
+        };
+        // Actions que finalmente se mostrarán en el control
+        ctrl.uiSelectActions = [];
+
+        if (!ctrl.actions) {
+            angular.forEach(uiSelectActionsDefinition, function (action) {
+                ctrl.uiSelectActions.push(action);
             });
         } else {
-            var operationTemplateBuilder = function (operationSelected) {
-                return {
-                    title: $translate.instant('BUTTON.TITLE.EXECUTE_OPERATION'),
-                    icon: 'glyphicon glyphicon-flash',
-                    action: function () {
-                        $doActions.executeModal('executeOperation', {
-                            keys: jsonPath(ctrl.device, '$..' + $jsonFinderHelper.provisioned.getPath('identifier') + '._current.value') || [],
-                            entityType: 'GATEWAY',
-                            operation: operationSelected ? operationSelected.trim().toUpperCase() : undefined
-                        });
-                    },
-                    disable: function () {
-                        return !ctrl.device || ctrl.device.length === 0;
-                    },
-                    permissions: 'executeOperation'
-                };
-            };
-
-            angular.forEach(ctrl.actions, function (operationAction) {
-                var operationActionFinal = operationTemplateBuilder(operationAction.operation);
-                operationActionFinal.title = operationAction.title || operationActionFinal.title;
-                operationActionFinal.icon = operationAction.icon || operationActionFinal.icon;
-
-                ctrl._actions.push(operationActionFinal);
+            angular.forEach(ctrl.actions, function (action) {
+                var finalAction;
+                switch (action.type) {
+                    case 'operation':
+                        finalAction = _getOperationActionTemplate(action.operation);
+                        break;
+                    case 'create':
+                        finalAction = uiSelectActionsDefinition.create;
+                        break;
+                }
+                finalAction.title = action.title || finalAction.title;
+                finalAction.icon = action.icon || finalAction.icon;
+                ctrl.uiSelectActions.push(finalAction);
             });
+
         }
 
         ctrl.$onChanges = function (changesObj) {
