@@ -13092,18 +13092,27 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
 
         ctrl.$onChanges = function (changesObj) {
             if (changesObj) {
-                if (changesObj.identifier) {
-                    mapIdentifier(changesObj.identifier.currentValue);
-                }
-
-                var organization = changesObj.organization;
-                var currentValue = organization && organization.currentValue && (Object.keys(organization.currentValue).length > 0 ? organization.currentValue : null);
-                var previousValue = organization && organization.previousValue && (Object.keys(organization.previousValue).length > 0 ? organization.previousValue : null);
-                previousValue = (previousValue === 'LOG.LOADING' && null);
-                if (!currentValue || (previousValue && currentValue !== previousValue)) {
-                    ctrl.ngModel = undefined;
-                    ctrl.channel = [];
-                }
+                Object.keys(changesObj).forEach(function (key) {
+                    switch (key) {
+                        case 'identifier':
+                            mapIdentifier(changesObj.identifier.currentValue);
+                            break;
+                        case 'organization':
+                            if (ctrl.organization) {
+                                var organization = changesObj.organization;
+                                var currentValue = organization.currentValue && (Object.keys(organization.currentValue).length > 0 ? organization.currentValue : null);
+                                var previousValue = organization.previousValue && (Object.keys(organization.previousValue).length > 0 ? organization.previousValue : null);
+                                previousValue = (previousValue === 'LOG.LOADING' && null);
+                                if (!currentValue || (previousValue && currentValue !== previousValue)) {
+                                    ctrl.ngModel = undefined;
+                                    ctrl.channel = [];
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                });
             }
         };
 
@@ -13111,71 +13120,49 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
             mapIdentifier(ctrl.identifier);
         }
 
+        function _getChannel(id) {
+            var administration = {
+                identifier: {
+                    _current: {
+                        value: id
+                    }
+                }
+            };
+
+            var channel = angular.copy(administration);
+
+            if (ctrl.organization) {
+                administration.organization = {
+                    _current: {
+                        value: ctrl.organization
+                    }
+                };
+            }
+
+            return {
+                provision: {
+                    administration: administration,
+                    channel: channel
+                }
+            };
+        }
+
         function mapIdentifier(identifierSrc) {
             var identifier = identifierSrc;
+            ctrl.channel = [];
             if (identifier) {
                 if (identifier._current) {
                     identifier = identifier._current.value;
                 }
-
                 if (ctrl.multiple) {
                     if (angular.isArray(identifier)) {
-                        ctrl.channel = [];
-
                         angular.forEach(identifier, function (idTmp) {
-                            ctrl.channel.push({
-                                provision: {
-                                    administration: {
-                                        identifier: {
-                                            _current: {
-                                                value: idTmp
-                                            }
-                                        },
-                                        organization: {
-                                            _current: {
-                                                value: ctrl.organization
-                                            }
-                                        }
-                                    },
-                                    channel: {
-                                        identifier: {
-                                            _current: {
-                                                value: idTmp
-                                            }
-                                        }
-                                    }
-                                }
-                            });
+                            ctrl.channel.push(_getChannel(idTmp));
                         });
                     }
-
                 } else {
-                    ctrl.channel = [{
-                        provision: {
-                            administration: {
-                                identifier: {
-                                    _current: {
-                                        value: identifier
-                                    }
-                                },
-                                organization: {
-                                    _current: {
-                                        value: ctrl.organization
-                                    }
-                                }
-                            },
-                            channel: {
-                                identifier: {
-                                    _current: {
-                                        value: identifier
-                                    }
-                                }
-                            }
-                        }
-                    }];
+                    ctrl.channel.push(_getChannel(identifier));
                 }
-            } else {
-                ctrl.channel = [];
             }
         }
     }
