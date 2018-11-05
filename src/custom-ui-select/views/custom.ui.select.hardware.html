@@ -8,17 +8,17 @@
             <span ng-if="$item.version">{{ FORM.VER | translate }} </span>{{$item.version}})</ui-select-match>
         <ui-select-choices repeat="hardware in $ctrl.ownConfig.collection track by $index">
             <div>
-                {{hardware.manufacturer.name}} ({{ hardware.model.name }}
-                <span ng-if="hardware.model.version">{{ FORM.VER | translate }}</span> {{hardware.model.version}})
+                {{hardware.name}} ({{ hardware.name }}
+                <span ng-if="hardware.version">{{ FORM.VER | translate }}</span> {{hardware.version}})
             </div>
             <small>
             <div>{{ FORM.MODEL  | translate}}</div>
             <div>{{ FORM.NAME | translate:'{before:" - ", after:":"}' }}
-                <span ng-bind-html="''+hardware.model.name | highlight: $select.search"></span>
+                <span ng-bind-html="''+hardware.name | highlight: $select.search"></span>
             </div>
             <div>
-                <span ng-if="hardware.model.version">{{ FORM.VERSION | translate }} </span>
-                <span ng-bind-html="''+hardware.model.version | highlight: $select.search"></span>
+                <span ng-if="hardware.version">{{ FORM.VERSION | translate }} </span>
+                <span ng-bind-html="''+hardware.version | highlight: $select.search"></span>
             </div>
         </small>
         </ui-select-choices>
@@ -36,17 +36,17 @@
             <span ng-if="$item.version">{{ FORM.VER | translate }} </span>{{$item.version}}) </ui-select-match>
         <ui-select-choices repeat="hardware in $ctrl.ownConfig.collection track by $index">
             <div>
-                {{hardware.manufacturer.name}} ({{ hardware.model.name }}
-                <span ng-if="hardware.model.version">{{ FORM.VER | translate }}</span> {{hardware.model.version}})
+                {{hardware.name}} ({{ hardware.name }}
+                <span ng-if="hardware.version">{{ FORM.VER | translate }}</span> {{hardware.version}})
             </div>
             <small>
                 <div>{{ FORM.MODEL  | translate}}</div>
                 <div>{{ FORM.NAME | translate:'{before:" - ", after:":"}' }}
-                    <span ng-bind-html="''+hardware.model.name | highlight: $select.search"></span>
+                    <span ng-bind-html="''+hardware.name | highlight: $select.search"></span>
                 </div>
                 <div>
-                    <span ng-if="hardware.model.version">{{ FORM.VERSION | translate }} </span>
-                    <span ng-bind-html="''+hardware.model.version | highlight: $select.search"></span>
+                    <span ng-if="hardware.version">{{ FORM.VERSION | translate }} </span>
+                    <span ng-bind-html="''+hardware.version | highlight: $select.search"></span>
                 </div>
             </small>
         </ui-select-choices>

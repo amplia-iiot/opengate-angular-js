@@ -2,12 +2,12 @@
 
 
 angular.module('opengate-angular-js').controller('customUiSelectHardwareController', ['$scope', '$element', '$attrs', '$api', '$q',
-    function($scope, $element, $attrs, $api, $q) {
+    function ($scope, $element, $attrs, $api, $q) {
         var ctrl = this;
 
         ctrl.ownConfig = {
             builder: $api().hardwaresSearchBuilder(),
-            filter: function(search) {
+            filter: function (search) {
                 return {
                     'or': [{
                             'like': {
@@ -30,30 +30,31 @@ angular.module('opengate-angular-js').controller('customUiSelectHardwareControll
             rootKey: 'hardwares',
             collection: [],
             customSelectors: $api().hardwaresSearchBuilder(),
-            processingData: function(data, collection) {
+            processingData: function (data, collection) {
                 try {
-                    return $q(function(C_ok, reject) {
+                    return $q(function (C_ok, reject) {
                         collection = [];
                         if (typeof data.data.hardware !== 'undefined') {
                             angular.copy(data.data.hardware, collection);
                         } else if (typeof data.data.manufacturer !== 'undefined') {
-                            data.data.manufacturer.forEach(function(manuf) {
+                            data.data.manufacturer.forEach(function (manuf) {
                                 var manuf_name = manuf.name;
+                                var manuf_id = manuf.id;
                                 if (manuf.models) {
-                                    manuf.models.forEach(function(model) {
+                                    manuf.models.forEach(function (model) {
                                         var model_name = model.name;
                                         var id = model.id;
                                         var model_version = model.version;
-                                        collection.push({
-                                            id: id,
-                                            model: {
-                                                name: model_name,
-                                                version: model_version
-                                            },
-                                            manufacturer: {
-                                                name: manuf_name
-                                            }
-                                        });
+                                        var _model = {
+                                            name: model_name,
+                                            manufacturer: manuf_name,
+                                            version: model_version
+                                        };
+                                        if (ctrl.fullResult) {
+                                            _model.id = id;
+                                            _model.manufacturerId = manuf_id;
+                                        }
+                                        collection.push(_model);
                                     });
                                 }
                             });
@@ -68,74 +69,37 @@ angular.module('opengate-angular-js').controller('customUiSelectHardwareControll
             }
         };
 
-        ctrl.hardwareSelected = function($item, $model) {
-            if (ctrl.multiple) {
-                var identifierTmp = [];
-
-                angular.forEach(ctrl.hardware, function(sgTmp) {
-                    if (sgTmp.id) {
-                        identifierTmp.push({
-                            name: sgTmp.model.name,
-                            manufacturer: sgTmp.manufacturer.name,
-                            version: sgTmp.model.version
-                        });
-                    } else {
-                        identifierTmp.push(sgTmp);
-                    }
-                });
-
-                ctrl.ngModel = identifierTmp;
-            } else {
-                ctrl.ngModel = {
-                    name: $item.model.name,
-                    manufacturer: $item.manufacturer.name,
-                    version: $item.model.version
-                };
+        ctrl.hardwareSelected = function ($item, $model) {
+            var _$item = ctrl.ngModel = $item;
+            if (!ctrl.multiple) {
+                _$item = ctrl.ngModel = $item;
             }
 
             if (ctrl.onSelectItem) {
                 var returnObj = {};
-                returnObj.$item = $item;
+                returnObj.$item = _$item;
                 returnObj.$model = $model;
                 ctrl.onSelectItem(returnObj);
             }
         };
 
-        ctrl.hardwareRemove = function($item, $model) {
+        ctrl.hardwareRemove = function ($item, $model) {
+            var _$item = ctrl.ngModel = $item;
+            if (!ctrl.multiple) {
+                _$item = ctrl.ngModel = undefined;
+            }
+
             if (ctrl.onRemove) {
                 var returnObj = {};
-                returnObj.$item = $item;
+                returnObj.$item = _$item;
                 returnObj.$model = $model;
                 ctrl.onRemove(returnObj);
             }
 
-            if (ctrl.multiple) {
-                if (ctrl.hardware && ctrl.hardware.length > 0) {
-                    var identifierTmp = [];
-
-                    angular.forEach(ctrl.hardware, function(sgTmp) {
-                        if (sgTmp.id) {
-                            identifierTmp.push({
-                                name: sgTmp.model.name,
-                                manufacturer: sgTmp.manufacturer.name,
-                                version: sgTmp.model.version
-                            });
-                        } else {
-                            identifierTmp.push(sgTmp);
-                        }
-                    });
-
-                    ctrl.ngModel = identifierTmp;
-                } else {
-                    ctrl.ngModel = undefined;
-                }
-            } else {
-                ctrl.ngModel = undefined;
-            }
         };
 
 
-        ctrl.$onChanges = function(changesObj) {
+        ctrl.$onChanges = function (changesObj) {
             if (changesObj && changesObj.identifier) {
                 mapIdentifier(changesObj.identifier.currentValue);
             }
@@ -156,7 +120,7 @@ angular.module('opengate-angular-js').controller('customUiSelectHardwareControll
                     if (angular.isArray(identifier)) {
                         ctrl.hardware = [];
 
-                        angular.forEach(identifier, function(idTmp) {
+                        angular.forEach(identifier, function (idTmp) {
                             ctrl.hardware.push(idTmp);
                         });
                     }
@@ -178,7 +142,7 @@ angular.module('opengate-angular-js').component('customUiSelectHardware', {
     bindings: {
         onSelectItem: '&',
         onRemove: '&',
-        hardware: '=',
+        hardware: '=?',
         identifier: '<?',
         multiple: '<',
         ngRequired: '<',
@@ -187,7 +151,8 @@ angular.module('opengate-angular-js').component('customUiSelectHardware', {
         disabled: '<?',
         ngModel: '=?',
         title: '@',
-        uiSelectMatchClass: '@?'
+        uiSelectMatchClass: '@?',
+        fullResult: '<?'
     }
 
 });
