@@ -11706,10 +11706,13 @@ angular.module('opengate-angular-js').controller('customUiSelectOrganizationCont
                     });
                 }
 
-                var _selectedOrganization = ctrl.organization && ctrl.organization.selected && ctrl.organization.selected.length === 1;
 
-                if (firstLoad && !_selectedOrganization) {
-                    ctrl.organization = [organizationsFormatted[0]];
+
+                if (firstLoad) {
+                    var _selectedOrganization = ctrl.organization && ctrl.organization.selected && ctrl.organization.selected.length === 1;
+                    if (!_selectedOrganization) {
+                        ctrl.organization = [organizationsFormatted[0]];
+                    }
                     firstLoad = false;
                 }
 
@@ -12320,13 +12323,14 @@ angular.module('opengate-angular-js').component('customUiSelectEntity', {
 
 
 
-angular.module('opengate-angular-js').controller('customUiSelectDomainController', ['$scope', '$element', '$attrs', '$api', function($scope, $element, $attrs, $api) {
+angular.module('opengate-angular-js').controller('customUiSelectDomainController', ['$scope', '$element', '$attrs', '$api', '$q', function ($scope, $element, $attrs, $api, $q) {
     var ctrl = this;
+    var firstLoad = true;
     ctrl.ownConfig = {
         builder: $api().domainsSearchBuilder(),
         rootKey: 'domains',
         collection: [],
-        filter: function(search) {
+        filter: function (search) {
             return {
                 'or': [{
                         'like': {
@@ -12341,10 +12345,23 @@ angular.module('opengate-angular-js').controller('customUiSelectDomainController
                 ]
             };
         },
-        customSelectors: $api().domainsSearchBuilder()
+        customSelectors: $api().domainsSearchBuilder(),
+        processingData: function (result, domains) {
+            if (firstLoad) {
+                var _selectedDomain = Array.isArray(ctrl.domain) ? ctrl.domain : (ctrl.domain && [ctrl.domain]);
+                ctrl.domain = _selectedDomain || [domains[0]];
+                firstLoad = false;
+            }
+
+            var deferred = $q.defer();
+
+            deferred.resolve(domains);
+
+            return deferred.promise;
+        }
     };
 
-    ctrl.domainSelected = function($item, $model) {
+    ctrl.domainSelected = function ($item, $model) {
         var returnObj = {};
         returnObj.$item = $item;
         returnObj.$model = $model;

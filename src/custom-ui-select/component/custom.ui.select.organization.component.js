@@ -25,10 +25,13 @@ angular.module('opengate-angular-js').controller('customUiSelectOrganizationCont
                     });
                 }
 
-                var _selectedOrganization = ctrl.organization && ctrl.organization.selected && ctrl.organization.selected.length === 1;
+                
 
-                if (firstLoad && !_selectedOrganization) {
-                    ctrl.organization = [organizationsFormatted[0]];
+                if (firstLoad) {
+                    var _selectedOrganization = ctrl.organization && ctrl.organization.selected && ctrl.organization.selected.length === 1;
+                    if (!_selectedOrganization) {
+                        ctrl.organization = [organizationsFormatted[0]];
+                    }
                     firstLoad = false;
                 }
 

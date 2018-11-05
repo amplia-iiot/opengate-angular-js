@@ -1,13 +1,14 @@
 'use strict';
 
 
-angular.module('opengate-angular-js').controller('customUiSelectDomainController', ['$scope', '$element', '$attrs', '$api', function($scope, $element, $attrs, $api) {
+angular.module('opengate-angular-js').controller('customUiSelectDomainController', ['$scope', '$element', '$attrs', '$api', '$q', function ($scope, $element, $attrs, $api, $q) {
     var ctrl = this;
+    var firstLoad = true;
     ctrl.ownConfig = {
         builder: $api().domainsSearchBuilder(),
         rootKey: 'domains',
         collection: [],
-        filter: function(search) {
+        filter: function (search) {
             return {
                 'or': [{
                         'like': {
@@ -22,10 +23,23 @@ angular.module('opengate-angular-js').controller('customUiSelectDomainController
                 ]
             };
         },
-        customSelectors: $api().domainsSearchBuilder()
+        customSelectors: $api().domainsSearchBuilder(),
+        processingData: function (result, domains) {
+            if (firstLoad) {
+                var _selectedDomain = Array.isArray(ctrl.domain) ? ctrl.domain : (ctrl.domain && [ctrl.domain]);
+                ctrl.domain = _selectedDomain || [domains[0]];
+                firstLoad = false;
+            }
+
+            var deferred = $q.defer();
+
+            deferred.resolve(domains);
+
+            return deferred.promise;
+        }
     };
 
-    ctrl.domainSelected = function($item, $model) {
+    ctrl.domainSelected = function ($item, $model) {
         var returnObj = {};
         returnObj.$item = $item;
         returnObj.$model = $model;
