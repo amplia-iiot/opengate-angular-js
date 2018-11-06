@@ -8,7 +8,7 @@
             <span ng-if="$item.version">{{ FORM.VER | translate }} </span>{{$item.version}})</ui-select-match>
         <ui-select-choices repeat="hardware in $ctrl.ownConfig.collection track by $index">
             <div>
-                {{hardware.name}} ({{ hardware.name }}
+                {{hardware.manufacturer}} ({{ hardware.name }}
                 <span ng-if="hardware.version">{{ FORM.VER | translate }}</span> {{hardware.version}})
             </div>
             <small>
@@ -36,7 +36,7 @@
             <span ng-if="$item.version">{{ FORM.VER | translate }} </span>{{$item.version}}) </ui-select-match>
         <ui-select-choices repeat="hardware in $ctrl.ownConfig.collection track by $index">
             <div>
-                {{hardware.name}} ({{ hardware.name }}
+                {{hardware.manufacturer}} ({{ hardware.name }}
                 <span ng-if="hardware.version">{{ FORM.VER | translate }}</span> {{hardware.version}})
             </div>
             <small>
