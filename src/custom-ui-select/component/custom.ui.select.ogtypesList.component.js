@@ -1,7 +1,7 @@
 'use strict';
 
 
-angular.module('opengate-angular-js').controller('customUiSelectOgtypeListController', ['$scope', '$element', '$attrs', '$api', '$q', function($scope, $element, $attrs, $api, $q) {
+angular.module('opengate-angular-js').controller('customUiSelectOgtypeListController', ['$scope', '$element', '$attrs', '$api', '$q', function ($scope, $element, $attrs, $api, $q) {
     var ctrl = this;
     var builder = $api().basicTypesSearchBuilder();
     if (ctrl.path) {
@@ -9,7 +9,7 @@ angular.module('opengate-angular-js').controller('customUiSelectOgtypeListContro
     }
     ctrl.ownConfig = {
         builder: builder.build().execute(),
-        filter: function(search) {},
+        filter: function (search) {},
         rootKey: 'enum',
         collection: [],
         isGet: true,
@@ -17,11 +17,11 @@ angular.module('opengate-angular-js').controller('customUiSelectOgtypeListContro
         path: ctrl.path
     };
 
-    ctrl.elementSelected = function($item, $model) {
+    ctrl.elementSelected = function ($item, $model) {
         if (ctrl.multiple) {
             var identifierTmp = [];
 
-            angular.forEach(ctrl.element, function(element) {
+            angular.forEach(ctrl.element, function (element) {
                 identifierTmp.push(element);
             });
 
@@ -38,7 +38,7 @@ angular.module('opengate-angular-js').controller('customUiSelectOgtypeListContro
         }
     };
 
-    ctrl.elementRemove = function($item, $model) {
+    ctrl.elementRemove = function ($item, $model) {
         if (ctrl.onRemove) {
             var returnObj = {};
             returnObj.$item = $item;
@@ -55,10 +55,18 @@ angular.module('opengate-angular-js').controller('customUiSelectOgtypeListContro
     };
 
 
-    ctrl.$onChanges = function(changesObj) {
-        if (changesObj && changesObj.identifier) {
-            mapIdentifier(changesObj.identifier.currentValue);
-        }
+    ctrl.$onChanges = function (changesObj) {
+        Object.keys(changesObj).forEach(function (key) {
+            switch (key) {
+                case 'identifier':
+                    mapIdentifier(changesObj.identifier.currentValue);
+                    break;
+                case 'path':
+                    ctrl.ownConfig.collection = [];
+                    ctrl.ownConfig.builder = builder.withPath(ctrl.path).build().execute();
+                    break;
+            }
+        });
     };
 
     if (ctrl.required !== undefined) {
@@ -81,7 +89,7 @@ angular.module('opengate-angular-js').controller('customUiSelectOgtypeListContro
                 if (angular.isArray(identifier)) {
                     ctrl.element = [];
 
-                    angular.forEach(identifier, function(idTmp) {
+                    angular.forEach(identifier, function (idTmp) {
                         ctrl.element.push(idTmp);
                     });
                 }

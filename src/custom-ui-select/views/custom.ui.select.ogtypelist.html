@@ -2,7 +2,7 @@
     <label ng-if="$ctrl.label" class="custom-ui-select-label">{{ $ctrl.label | translate }}
         <field-options required="$ctrl.ngRequired" multiple="$ctrl.multiple" /></label>
     <ui-select name="element" custom-ui-select-config="$ctrl.ownConfig" ng-model="$ctrl.element" theme="bootstrap" title="{{ $ctrl.placeholder | translate }}" custom-ui-select multiple="true"  on-select="$ctrl.elementSelected($item, $model)"
-        on-remove="$ctrl.elementRemove($item, $model)" ng-required="$ctrl.required">
+        on-remove="$ctrl.elementRemove($item, $model)" ng-required="$ctrl.required" ng-disabled="$ctrl.disabled">
         <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ $ctrl.placeholder | translate }}" allow-clear="true"> {{$item}} </ui-select-match>
         <ui-select-choices repeat="element in $ctrl.ownConfig.collection track by $index">
             <span ng-bind-html="element | highlight: $select.search">
@@ -15,7 +15,7 @@
    
     <ui-select custom-ui-select-config="$ctrl.ownConfig" name="element" ng-model="$ctrl.element" theme="bootstrap"
         title="{{ $ctrl.placeholder | translate }}" custom-ui-select multiple="false" on-select="$ctrl.elementSelected($item, $model)"  on-remove="$ctrl.elementRemove($item, $model)"
-      ng-required="$ctrl.required">
+      ng-required="$ctrl.required" ng-disabled="$ctrl.disabled">
         <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ $ctrl.placeholder | translate }}" allow-clear="true"><span> {{$item}}</span> </ui-select-match>
             <ui-select-choices repeat="element in $ctrl.ownConfig.collection track by $index">
                 <span ng-bind-html="element | highlight: $select.search">
