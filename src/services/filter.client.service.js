@@ -3,11 +3,11 @@
 // Filter service
 angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q',
 
-    function($window, $sce, $q) {
+    function ($window, $sce, $q) {
         //var customSelectors = [];
         var conditionSelectors = [];
         //var separators = [' ', '\n', '-', '!', '=', '~', '>', '<', '&', 'or', 'and', '(', ')', 'eq', 'neq', '==', 'like', 'gt', 'gte', 'lt', 'lte', '<=', '>='];
-        var separators = [' ', '\n', '!', '=', '~', '>', '<', '&', 'or', 'and', ')', 'in', ',', 'neq', 'like', 'within'];
+        var separators = [' ', '\n', '!', '=', '~', '>', '<', '&', 'or', 'and', ')', 'in', ',', 'neq', 'like', 'within', 'exists'];
 
         function suggest_field(term, customSelectors) {
             var results = [];
@@ -17,7 +17,7 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
                 for (i = 0; i < customSelectors.length && results.length < 8; i++) {
                     customSelector = customSelectors[i];
 
-                    var exists = results.find(function(data) {
+                    var exists = results.find(function (data) {
                         return data.value === customSelector;
                     });
 
@@ -43,7 +43,7 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
                 for (i = 0; i < customSelectors.length && results.length < 8; i++) {
                     customSelector = customSelectors[i];
                     if (customSelector.toLowerCase().indexOf(q) > -1) {
-                        var exists = results.find(function(data) {
+                        var exists = results.find(function (data) {
                             return data.value === customSelector;
                         });
 
@@ -72,7 +72,7 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
 
         function suggest_field_delimited(term, target_element, query) {
             var deferred = $q.defer();
-            query.findFields(term).then(function(fields) {
+            query.findFields(term).then(function (fields) {
                 var values = fields;
                 var idx = -1;
 
@@ -110,12 +110,12 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
                     suggestions = suggest_field();
                 }
 
-                suggestions.forEach(function(s) {
+                suggestions.forEach(function (s) {
                     s.value = s.value;
                 });
                 deferred.resolve(suggestions);
 
-            }).catch(function(err) {
+            }).catch(function (err) {
                 console.error(err);
                 deferred.reject(err);
             });
@@ -160,6 +160,7 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
                 $window.jsep.addBinaryOp('gte', 6);
                 $window.jsep.addBinaryOp('eq', 6);
                 $window.jsep.addBinaryOp('neq', 6);
+                $window.jsep.addBinaryOp('exists', 6);
                 $window.jsep.addBinaryOp(',', 6);
 
                 parse_tree = $window.jsep(string);
@@ -185,7 +186,7 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
         function parseSimple(parse_tree) {
             var id, value, newFilter = {};
             var op;
-            if (parse_tree.type === 'BinaryExpression' && /\eq|\neq|\like|\gt|\lt|\gte|\lte|\=|\'<'|\'>'|\~|\!/.test(parse_tree.operator)) {
+            if (parse_tree.type === 'BinaryExpression' && /\eq|\neq|\exists|\like|\gt|\lt|\gte|\lte|\=|\'<'|\'>'|\~|\!/.test(parse_tree.operator)) {
                 id = getId(parse_tree.left).split('.').reverse().join('.');
                 id = id.replace('.undefined', '[]');
                 var right = parse_tree.right;
@@ -274,12 +275,12 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
 
 
         return {
-            suggest_field_delimited: function(term, target_element, selectors) {
+            suggest_field_delimited: function (term, target_element, selectors) {
                 var customSelectors = selectors;
                 var result = suggest_field_delimited(term, target_element, selectors);
                 return result;
             },
-            parseQuery: function(values) {
+            parseQuery: function (values) {
                 var result = parseQuery(values);
                 return result;
             }
