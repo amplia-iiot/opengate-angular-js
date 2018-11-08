@@ -5,6 +5,7 @@ angular.module('opengate-angular-js').controller('customUiSelectOrganizationCont
     function ($scope, $element, $attrs, $api, Authentication, $q) {
         var ctrl = this;
         var firstLoad = true;
+        ctrl.organization = ctrl.organization || (ctrl.ngModel && [ctrl.ngModel]);
         var savedSearch;
         ctrl.ownConfig = {
             builder: $api().newOrganizationFinder().findByDomainAndWorkgroup(Authentication.getUser().domain, Authentication.getUser().workgroup),
@@ -25,10 +26,10 @@ angular.module('opengate-angular-js').controller('customUiSelectOrganizationCont
                     });
                 }
 
-                
+
 
                 if (firstLoad) {
-                    var _selectedOrganization = ctrl.organization && ctrl.organization.selected && ctrl.organization.selected.length === 1;
+                    var _selectedOrganization = ctrl.organization && ctrl.organization.length === 1;
                     if (!_selectedOrganization) {
                         ctrl.organization = [organizationsFormatted[0]];
                     }
