@@ -117,15 +117,13 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
                             mapIdentifier(changesObj.identifier.currentValue);
                             break;
                         case 'organization':
-                            if (ctrl.organization) {
-                                var organization = changesObj.organization;
-                                var currentValue = organization.currentValue && (Object.keys(organization.currentValue).length > 0 ? organization.currentValue : null);
-                                var previousValue = organization.previousValue && (Object.keys(organization.previousValue).length > 0 ? organization.previousValue : null);
-                                previousValue = (previousValue === 'LOG.LOADING' && null);
-                                if (!currentValue || (previousValue && currentValue !== previousValue)) {
-                                    ctrl.ngModel = undefined;
-                                    ctrl.channel = [];
-                                }
+                            var organization = changesObj.organization;
+                            var currentValue = organization.currentValue && (Object.keys(organization.currentValue).length > 0 ? organization.currentValue : null);
+                            var previousValue = organization.previousValue && (Object.keys(organization.previousValue).length > 0 ? organization.previousValue : null);
+                            previousValue = (previousValue === 'LOG.LOADING' && null);
+                            if (!currentValue || (previousValue && currentValue !== previousValue)) {
+                                ctrl.ngModel = undefined;
+                                ctrl.channel = [];
                             }
                             break;
                         default:
