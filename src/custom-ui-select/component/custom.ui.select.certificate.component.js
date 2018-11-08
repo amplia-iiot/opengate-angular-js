@@ -4,7 +4,7 @@
 angular.module('opengate-angular-js').controller('customUiSelectCertificateController', ['$scope', '$element', '$attrs', '$api',
     function ($scope, $element, $attrs, $api) {
         var ctrl = this;
-
+        ctrl.certificate = ctrl.certificate || (ctrl.ngModel && [ctrl.ngModel]);
         var builder = $api().certificatesSearchBuilder().assignable();
         ctrl.ownConfig = {
             builder: builder,
@@ -90,7 +90,6 @@ angular.module('opengate-angular-js').controller('customUiSelectCertificateContr
             }
         };
 
-
         ctrl.$onChanges = function (changesObj) {
             if (changesObj && changesObj.identifier) {
                 mapIdentifier(changesObj.identifier.currentValue);
@@ -113,16 +112,12 @@ angular.module('opengate-angular-js').controller('customUiSelectCertificateContr
                         ctrl.certificate = [];
 
                         angular.forEach(identifier, function (idTmp) {
-                            ctrl.certificate.push({
-                                id: idTmp
-                            });
+                            ctrl.certificate.push(idTmp);
                         });
                     }
 
                 } else {
-                    ctrl.certificate = [{
-                        id: ctrl.identifier
-                    }];
+                    ctrl.certificate = [ctrl.identifier];
                 }
             } else {
                 ctrl.certificate = [];
