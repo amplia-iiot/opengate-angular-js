@@ -278,7 +278,7 @@ angular.module('opengate-angular-js').component('customUiSelectAsset', {
         ngRequired: '<',
         required: '<',
         label: '=',
-        action: '=?',
+        actions: '=?',
         specificType: '@?',
         disabled: '<?',
         ngModel: '=?',

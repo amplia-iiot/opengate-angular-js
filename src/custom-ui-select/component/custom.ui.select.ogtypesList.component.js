@@ -118,7 +118,6 @@ angular.module('opengate-angular-js').component('customUiSelectOgtypeList', {
         required: '<',
         label: '=',
         placeholder: '@',
-        action: '=?',
         disabled: '<?',
         ngModel: '=?',
         uiSelectMatchClass: '@?'

@@ -138,7 +138,6 @@ angular.module('opengate-angular-js').component('customUiSelectCertificate', {
         multiple: '<',
         ngRequired: '<',
         label: '<',
-        action: '<?',
         disabled: '<?',
         ngModel: '=?',
         uiSelectMatchClass: '@?'

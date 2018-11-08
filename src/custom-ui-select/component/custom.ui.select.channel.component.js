@@ -198,7 +198,6 @@ angular.module('opengate-angular-js').component('customUiSelectChannel', {
         multiple: '<',
         ngRequired: '<',
         label: '<',
-        action: '<?',
         disabled: '<?',
         ngModel: '=?',
         uiSelectMatchClass: '@?'

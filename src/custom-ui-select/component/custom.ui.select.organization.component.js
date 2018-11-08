@@ -140,7 +140,6 @@ angular.module('opengate-angular-js').component('customUiSelectOrganization', {
         ngRequired: '<',
         required: '<',
         label: '<',
-        action: '<?',
         disabled: '<?',
         ngModel: '=?',
         uiSelectMatchClass: '@?'

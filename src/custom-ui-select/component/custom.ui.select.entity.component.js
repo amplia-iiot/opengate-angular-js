@@ -171,7 +171,6 @@ angular.module('opengate-angular-js').component('customUiSelectEntity', {
         ngRequired: '<',
         required: '<',
         label: '<',
-        action: '<?',
         disabled: '<?',
         ngModel: '=?',
         uiSelectMatchClass: '@?'

@@ -3,6 +3,6 @@
     <custom-ui-select-asset label="form.title" specific-type="{{form.specificType}}" on-select-item="evalExpr(form.onselectitem, {$item: $$value$$, $model: $model})"
         on-remove="evalExpr(form.onremove, {$item: $$value$$, $model: $model})" ng-model="$$value$$" identifier="$$value$$"
         multiple="form.multiple" sf-field-model="replaceAll" ui-select-match-class="form.uiSelectMatchClass" asset="form.dummy"
-        ng-required="form.required">
+        ng-required="form.required" actions="form.actions">
     </custom-ui-select-asset>
 </div>

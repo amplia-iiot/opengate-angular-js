@@ -147,7 +147,6 @@ angular.module('opengate-angular-js').component('customUiSelectHardware', {
         multiple: '<',
         ngRequired: '<',
         label: '<',
-        action: '<?',
         disabled: '<?',
         ngModel: '=?',
         title: '@',
