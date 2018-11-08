@@ -6,7 +6,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
         var ctrl = this;
         var defaultQuickSearchFields = "provision.device.communicationModules[].subscription.identifier, device.communicationModules[].subscription.identifier";
 
-        function _getQuickSerachFields(search) {
+        function _getQuickSearchFields(search) {
             var _quickSerachFields = ctrl.quickSearchFields || defaultQuickSearchFields;
             var fields = _quickSerachFields.split(/[,|, ]+/);
             var filter = {
@@ -30,7 +30,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
         ctrl.ownConfig = {
             builder: $api().subscriptionsSearchBuilder().provisioned(),
             filter: function(search) {
-                var filter = _getQuickSerachFields(search);
+                var filter = _getQuickSearchFields(search);
                 if (!!ctrl.specificType) {
                     filter = {
                         'and': [

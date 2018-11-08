@@ -1,65 +1,79 @@
 'use strict';
 
 
-angular.module('opengate-angular-js').controller('customUiSelectDeviceController', ['$scope', '$element', '$attrs', '$api', '$translate', '$doActions', '$jsonFinderHelper', 'jsonPath', '_', 'toastr',
-    function ($scope, $element, $attrs, $api, $translate, $doActions, $jsonFinderHelper, jsonPath, _, toastr) {
-        var selectBuilder = $api().newSelectBuilder();
-        var SE = $api().SE;
-
-        selectBuilder.add(SE.element('provision.administration.identifier', [{
-            field: 'value'
-        }]));
-        selectBuilder.add(SE.element('provision.administration.organization', [{
-            field: 'value'
-        }]));
-        selectBuilder.add(SE.element('provision.administration.channel', [{
-            field: 'value'
-        }]));
-        selectBuilder.add(SE.element('resourceType', [{
-            field: 'value'
-        }]));
-        selectBuilder.add(SE.element('provision.device.identifier', [{
-            field: 'value'
-        }]));
-        selectBuilder.add(SE.element('provision.device.specificType', [{
-            field: 'value'
-        }]));
-        selectBuilder.add(SE.element('provision.device.operationalStatus', [{
-            field: 'value'
-        }]));
-
-        selectBuilder.add(SE.element('provision.device.communicationModules[].specificType', [{
-            field: 'value'
-        }]));
-        selectBuilder.add(SE.element('provision.device.communicationModules[].subscription.specificType', [{
-            field: 'value'
-        }]));
-        selectBuilder.add(SE.element('provision.device.communicationModules[].subscriber.specificType', [{
-            field: 'value'
-        }]));
-
+angular.module('opengate-angular-js').controller('customUiSelectDeviceController', ['$scope', '$element', '$attrs', '$api', '$translate', '$doActions', '$jsonFinderHelper', 'jsonPath', '_', 'toastr', 'Filter',
+    function($scope, $element, $attrs, $api, $translate, $doActions, $jsonFinderHelper, jsonPath, _, toastr, Filter) {
         var ctrl = this;
-        ctrl.ownConfig = {
-            builder: $api().devicesSearchBuilder().select(selectBuilder),
-            filter: function (search) {
-                var filter = {
-                    'or': [{
-                            'like': {
-                                'provision.administration.identifier': search
-                            }
-                        },
-                        {
-                            'like': {
-                                'provision.device.specificType': search
-                            }
-                        },
-                        {
-                            'like': {
-                                'device.specificType': search
-                            }
-                        }
-                    ]
+
+        var deviceBuilder = $api().devicesSearchBuilder();
+
+        if (!ctrl.fullInfo) {
+            var selectBuilder = $api().newSelectBuilder();
+            var SE = $api().SE;
+
+            selectBuilder.add(SE.element('provision.administration.identifier', [{
+                field: 'value'
+            }]));
+            selectBuilder.add(SE.element('provision.administration.organization', [{
+                field: 'value'
+            }]));
+            selectBuilder.add(SE.element('provision.administration.channel', [{
+                field: 'value'
+            }]));
+            selectBuilder.add(SE.element('resourceType', [{
+                field: 'value'
+            }]));
+            selectBuilder.add(SE.element('provision.device.identifier', [{
+                field: 'value'
+            }]));
+            selectBuilder.add(SE.element('provision.device.specificType', [{
+                field: 'value'
+            }]));
+            selectBuilder.add(SE.element('provision.device.operationalStatus', [{
+                field: 'value'
+            }]));
+
+            selectBuilder.add(SE.element('provision.device.communicationModules[].specificType', [{
+                field: 'value'
+            }]));
+            selectBuilder.add(SE.element('provision.device.communicationModules[].subscription.specificType', [{
+                field: 'value'
+            }]));
+            selectBuilder.add(SE.element('provision.device.communicationModules[].subscriber.specificType', [{
+                field: 'value'
+            }]));
+
+            deviceBuilder.select(selectBuilder);
+        }
+
+        var defaultQuickSearchFields = "provision.administration.identifier,provision.device.specificType,device.specificType";
+
+        function _getQuickSearchFields(search) {
+            var _quickSearchFields = ctrl.quickSearchFields || defaultQuickSearchFields;
+            var fields = _quickSearchFields.split(/[,|, ]+/);
+            var filter = {
+                or: []
+            };
+            fields.forEach(function(field) {
+                var _like = {
+                    like: {}
                 };
+                _like.like[field] = search;
+                filter.or.push(_like);
+            });
+            return filter;
+        }
+
+        function _getFilter(oql) {
+            var _json = Filter.parseQuery(oql);
+            var _filter = jsonPath(_json, '$..value.filter')[0] || undefined;
+            return _filter.and || ([_filter] || []);
+        }
+
+        ctrl.ownConfig = {
+            builder: deviceBuilder,
+            filter: function(search) {
+                var filter = _getQuickSearchFields(search);
 
                 if (!!ctrl.specificType) {
                     filter = {
@@ -82,19 +96,31 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
                     };
                 }
 
+                if (ctrl.oql) {
+                    var _oql = _getFilter(ctrl.oql);
+                    if (!filter.and)
+                        filter = {
+                            and: [filter]
+                        };
+                    var _and = filter.and.concat(_oql);
+                    filter.and = _and;
+                }
+
                 return filter;
             },
             rootKey: 'devices',
             collection: [],
             customSelectors: $api().devicesSearchBuilder(),
-            specificType: ctrl.specificType
+            specificType: ctrl.specificType,
+            oql: ctrl.oql,
+            quickSearchFields: ctrl.quickSearchFields
         };
 
-        ctrl.deviceSelected = function ($item, $model) {
+        ctrl.deviceSelected = function($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = [];
 
-                angular.forEach(ctrl.device, function (deviceTmp) {
+                angular.forEach(ctrl.device, function(deviceTmp) {
                     identifierTmp.push(deviceTmp.provision.administration.identifier._current.value);
                 });
 
@@ -111,7 +137,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
             }
         };
 
-        ctrl.deviceRemove = function ($item, $model) {
+        ctrl.deviceRemove = function($item, $model) {
             if (ctrl.onRemove) {
                 var returnObj = {};
                 returnObj.$item = $item;
@@ -129,7 +155,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
 
         };
 
-        ctrl.editDevice = function (deviceData) {
+        ctrl.editDevice = function(deviceData) {
             var entityId = deviceData.provision.administration.identifier._current.value || deviceData.identifier;
             var deviceFinder = $api().devicesSearchBuilder().filter({
                 "and": [{
@@ -140,21 +166,21 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
             });
 
             deviceFinder.build().execute()
-                .then(function (result) {
+                .then(function(result) {
                     if (result.statusCode === 204) {
                         $translate('TOASTR.ENTITY_NOT_FOUND', {
                             identifier: entityId
                         }).
-                        then(function (translatedMessage) {
+                        then(function(translatedMessage) {
                             toastr.error(translatedMessage);
                         });
                     } else {
                         $doActions.executeModal('editDevice', angular.copy(result.data.devices[0]));
                     }
                 })
-                .catch(function (err) {
+                .catch(function(err) {
                     $translate('TOASTR.CANNOT_GET_ENTITY_INFO').
-                    then(function (translatedMessage) {
+                    then(function(translatedMessage) {
                         toastr.error(translatedMessage);
                     });
                 });
@@ -164,14 +190,14 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
             return {
                 title: $translate.instant('BUTTON.TITLE.EXECUTE_OPERATION'),
                 icon: 'glyphicon glyphicon-flash',
-                action: function () {
+                action: function() {
                     $doActions.executeModal('executeOperation', {
                         keys: jsonPath(ctrl.device, '$..' + $jsonFinderHelper.provisioned.getPath('identifier') + '._current.value') || [],
                         entityType: 'GATEWAY',
                         operation: operationSelected ? operationSelected.trim().toUpperCase() : undefined
                     });
                 },
-                disable: function () {
+                disable: function() {
                     return !ctrl.device || ctrl.device.length === 0;
                 },
                 permissions: 'executeOperation'
@@ -183,7 +209,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
             create: {
                 title: $translate.instant('FORM.LABEL.NEW'),
                 icon: 'glyphicon glyphicon-plus-sign',
-                action: function () {
+                action: function() {
                     var actionData = {};
                     if (!!ctrl.specificType) {
                         actionData = {
@@ -203,7 +229,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
                             }
                         };
                     }
-                    $doActions.executeModal('createDevice', actionData, function (result) {
+                    $doActions.executeModal('createDevice', actionData, function(result) {
                         if (result && result.length > 0) {
                             ctrl.device = !ctrl.device ? [] : ctrl.device;
                             ctrl.device.push({
@@ -234,11 +260,11 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
         ctrl.uiSelectActions = [];
 
         if (!ctrl.actions) {
-            angular.forEach(uiSelectActionsDefinition, function (action) {
+            angular.forEach(uiSelectActionsDefinition, function(action) {
                 ctrl.uiSelectActions.push(action);
             });
         } else {
-            angular.forEach(ctrl.actions, function (action) {
+            angular.forEach(ctrl.actions, function(action) {
                 var finalAction;
                 switch (action.type) {
                     case 'operation':
@@ -255,7 +281,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
 
         }
 
-        ctrl.$onChanges = function (changesObj) {
+        ctrl.$onChanges = function(changesObj) {
             if (changesObj && changesObj.identifier) {
                 mapIdentifier(changesObj.identifier.currentValue);
             }
@@ -280,7 +306,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
                     if (angular.isArray(identifier)) {
                         ctrl.device = [];
 
-                        angular.forEach(identifier, function (idTmp) {
+                        angular.forEach(identifier, function(idTmp) {
                             ctrl.device.push({
                                 provision: {
                                     administration: {
@@ -345,7 +371,10 @@ angular.module('opengate-angular-js').component('customUiSelectDevice', {
         specificType: '@?',
         disabled: '<?',
         ngModel: '=?',
-        uiSelectMatchClass: '@?'
+        uiSelectMatchClass: '@?',
+        oql: '@',
+        quickSearchFields: '@',
+        fullInfo: '=?'
     }
 
 });
