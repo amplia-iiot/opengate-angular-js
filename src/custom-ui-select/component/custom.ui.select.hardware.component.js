@@ -4,7 +4,7 @@
 angular.module('opengate-angular-js').controller('customUiSelectHardwareController', ['$scope', '$element', '$attrs', '$api', '$q',
     function ($scope, $element, $attrs, $api, $q) {
         var ctrl = this;
-
+        ctrl.hardware = ctrl.hardware || (ctrl.ngModel && [ctrl.ngModel]);
         ctrl.ownConfig = {
             builder: $api().hardwaresSearchBuilder(),
             filter: function (search) {
