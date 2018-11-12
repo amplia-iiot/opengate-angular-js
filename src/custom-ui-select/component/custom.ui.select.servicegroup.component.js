@@ -5,7 +5,7 @@ angular.module('opengate-angular-js').controller('customUiSelectServiceGroupCont
     function ($scope, $element, $attrs, $api, $q) {
         var ctrl = this;
         ctrl.serviceGroup = ctrl.serviceGroup || (ctrl.ngModel && [ctrl.ngModel]);
-        var firstLoad = true;
+        var firstLoad = ctrl.ngRequired || ctrl.required;
         var builder = $api().serviceGroupSearchBuilder();
         if (!!ctrl.entityType && ctrl.entityType.toUpperCase() !== 'DEVICE') {
             builder.withEntityType(ctrl.entityType.toUpperCase());
@@ -31,7 +31,7 @@ angular.module('opengate-angular-js').controller('customUiSelectServiceGroupCont
                         var item = {
                             name: serviceGroups.indexOf('emptyServiceGroup') === -1 ? ctrl.serviceGroup[0] : 'emptyServiceGroup'
                         };
-                        ctrl.serviceGroup = [item]
+                        ctrl.serviceGroup = [item];
                     }
                     firstLoad = false;
                 }

@@ -4,9 +4,10 @@
 angular.module('opengate-angular-js').controller('customUiSelectChannelController', ['$scope', '$element', '$attrs', '$api', '$q',
     function ($scope, $element, $attrs, $api, $q) {
         var ctrl = this;
-        var firstLoad = true;
+        var firstLoad = ctrl.ngRequired || ctrl.required;
         var defaultQuickSearchFields = 'provision.channel.identifier,provision.channel.description';
         ctrl.organization = ctrl.organization === 'LOG.LOADING' && undefined;
+        ctrl.channel = ctrl.channel || (ctrl.ngModel && ([_getChannel(ctrl.ngModel)]));
 
         function _getQuickSerachFields(search) {
             var _quickSerachFields = ctrl.quickSearchFields || defaultQuickSearchFields;
@@ -120,10 +121,11 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
                             var organization = changesObj.organization;
                             var currentValue = organization.currentValue && (Object.keys(organization.currentValue).length > 0 ? organization.currentValue : null);
                             var previousValue = organization.previousValue && (Object.keys(organization.previousValue).length > 0 ? organization.previousValue : null);
-                            previousValue = (previousValue === 'LOG.LOADING' && null);
-                            if (!currentValue || (previousValue && currentValue !== previousValue)) {
-                                ctrl.ngModel = undefined;
-                                ctrl.channel = [];
+                            if (ctrl.organization || previousValue) {
+                                if (currentValue !== previousValue) {
+                                    ctrl.ngModel = undefined;
+                                    ctrl.channel = [];
+                                }
                             }
                             break;
                         default:
@@ -156,10 +158,11 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
                 };
             }
 
+            administration.channel = channel;
+
             return {
                 provision: {
-                    administration: administration,
-                    channel: channel
+                    administration: administration
                 }
             };
         }

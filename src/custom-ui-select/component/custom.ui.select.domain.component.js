@@ -3,7 +3,7 @@
 
 angular.module('opengate-angular-js').controller('customUiSelectDomainController', ['$scope', '$element', '$attrs', '$api', '$q', function ($scope, $element, $attrs, $api, $q) {
     var ctrl = this;
-    var firstLoad = true;
+    var firstLoad = ctrl.ngRequired || ctrl.required;
     ctrl.ownConfig = {
         builder: $api().domainsSearchBuilder(),
         rootKey: 'domains',
