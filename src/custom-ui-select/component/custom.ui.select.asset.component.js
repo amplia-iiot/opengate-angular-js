@@ -1,8 +1,35 @@
 'use strict';
 
 
-angular.module('opengate-angular-js').controller('customUiSelectAssetController', ['$scope', '$element', '$attrs', '$api', '$doActions', '$translate', '$jsonFinderHelper', 'jsonPath',
-    function($scope, $element, $attrs, $api, $doActions, $translate, $jsonFinderHelper, jsonPath) {
+angular.module('opengate-angular-js').controller('customUiSelectAssetController', ['$scope', '$element', '$attrs', '$api', '$doActions', '$translate', 'jsonPath', 'Filter',
+    function ($scope, $element, $attrs, $api, $doActions, $translate, jsonPath, Filter) {
+
+        var ctrl = this;
+
+        var defaultQuickSearchFields = "provision.administration.identifier, provision.asset.specificType, asset.specificType";
+
+        function _getQuickSearchFields(search) {
+            var _quickSerachFields = ctrl.quickSearchFields || defaultQuickSearchFields;
+            var fields = _quickSerachFields.split(/[,|, ]+/);
+            var filter = {
+                or: []
+            };
+            fields.forEach(function (field) {
+                var _like = {
+                    like: {}
+                };
+                _like.like[field] = search;
+                filter.or.push(_like);
+            });
+            return filter;
+        }
+
+        function _getFilter(oql) {
+            var _json = Filter.parseQuery(oql);
+            var _filter = jsonPath(_json, '$..value.filter')[0] || undefined;
+            return _filter.and || ([_filter] || []);
+        }
+
         var selectBuilder = $api().newSelectBuilder();
         var SE = $api().SE;
 
@@ -28,28 +55,11 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
             field: 'value'
         }]));
 
-        var ctrl = this;
+
         ctrl.ownConfig = {
             builder: $api().assetsSearchBuilder().select(selectBuilder),
-            filter: function(search) {
-                var filter = {
-                    'or': [{
-                            'like': {
-                                'provision.administration.identifier': search
-                            }
-                        },
-                        {
-                            'like': {
-                                'provision.asset.specificType': search
-                            }
-                        },
-                        {
-                            'like': {
-                                'asset.specificType': search
-                            }
-                        }
-                    ]
-                };
+            filter: function (search) {
+                var filter = _getQuickSearchFields(search);
 
                 if (!!ctrl.specificType) {
                     filter = {
@@ -71,7 +81,15 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
                         ]
                     };
                 }
-
+                if (ctrl.oql) {
+                    var _oql = _getFilter(ctrl.oql);
+                    if (!filter.and)
+                        filter = {
+                            and: [filter]
+                        };
+                    var _and = filter.and.concat(_oql);
+                    filter.and = _and;
+                }
                 return filter;
             },
             rootKey: 'assets',
@@ -80,11 +98,11 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
             specificType: ctrl.specificType
         };
 
-        ctrl.assetSelected = function($item, $model) {
+        ctrl.assetSelected = function ($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = [];
 
-                angular.forEach(ctrl.asset, function(assetTmp) {
+                angular.forEach(ctrl.asset, function (assetTmp) {
                     identifierTmp.push(assetTmp.provision.administration.identifier._current.value);
                 });
 
@@ -101,7 +119,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
             }
         };
 
-        ctrl.assetRemove = function($item, $model) {
+        ctrl.assetRemove = function ($item, $model) {
             if (ctrl.onRemove) {
                 var returnObj = {};
                 returnObj.$item = $item;
@@ -122,7 +140,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
             create: {
                 title: $translate.instant('FORM.LABEL.NEW'),
                 icon: 'glyphicon glyphicon-plus-sign',
-                action: function() {
+                action: function () {
                     var actionData = {};
                     if (!!ctrl.specificType) {
                         actionData = {
@@ -142,7 +160,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
                             }
                         };
                     }
-                    $doActions.executeModal('createAsset', actionData, function(result) {
+                    $doActions.executeModal('createAsset', actionData, function (result) {
                         if (result && result.length > 0) {
                             ctrl.asset = !ctrl.asset ? [] : ctrl.asset;
                             ctrl.asset.push({
@@ -173,11 +191,11 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
         ctrl.uiSelectActions = [];
 
         if (!ctrl.actions) {
-            angular.forEach(uiSelectActionsDefinition, function(action) {
+            angular.forEach(uiSelectActionsDefinition, function (action) {
                 ctrl.uiSelectActions.push(action);
             });
         } else {
-            angular.forEach(ctrl.actions, function(action) {
+            angular.forEach(ctrl.actions, function (action) {
                 var finalAction;
                 switch (action.type) {
                     case 'create':
@@ -191,7 +209,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
 
         }
 
-        ctrl.$onChanges = function(changesObj) {
+        ctrl.$onChanges = function (changesObj) {
             if (changesObj && changesObj.identifier) {
                 mapIdentifier(changesObj.identifier.currentValue);
             }
@@ -216,7 +234,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
                     if (angular.isArray(identifier)) {
                         ctrl.asset = [];
 
-                        angular.forEach(identifier, function(idTmp) {
+                        angular.forEach(identifier, function (idTmp) {
                             ctrl.asset.push({
                                 provision: {
                                     administration: {
@@ -283,7 +301,9 @@ angular.module('opengate-angular-js').component('customUiSelectAsset', {
         specificType: '@?',
         disabled: '<?',
         ngModel: '=?',
-        uiSelectMatchClass: '@?'
+        uiSelectMatchClass: '@?',
+        oql: '@',
+        quickSearchFields: '@'
     }
 
 });
