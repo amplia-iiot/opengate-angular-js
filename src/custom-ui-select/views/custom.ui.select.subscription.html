@@ -6,10 +6,10 @@
         on-remove="$ctrl.entityRemove($item, $model)" ng-required="$ctrl.ngRequired">
         <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ $ctrl.placeholder || 'FORM.PLACEHOLDER.SUBSCRIPTION'  | translate }}"
             allow-clear="true">
-            {{$item.provision.subscription.identifier._current.value}}
+            {{$ctrl.getSelectMatch($item)}}
         </ui-select-match>
         <ui-select-choices repeat="subscriptionData in $ctrl.ownConfig.collection track by $index">
-            <span ng-bind-html="subscriptionData.provision.subscription.identifier._current.value | highlight: $select.search"></span>
+            <span ng-bind-html="$ctrl.getSelectMatch($subscriptionData) | highlight: $select.search"></span>
             <small>
                 <div ng-if="subscriptionData.provision.subscription.name._current.value">{{ 'FORM.LABEL.NAME' | translate }}:
                     <span ng-bind-html="''+subscriptionData.provision.subscription.name._current.value | highlight: $select.search"></span></div>
@@ -25,10 +25,10 @@
         on-remove="$ctrl.entityRemove($item, $model)" ng-required="$ctrl.ngRequired">
         <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ $ctrl.placeholder || 'FORM.PLACEHOLDER.SUBSCRIPTION'  | translate }}"
             allow-clear="true">
-            {{$item.provision.subscription.identifier._current.value}}
+            {{$ctrl.getSelectMatch($item)}}
         </ui-select-match>
         <ui-select-choices repeat="subscriptionData in $ctrl.ownConfig.collection track by $index">
-            <span ng-bind-html="subscriptionData.provision.subscription.identifier._current.value | highlight: $select.search"></span>
+            <span ng-bind-html="$ctrl.getSelectMatch(subscriptionData) | highlight: $select.search"></span>
             <small>
                 <div ng-if="subscriptionData.provision.subscription.name._current.value">{{ 'FORM.LABEL.NAME' | translate }}:
                     <span ng-bind-html="''+subscriptionData.provision.subscription.name._current.value | highlight: $select.search"></span></div>
