@@ -1,7 +1,7 @@
 <div ng-class="{'has-error': hasError(), 'has-success': hasSuccess(), 'has-feedback': form.feedback !== false }" class="form-group {{form.htmlClass}}">
     <!-- Surrounding DIV for sfField builder to add a sfField directive to. -->
-    <custom-ui-select-asset label="form.title" specific-type="{{form.specificType}}" on-select-item="evalExpr(form.onselectitem, {$item: $$value$$, $model: $model})"
-        on-remove="evalExpr(form.onremove, {$item: $$value$$, $model: $model})" ng-model="$$value$$" placeholder="{{form.placeholder || 'FORM.PLACEHOLDER.ELEMENT' | translate }}"
+    <custom-ui-select-asset label="form.title" specific-type="{{form.specificType}}" on-select-item="evalExpr(form.onselectitem, {$item: $item, $model: $model})"
+        on-remove="evalExpr(form.onremove, {$item: $item, $model: $model})" ng-model="$$value$$" placeholder="{{form.placeholder || 'FORM.PLACEHOLDER.ELEMENT' | translate }}"
         identifier="$$value$$" multiple="form.multiple" sf-field-model="replaceAll" ui-select-match-class="form.uiSelectMatchClass"
         asset="form.dummy" ng-required="form.required" actions="form.actions" oql="{{form.oql}}" quick-search-fields="{{form.quickSearchFields}}">
     </custom-ui-select-asset>
