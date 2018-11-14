@@ -2,7 +2,7 @@
 
 
 angular.module('opengate-angular-js').controller('customUiSelectAssetController', ['$scope', '$element', '$attrs', '$api', '$doActions', '$translate', '$jsonFinderHelper', 'jsonPath',
-    function ($scope, $element, $attrs, $api, $doActions, $translate, $jsonFinderHelper, jsonPath) {
+    function($scope, $element, $attrs, $api, $doActions, $translate, $jsonFinderHelper, jsonPath) {
         var selectBuilder = $api().newSelectBuilder();
         var SE = $api().SE;
 
@@ -31,7 +31,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
         var ctrl = this;
         ctrl.ownConfig = {
             builder: $api().assetsSearchBuilder().select(selectBuilder),
-            filter: function (search) {
+            filter: function(search) {
                 var filter = {
                     'or': [{
                             'like': {
@@ -80,11 +80,11 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
             specificType: ctrl.specificType
         };
 
-        ctrl.assetSelected = function ($item, $model) {
+        ctrl.assetSelected = function($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = [];
 
-                angular.forEach(ctrl.asset, function (assetTmp) {
+                angular.forEach(ctrl.asset, function(assetTmp) {
                     identifierTmp.push(assetTmp.provision.administration.identifier._current.value);
                 });
 
@@ -101,7 +101,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
             }
         };
 
-        ctrl.assetRemove = function ($item, $model) {
+        ctrl.assetRemove = function($item, $model) {
             if (ctrl.onRemove) {
                 var returnObj = {};
                 returnObj.$item = $item;
@@ -122,7 +122,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
             create: {
                 title: $translate.instant('FORM.LABEL.NEW'),
                 icon: 'glyphicon glyphicon-plus-sign',
-                action: function () {
+                action: function() {
                     var actionData = {};
                     if (!!ctrl.specificType) {
                         actionData = {
@@ -142,7 +142,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
                             }
                         };
                     }
-                    $doActions.executeModal('createAsset', actionData, function (result) {
+                    $doActions.executeModal('createAsset', actionData, function(result) {
                         if (result && result.length > 0) {
                             ctrl.asset = !ctrl.asset ? [] : ctrl.asset;
                             ctrl.asset.push({
@@ -173,11 +173,11 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
         ctrl.uiSelectActions = [];
 
         if (!ctrl.actions) {
-            angular.forEach(uiSelectActionsDefinition, function (action) {
+            angular.forEach(uiSelectActionsDefinition, function(action) {
                 ctrl.uiSelectActions.push(action);
             });
         } else {
-            angular.forEach(ctrl.actions, function (action) {
+            angular.forEach(ctrl.actions, function(action) {
                 var finalAction;
                 switch (action.type) {
                     case 'create':
@@ -191,7 +191,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
 
         }
 
-        ctrl.$onChanges = function (changesObj) {
+        ctrl.$onChanges = function(changesObj) {
             if (changesObj && changesObj.identifier) {
                 mapIdentifier(changesObj.identifier.currentValue);
             }
@@ -216,7 +216,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
                     if (angular.isArray(identifier)) {
                         ctrl.asset = [];
 
-                        angular.forEach(identifier, function (idTmp) {
+                        angular.forEach(identifier, function(idTmp) {
                             ctrl.asset.push({
                                 provision: {
                                     administration: {
@@ -276,6 +276,7 @@ angular.module('opengate-angular-js').component('customUiSelectAsset', {
         identifier: '<?',
         multiple: '<',
         ngRequired: '<',
+        placeholder: '@',
         required: '<',
         label: '=',
         actions: '=?',
