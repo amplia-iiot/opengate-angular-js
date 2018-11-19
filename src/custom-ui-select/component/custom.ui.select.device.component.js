@@ -250,6 +250,34 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
                                     }
                                 }
                             });
+
+                            var deviceFinder = $api().devicesSearchBuilder().filter({
+                                "and": [{
+                                    "eq": {
+                                        "provision.device.identifier": result[0].identifier
+                                    }
+                                }]
+                            });
+
+                            deviceFinder.build().execute()
+                                .then(function(result) {
+                                    if (result.statusCode === 204) {
+                                        $translate('TOASTR.ENTITY_NOT_FOUND', {
+                                            identifier: result[0].identifier
+                                        }).
+                                        then(function(translatedMessage) {
+                                            toastr.error(translatedMessage);
+                                        });
+                                    } else {
+                                        ctrl.deviceSelected(result.data.devices[0]);
+                                    }
+                                })
+                                .catch(function(err) {
+                                    $translate('TOASTR.CANNOT_GET_ENTITY_INFO').
+                                    then(function(translatedMessage) {
+                                        toastr.error(translatedMessage);
+                                    });
+                                });
                         }
                     });
                 },

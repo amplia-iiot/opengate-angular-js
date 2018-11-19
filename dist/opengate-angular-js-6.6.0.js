@@ -15,7 +15,7 @@ $templateCache.put("custom-ui-select/views/custom.ui.select.device.html","<div c
 $templateCache.put("custom-ui-select/views/custom.ui.select.domain.html","<div class=\"form-group no-margin\" mass-autocomplete ng-if=$ctrl.multiple><label for=domain class=custom-ui-select-label>{{ ($ctrl.label?$ctrl.label:\'FORM.LABEL.DOMAIN\') | translate }}<field-options required=$ctrl.required multiple=$ctrl.multiple></field-options></label><ui-select name=domain custom-ui-select-config=$ctrl.ownConfig ng-model=$ctrl.domain theme=bootstrap title=\"Choose a domaion\" custom-ui-select multiple=true custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.domainSelected($item, $model)\" on-remove=\"$ctrl.domainRemove($item, $model)\" ng-required=$ctrl.required><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.DOMAIN\' | translate }}\" allow-clear=true>{{$item.name}}</ui-select-match><ui-select-choices repeat=\"domainData in $ctrl.ownConfig.collection track by $index\"><span ng-bind-html=\"domainData.name | highlight: $select.search\"></span></ui-select-choices></ui-select></div><div class=\"form-group no-margin\" mass-autocomplete ng-if=!$ctrl.multiple><label for=domain class=custom-ui-select-label>{{ ($ctrl.label?$ctrl.label:\'FORM.LABEL.DOMAIN\') | translate }}<field-options required=$ctrl.required multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=domain ng-model=$ctrl.domain theme=bootstrap title=\"Choose a domain\" custom-ui-select multiple=false custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.domainSelected($item, $model)\" on-remove=\"$ctrl.domainRemove($item, $model)\" ng-required=$ctrl.required><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.DOMAIN\' | translate }}\" allow-clear=true>{{$item.name}}</ui-select-match><ui-select-choices repeat=\"domainData in $ctrl.ownConfig.collection track by $index\"><span ng-bind-html=\"domainData.name | highlight: $select.search\"></span></ui-select-choices></ui-select></div>");
 $templateCache.put("custom-ui-select/views/custom.ui.select.entity.html","<div class=\"form-group no-margin\" mass-autocomplete ng-if=$ctrl.multiple><label class=custom-ui-select-label>{{ ($ctrl.label?$ctrl.label:\'FORM.LABEL.ENTITY_KEY\') | translate }}<field-options required=$ctrl.ngRequired multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig ng-disabled=$ctrl.disabled name=entity ng-model=$ctrl.entity theme=bootstrap title=\"Choose a entity\" custom-ui-select custom-ui-select-action=$ctrl.action multiple=true custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.entitySelected($item, $model)\" on-remove=\"$ctrl.entityRemove($item, $model)\" ng-required=$ctrl.ngRequired><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.ENTITY\' | translate }}\" allow-clear=true>{{$item.provision.administration.identifier._current.value || $item.identifier}}</ui-select-match><ui-select-choices repeat=\"entityData in $ctrl.ownConfig.collection track by $index\"><span ng-bind-html=\"entityData.provision.administration.identifier._current.value | highlight: $select.search\"></span> <small><div ng-if=entityData.resourceType._current.value>{{ \'FORM.LABEL.RESOURCE_TYPE\' | translate }}: <span ng-bind-html=\"entityData.resourceType._current.value | highlight: $select.search\"></span></div><div ng-if=entityData.provision.asset.specificType._current.value>{{ \'FORM.LABEL.SPECIFIC_TYPE\' | translate }}: <span ng-bind-html=\"entityData.provision.asset.specificType._current.value | highlight: $select.search\"></span></div><div ng-if=entityData.provision.device.specificType._current.value>{{ \'FORM.LABEL.SPECIFIC_TYPE\' | translate }}: <span ng-bind-html=\"entityData.provision.device.specificType._current.value | highlight: $select.search\"></span></div><div ng-if=entityData.provision.device.operationalStatus._current.value>{{ \'FORM.LABEL.OP_STATUS\' | translate }}: <span ng-bind-html=\"\'\'+entityData.provision.device.operationalStatus._current.value | highlight: $select.search\"></span></div><div ng-if=\"!entityData.provision.device.specificType && entityData.provision.device.communicationModules && entityData.provision.device.communicationModules[0] && entityData.provision.device.communicationModules[0].specificType._current.value\">{{ \'FORM.LABEL.SPECIFIC_TYPE\' | translate }}: <span ng-bind-html=\"entityData.provision.device.communicationModules[0].specificType._current.value | highlight: $select.search\"></span></div><div ng-if=\"!entityData.provision.device.specificType && entityData.provision.device.communicationModules && entityData.provision.device.communicationModules[0] && entityData.provision.device.communicationModules[0].subscriber && entityData.provision.device.communicationModules[0].subscriber.specificType._current.value\">{{ \'FORM.LABEL.SPECIFIC_TYPE\' | translate }}: <span ng-bind-html=\"entityData.provision.device.communicationModules[0].subscriber.specificType._current.value | highlight: $select.search\"></span></div><div ng-if=\"!entityData.provision.device.specificType && entityData.provision.device.communicationModules && entityData.provision.device.communicationModules[0] && entityData.provision.device.communicationModules[0].subscription && entityData.provision.device.communicationModules[0].subscription.specificType._current.value\">{{ \'FORM.LABEL.SPECIFIC_TYPE\' | translate }}: <span ng-bind-html=\"entityData.provision.device.communicationModules[0].subscription.specificType._current.value | highlight: $select.search\"></span></div></small></ui-select-choices></ui-select></div><div class=\"form-group no-margin\" mass-autocomplete ng-if=!$ctrl.multiple><label class=custom-ui-select-label>{{($ctrl.label?$ctrl.label:\'FORM.LABEL.ENTITY_KEY\') | translate }}<field-options required=$ctrl.ngRequired multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig ng-disabled=$ctrl.disabled name=entity ng-model=$ctrl.entity theme=bootstrap title=\"Choose a entity\" custom-ui-select custom-ui-select-action=$ctrl.action multiple=false custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.entitySelected($item, $model)\" on-remove=\"$ctrl.entityRemove($item, $model)\" ng-required=$ctrl.ngRequired><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.ENTITY\' | translate }}\" allow-clear=true>{{$item.provision.administration.identifier._current.value || $item.identifier}}</ui-select-match><ui-select-choices repeat=\"entityData in $ctrl.ownConfig.collection track by $index\"><span ng-bind-html=\"entityData.provision.administration.identifier._current.value | highlight: $select.search\"></span> <small><div ng-if=entityData.resourceType._current.value>{{ \'FORM.LABEL.RESOURCE_TYPE\' | translate }}: <span ng-bind-html=\"entityData.resourceType._current.value | highlight: $select.search\"></span></div><div ng-if=entityData.provision.asset.specificType._current.value>{{ \'FORM.LABEL.SPECIFIC_TYPE\' | translate }}: <span ng-bind-html=\"entityData.provision.asset.specificType._current.value | highlight: $select.search\"></span></div><div ng-if=entityData.provision.device.specificType._current.value>{{ \'FORM.LABEL.SPECIFIC_TYPE\' | translate }}: <span ng-bind-html=\"entityData.provision.device.specificType._current.value | highlight: $select.search\"></span></div><div ng-if=entityData.provision.device.operationalStatus._current.value>{{ \'FORM.LABEL.OP_STATUS\' | translate }}: <span ng-bind-html=\"\'\'+entityData.provision.device.operationalStatus._current.value | highlight: $select.search\"></span></div><div ng-if=\"!entityData.provision.device.specificType && entityData.provision.device.communicationModules && entityData.provision.device.communicationModules[0] && entityData.provision.device.communicationModules[0].specificType._current.value\">{{ \'FORM.LABEL.SPECIFIC_TYPE\' | translate }}: <span ng-bind-html=\"entityData.provision.device.communicationModules[0].specificType._current.value | highlight: $select.search\"></span></div><div ng-if=\"!entityData.provision.device.specificType && entityData.provision.device.communicationModules && entityData.provision.device.communicationModules[0] && entityData.provision.device.communicationModules[0].subscriber && entityData.provision.device.communicationModules[0].subscriber.specificType._current.value\">{{ \'FORM.LABEL.SPECIFIC_TYPE\' | translate }}: <span ng-bind-html=\"entityData.provision.device.communicationModules[0].subscriber.specificType._current.value | highlight: $select.search\"></span></div><div ng-if=\"!entityData.provision.device.specificType && entityData.provision.device.communicationModules && entityData.provision.device.communicationModules[0] && entityData.provision.device.communicationModules[0].subscription && entityData.provision.device.communicationModules[0].subscription.specificType._current.value\">{{ \'FORM.LABEL.SPECIFIC_TYPE\' | translate }}: <span ng-bind-html=\"entityData.provision.device.communicationModules[0].subscription.specificType._current.value | highlight: $select.search\"></span></div></small></ui-select-choices></ui-select></div>");
 $templateCache.put("custom-ui-select/views/custom.ui.select.hardware.html","<div class=\"form-group no-margin\" mass-autocomplete ng-if=$ctrl.multiple><label ng-if=\"$ctrl.label || $ctrl.title\" class=custom-ui-select-label>{{ $ctrl.label || $ctrl.title | translate }}<field-options required=$ctrl.ngRequired multiple=$ctrl.multiple></field-options></label><ui-select name=hardware custom-ui-select-config=$ctrl.ownConfig ng-model=$ctrl.hardware theme=bootstrap title=\"{{ \'FORM.PLACEHOLDER.HARDWARE\' | translate }}\" custom-ui-select multiple=true custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.hardwareSelected($item, $model)\" on-remove=\"$ctrl.hardwareRemove($item, $model)\" ng-required=$ctrl.required><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.HARDWARE\' | translate }}\" allow-clear=true>{{$item.manufacturer}} ({{ $item.name || $item.id }} <span ng-if=$item.version>{{ FORM.VER | translate }}</span>{{$item.version}})</ui-select-match><ui-select-choices repeat=\"hardware in $ctrl.ownConfig.collection track by $index\"><div>{{hardware.manufacturer}} ({{ hardware.name }} <span ng-if=hardware.version>{{ FORM.VER | translate }}</span> {{hardware.version}})</div><small><div>{{ FORM.MODEL | translate}}</div><div>{{ FORM.NAME | translate:\'{before:\" - \", after:\":\"}\' }} <span ng-bind-html=\"\'\'+hardware.name | highlight: $select.search\"></span></div><div><span ng-if=hardware.version>{{ FORM.VERSION | translate }}</span> <span ng-bind-html=\"\'\'+hardware.version | highlight: $select.search\"></span></div></small></ui-select-choices></ui-select></div><div class=\"form-group no-margin\" mass-autocomplete ng-if=!$ctrl.multiple><label ng-if=\"$ctrl.label || $ctrl.title\" class=custom-ui-select-label>{{ $ctrl.label || $ctrl.title | translate }}<field-options required=$ctrl.ngRequired multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=hardware ng-model=$ctrl.hardware theme=bootstrap title=\"{{ \'FORM.PLACEHOLDER.HARDWARE\' | translate }}\" custom-ui-select multiple=false custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.hardwareSelected($item, $model)\" on-remove=\"$ctrl.hardwareRemove($item, $model)\" ng-required=$ctrl.ngRequired><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.HARDWARE\' | translate }}\" allow-clear=true>{{$item.manufacturer}} ({{ $item.name || $item.id}} <span ng-if=$item.version>{{ FORM.VER | translate }}</span>{{$item.version}})</ui-select-match><ui-select-choices repeat=\"hardware in $ctrl.ownConfig.collection track by $index\"><div>{{hardware.manufacturer}} ({{ hardware.name }} <span ng-if=hardware.version>{{ FORM.VER | translate }}</span> {{hardware.version}})</div><small><div>{{ FORM.MODEL | translate}}</div><div>{{ FORM.NAME | translate:\'{before:\" - \", after:\":\"}\' }} <span ng-bind-html=\"\'\'+hardware.name | highlight: $select.search\"></span></div><div><span ng-if=hardware.version>{{ FORM.VERSION | translate }}</span> <span ng-bind-html=\"\'\'+hardware.version | highlight: $select.search\"></span></div></small></ui-select-choices></ui-select></div>");
-$templateCache.put("custom-ui-select/views/custom.ui.select.ogtypelist.html","<div class=\"form-group no-margin\" ng-if=$ctrl.multiple><label ng-if=$ctrl.label class=custom-ui-select-label>{{ $ctrl.label | translate }}<field-options required=$ctrl.ngRequired multiple=$ctrl.multiple></field-options></label><ui-select name=element custom-ui-select-config=$ctrl.ownConfig ng-model=$ctrl.element theme=bootstrap title=\"{{ $ctrl.placeholder | translate }}\" custom-ui-select multiple=true on-select=\"$ctrl.elementSelected($item, $model)\" on-remove=\"$ctrl.elementRemove($item, $model)\" ng-required=$ctrl.required ng-disabled=$ctrl.disabled><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ $ctrl.placeholder | translate }}\" allow-clear=true>{{$item}}</ui-select-match><ui-select-choices repeat=\"element in $ctrl.ownConfig.collection track by $index\"><span ng-bind-html=\"element | highlight: $select.search\"></span></ui-select-choices></ui-select></div><div class=\"form-group no-margin\" ng-if=!$ctrl.multiple><label ng-if=$ctrl.label class=custom-ui-select-label>{{ $ctrl.label | translate }}<field-options required=$ctrl.ngRequired multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=element ng-model=$ctrl.element theme=bootstrap title=\"{{ $ctrl.placeholder | translate }}\" custom-ui-select multiple=false on-select=\"$ctrl.elementSelected($item, $model)\" on-remove=\"$ctrl.elementRemove($item, $model)\" ng-required=$ctrl.required ng-disabled=$ctrl.disabled><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ $ctrl.placeholder | translate }}\" allow-clear=true><span>{{$item}}</span></ui-select-match><ui-select-choices repeat=\"element in $ctrl.ownConfig.collection track by $index\"><span ng-bind-html=\"element | highlight: $select.search\"></span></ui-select-choices></ui-select></div>");
+$templateCache.put("custom-ui-select/views/custom.ui.select.ogtypelist.html","<div class=\"form-group no-margin\" ng-if=$ctrl.multiple><label ng-if=$ctrl.label class=custom-ui-select-label>{{ $ctrl.label | translate }}<field-options required=$ctrl.ngRequired multiple=$ctrl.multiple></field-options></label><ui-select name=element custom-ui-select-config=$ctrl.ownConfig ng-model=$ctrl.element theme=bootstrap title=\"{{ $ctrl.placeholder | translate }}\" custom-ui-select multiple=true on-select=\"$ctrl.elementSelected($item, $model)\" on-remove=\"$ctrl.elementRemove($item, $model)\" ng-required=$ctrl.required ng-disabled=$ctrl.disabled><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ $ctrl.placeholder | translate }}\" allow-clear=true>{{$item}}</ui-select-match><ui-select-choices repeat=\"element in $ctrl.ownConfig.collection | filter:$select.search track by $index\"><span ng-bind-html=\"element | highlight: $select.search\"></span></ui-select-choices></ui-select></div><div class=\"form-group no-margin\" ng-if=!$ctrl.multiple><label ng-if=$ctrl.label class=custom-ui-select-label>{{ $ctrl.label | translate }}<field-options required=$ctrl.ngRequired multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=element ng-model=$ctrl.element theme=bootstrap title=\"{{ $ctrl.placeholder | translate }}\" custom-ui-select multiple=false on-select=\"$ctrl.elementSelected($item, $model)\" on-remove=\"$ctrl.elementRemove($item, $model)\" ng-required=$ctrl.required ng-disabled=$ctrl.disabled><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ $ctrl.placeholder | translate }}\" allow-clear=true><span>{{$item}}</span></ui-select-match><ui-select-choices repeat=\"element in $ctrl.ownConfig.collection | filter:$select.search track by $index\"><span ng-bind-html=\"element | highlight: $select.search\"></span></ui-select-choices></ui-select></div>");
 $templateCache.put("custom-ui-select/views/custom.ui.select.organization.html","<div class=\"form-group no-margin\" mass-autocomplete ng-if=$ctrl.multiple><label ng-if=$ctrl.label class=custom-ui-select-label>{{ $ctrl.label | translate }}<field-options required=$ctrl.ngRequired multiple=$ctrl.multiple></field-options></label><ui-select name=organization custom-ui-select-config=$ctrl.ownConfig ng-model=$ctrl.organization theme=bootstrap title=\"Choose an organization\" custom-ui-select multiple=true custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.organizationSelected($item, $model)\" on-remove=\"$ctrl.organizationRemove($item, $model)\" ng-required=$ctrl.required><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.ORGANIZATION\' | translate }}\" allow-clear=true>{{$item.name}}</ui-select-match><ui-select-choices repeat=\"organization in $ctrl.ownConfig.collection track by $index\"><span ng-bind-html=\"organization.name | highlight: $select.search\"></span></ui-select-choices></ui-select></div><div class=\"form-group no-margin\" mass-autocomplete ng-if=!$ctrl.multiple><label ng-if=$ctrl.label class=custom-ui-select-label>{{ $ctrl.label | translate }}<field-options required=$ctrl.ngRequired multiple=false></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=organization ng-model=$ctrl.organization theme=bootstrap title=\"Choose an organization\" custom-ui-select multiple=false custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.organizationSelected($item, $model)\" on-remove=\"$ctrl.organizationRemove($item, $model)\" ng-required=$ctrl.required><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.ORGANIZATION\' | translate }}\" allow-clear=true>{{$item.name}}</ui-select-match><ui-select-choices repeat=\"organization in $ctrl.ownConfig.collection track by $index\"><span ng-bind-html=\"organization.name | highlight: $select.search\"></span></ui-select-choices></ui-select></div>");
 $templateCache.put("custom-ui-select/views/custom.ui.select.servicegroup.html","<div class=\"form-group no-margin\" mass-autocomplete ng-if=$ctrl.multiple><label ng-if=$ctrl.label class=custom-ui-select-label>{{ $ctrl.label | translate }}<field-options required=$ctrl.ngRequired multiple=$ctrl.multiple></field-options></label><ui-select name=serviceGroup custom-ui-select-config=$ctrl.ownConfig ng-model=$ctrl.serviceGroup theme=bootstrap title=\"{{ \'FORM.PLACEHOLDER.SERVICEGROUP\' | translate }}\" custom-ui-select multiple=true custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.serviceGroupSelected($item, $model)\" on-remove=\"$ctrl.serviceGroupRemove($item, $model)\" ng-required=$ctrl.required><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.SERVICEGROUP\' | translate }}\" allow-clear=true>{{$item.name}}</ui-select-match><ui-select-choices repeat=\"serviceGroup in $ctrl.ownConfig.collection track by $index\"><span ng-bind-html=\"serviceGroup.name | highlight: $select.search\"></span></ui-select-choices></ui-select></div><div class=\"form-group no-margin\" mass-autocomplete ng-if=!$ctrl.multiple><label ng-if=$ctrl.label class=custom-ui-select-label>{{ $ctrl.label | translate }}<field-options required=$ctrl.ngRequired multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=serviceGroup ng-model=$ctrl.serviceGroup theme=bootstrap title=\"{{ \'FORM.PLACEHOLDER.SERVICEGROUP\' | translate }}\" custom-ui-select multiple=false custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.serviceGroupSelected($item, $model)\" on-remove=\"$ctrl.serviceGroupRemove($item, $model)\" ng-required=$ctrl.ngRequired><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.SERVICEGROUP\' | translate }}\" allow-clear=true>{{$item.name}}</ui-select-match><ui-select-choices repeat=\"serviceGroup in $ctrl.ownConfig.collection track by $index\"><span ng-bind-html=\"serviceGroup.name | highlight: $select.search\"></span></ui-select-choices></ui-select></div>");
 $templateCache.put("custom-ui-select/views/custom.ui.select.subscriber.html","<div class=\"form-group no-margin\" mass-autocomplete ng-if=$ctrl.multiple><label class=custom-ui-select-label>{{\'FORM.LABEL.ENTITY_KEY\' | translate}}<field-options required=$ctrl.ngRequired multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=entity ng-model=$ctrl.entity theme=bootstrap title=\"Choose a entity\" custom-ui-select multiple=true custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.entitySelected($item, $model)\" on-remove=\"$ctrl.entityRemove($item, $model)\" ng-required=$ctrl.ngRequired><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"Choose a entity\" allow-clear=true>{{$item.provision.subscriber.identifier._current.value}}</ui-select-match><ui-select-choices repeat=\"subscriberData in $ctrl.ownConfig.collection track by $index\"><span ng-bind-html=\"subscriberData.provision.subscriber.identifier._current.value | highlight: $select.search\"></span> <small><div ng-if=subscriberData.provision.subscriber.name._current.value>Name: <span ng-bind-html=\"\'\'+subscriberData.provision.subscriber.name._current.value | highlight: $select.search\"></span></div></small></ui-select-choices></ui-select></div><div class=\"form-group no-margin\" mass-autocomplete ng-if=!$ctrl.multiple><label class=custom-ui-select-label>{{\'FORM.LABEL.ENTITY_KEY\' | translate}}<field-options required=$ctrl.ngRequired multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=entity ng-model=$ctrl.entity theme=bootstrap title=\"Choose a entity\" custom-ui-select multiple=false custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.entitySelected($item, $model)\" on-remove=\"$ctrl.entityRemove($item, $model)\" ng-required=$ctrl.ngRequired><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"Choose a entity\" allow-clear=true>{{$item.provision.subscriber.identifier._current.value}}</ui-select-match><ui-select-choices repeat=\"subscriberData in $ctrl.ownConfig.collection track by $index\"><span ng-bind-html=\"subscriberData.provision.subscriber.identifier._current.value | highlight: $select.search\"></span> <small><div ng-if=subscriberData.provision.subscriber.name._current.value>{{ \'FORM.LABEL.NAME\' | translate }}: <span ng-bind-html=\"\'\'+subscriberData.provision.subscriber.name._current.value | highlight: $select.search\"></span></div><div ng-if=subscriberData.provision.subscriber.mobile.icc._current.value>{{ \'FORM.LABEL.NAME\' | translate }}: <span ng-bind-html=\"\'\'+subscriberData.provision.subscriber.mobile.icc.name._current.value | highlight: $select.search\"></span></div></small></ui-select-choices></ui-select></div>");
@@ -10573,11 +10573,11 @@ angular.module('opengate-angular-js').component('helperUiSelect', {
 
 angular.module('opengate-angular-js')
     .directive('customUiSelect', ['$compile', 'Filter',
-        function ($compile, Filter) {
+        function($compile, Filter) {
             var button = angular.element('<div title="Toggle Advanced/Basic filter search" ng-click="complex()" style="cursor:pointer" class="custom-ui-select-button input-group-addon"><i class="fa fa-filter"></i><i class="filter-icon fa fa-bold text-muted"></i></div>');
             var container = angular.element('<div class="custom-ui-select-container input-group"></div>');
 
-            var setRefresh = function (obj, fnc) {
+            var setRefresh = function(obj, fnc) {
                 var choices = obj.querySelectorAll('ui-select-choices');
                 choices.attr('refresh', fnc);
                 choices.attr('refresh-delay', '0');
@@ -10587,7 +10587,7 @@ angular.module('opengate-angular-js')
                 require: 'uiSelect',
                 scope: true,
                 bindToController: true,
-                controller: ["$scope", "$element", "$attrs", "$q", "$timeout", function ($scope, $element, $attrs, $q, $timeout) {
+                controller: ["$scope", "$element", "$attrs", "$q", "$timeout", function($scope, $element, $attrs, $q, $timeout) {
                     var uiConfig = getConfig();
 
                     function processFilter(_filter) {
@@ -10608,7 +10608,7 @@ angular.module('opengate-angular-js')
                             return $scope[$attrs.customUiSelectConfig];
                         } else {
                             var config = $scope;
-                            configPath.forEach(function (path) {
+                            configPath.forEach(function(path) {
                                 config = config[path];
                             });
                             return config;
@@ -10616,10 +10616,10 @@ angular.module('opengate-angular-js')
                     }
 
                     //Filtro asistido con mass-autocomplete
-                    $scope.complexfilter = function (search) {
+                    $scope.complexfilter = function(search) {
                         //console.log(search);
                         Filter.parseQuery(search || '')
-                            .then(function (data) {
+                            .then(function(data) {
                                 var filter = data.filter;
                                 //Solo filtramos si no se trata de un filtro vacio
                                 if (Object.keys(filter).length > 0) {
@@ -10630,7 +10630,7 @@ angular.module('opengate-angular-js')
                                     uiConfig.collection.splice(0, uiConfig.collection.length);
                                 }
                             })
-                            .catch(function (err) {
+                            .catch(function(err) {
                                 console.error(err);
                                 //Si el filtro no es valido borramos la lista de opciones del ui-select
                                 uiConfig.collection.splice(0, uiConfig.collection.length);
@@ -10639,12 +10639,12 @@ angular.module('opengate-angular-js')
                     };
 
                     //Filtro simple con or-like
-                    $scope.asyncfilter = function (search) {
+                    $scope.asyncfilter = function(search) {
                         _loadCollection(processFilter(uiConfig.filter(search)));
                     };
 
                     $scope._complex = $attrs.$$button.querySelectorAll('.fa-filter').hasClass('text-primary');
-                    $scope.complex = function () {
+                    $scope.complex = function() {
                         if (!uiConfig.simpleMode) {
                             $scope._complex = !$scope._complex;
                             if ($scope._complex) {
@@ -10659,7 +10659,7 @@ angular.module('opengate-angular-js')
                         }
                     };
 
-                    $scope.customUiTagTransform = function (value) {
+                    $scope.customUiTagTransform = function(value) {
                         return null;
                     };
 
@@ -10669,7 +10669,7 @@ angular.module('opengate-angular-js')
                     function _loadCollection(filter) {
                         if (lastTimeout) clearTimeout(lastTimeout);
 
-                        lastTimeout = setTimeout(function () {
+                        lastTimeout = setTimeout(function() {
                             _loadCollectionTimeout(filter);
                         }, 500);
                     }
@@ -10685,7 +10685,7 @@ angular.module('opengate-angular-js')
                         function _processingData(datas) {
                             var _collection = [];
                             if (!angular.isArray(datas)) {
-                                angular.forEach(datas, function (data, key) {
+                                angular.forEach(datas, function(data, key) {
                                     _collection.push(data);
                                 });
                             } else {
@@ -10699,7 +10699,7 @@ angular.module('opengate-angular-js')
                             $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-bold').removeClass('fa-font').addClass('fa-spinner').addClass('fa-spin');
                             var builderToExecute = isGet ? builder : builder.limit(limit).filter(filter).build().execute();
                             builderToExecute.then(
-                                function (data) {
+                                function(data) {
                                     if ($scope._complex) {
                                         $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-font');
                                     } else {
@@ -10715,7 +10715,7 @@ angular.module('opengate-angular-js')
                                             _processingData(datas);
                                         }
 
-                                        $scope.$apply();
+                                        //$scope.$apply();
                                     } else {
                                         uiConfig.collection.splice(0, uiConfig.collection.length);
 
@@ -10725,11 +10725,11 @@ angular.module('opengate-angular-js')
                                         } else {
                                             //   console.log(JSON.stringify(data));
                                         }
-                                        $scope.$apply();
+                                        //$scope.$apply();
                                     }
 
                                 }
-                            ).catch(function (err) {
+                            ).catch(function(err) {
                                 console.error(err);
                                 $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-filter');
                             });
@@ -10737,7 +10737,7 @@ angular.module('opengate-angular-js')
 
                     }
                 }],
-                compile: function (templateElement, templateAttributes) {
+                compile: function(templateElement, templateAttributes) {
                     templateAttributes.$$button = button.clone();
                     templateAttributes.$$container = container.clone();
                     var simple = templateAttributes.multiple !== 'true';
@@ -10791,7 +10791,7 @@ angular.module('opengate-angular-js')
 
                             $attrs.$$container.append($element);
                             var template = $attrs.$$templateElement.clone();
-                            var _cloneElement = $compile(template)($scope, function (clonedElement, $scope) {
+                            var _cloneElement = $compile(template)($scope, function(clonedElement, $scope) {
                                 $attrs.$$container.append(clonedElement);
                             });
                             _cloneElement.addClass(aus);
@@ -10802,10 +10802,10 @@ angular.module('opengate-angular-js')
                             $element.css('display', 'none').addClass('custom-ui-select-hide');
 
                             var keys = [];
-                            $attrs.$$container.bind('keydown', function (e) {
+                            $attrs.$$container.bind('keydown', function(e) {
                                 keys.push(e.keyCode);
                             });
-                            $attrs.$$container.bind('keyup', function (e) {
+                            $attrs.$$container.bind('keyup', function(e) {
                                 if (keys.length > 0) {
                                     if (angular.equals(keys, [17, 18, 70])) {
                                         $scope.complex();
@@ -10829,7 +10829,7 @@ angular.module('opengate-angular-js')
                                     return $scope[$attrs[attr]];
                                 } else {
                                     var config = $scope;
-                                    configPath.forEach(function (path) {
+                                    configPath.forEach(function(path) {
                                         config = config[path];
                                     });
                                     return config;
@@ -12720,6 +12720,34 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
                                     }
                                 }
                             });
+
+                            var deviceFinder = $api().devicesSearchBuilder().filter({
+                                "and": [{
+                                    "eq": {
+                                        "provision.device.identifier": result[0].identifier
+                                    }
+                                }]
+                            });
+
+                            deviceFinder.build().execute()
+                                .then(function(result) {
+                                    if (result.statusCode === 204) {
+                                        $translate('TOASTR.ENTITY_NOT_FOUND', {
+                                            identifier: result[0].identifier
+                                        }).
+                                        then(function(translatedMessage) {
+                                            toastr.error(translatedMessage);
+                                        });
+                                    } else {
+                                        ctrl.deviceSelected(result.data.devices[0]);
+                                    }
+                                })
+                                .catch(function(err) {
+                                    $translate('TOASTR.CANNOT_GET_ENTITY_INFO').
+                                    then(function(translatedMessage) {
+                                        toastr.error(translatedMessage);
+                                    });
+                                });
                         }
                     });
                 },
@@ -13517,7 +13545,7 @@ angular.module('opengate-angular-js').component('customUiSelectBundle', {
 
 
 angular.module('opengate-angular-js').controller('customUiSelectAssetController', ['$scope', '$element', '$attrs', '$api', '$doActions', '$translate', 'jsonPath', 'Filter',
-    function ($scope, $element, $attrs, $api, $doActions, $translate, jsonPath, Filter) {
+    function($scope, $element, $attrs, $api, $doActions, $translate, jsonPath, Filter) {
 
         var ctrl = this;
 
@@ -13529,7 +13557,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
             var filter = {
                 or: []
             };
-            fields.forEach(function (field) {
+            fields.forEach(function(field) {
                 var _like = {
                     like: {}
                 };
@@ -13573,7 +13601,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
 
         ctrl.ownConfig = {
             builder: $api().assetsSearchBuilder().select(selectBuilder),
-            filter: function (search) {
+            filter: function(search) {
                 var filter = _getQuickSearchFields(search);
 
                 if (!!ctrl.specificType) {
@@ -13613,11 +13641,11 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
             specificType: ctrl.specificType
         };
 
-        ctrl.assetSelected = function ($item, $model) {
+        ctrl.assetSelected = function($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = [];
 
-                angular.forEach(ctrl.asset, function (assetTmp) {
+                angular.forEach(ctrl.asset, function(assetTmp) {
                     identifierTmp.push(assetTmp.provision.administration.identifier._current.value);
                 });
 
@@ -13634,7 +13662,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
             }
         };
 
-        ctrl.assetRemove = function ($item, $model) {
+        ctrl.assetRemove = function($item, $model) {
             if (ctrl.onRemove) {
                 var returnObj = {};
                 returnObj.$item = $item;
@@ -13655,7 +13683,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
             create: {
                 title: $translate.instant('FORM.LABEL.NEW'),
                 icon: 'glyphicon glyphicon-plus-sign',
-                action: function () {
+                action: function() {
                     var actionData = {};
                     if (!!ctrl.specificType) {
                         actionData = {
@@ -13675,7 +13703,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
                             }
                         };
                     }
-                    $doActions.executeModal('createAsset', actionData, function (result) {
+                    $doActions.executeModal('createAsset', actionData, function(result) {
                         if (result && result.length > 0) {
                             ctrl.asset = !ctrl.asset ? [] : ctrl.asset;
                             ctrl.asset.push({
@@ -13696,6 +13724,34 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
                                     }
                                 }
                             });
+
+                            var assetFinder = $api().assetsSearchBuilder().filter({
+                                "and": [{
+                                    "eq": {
+                                        "provision.asset.identifier": result[0].identifier
+                                    }
+                                }]
+                            });
+
+                            assetFinder.build().execute()
+                                .then(function(result) {
+                                    if (result.statusCode === 204) {
+                                        $translate('TOASTR.ENTITY_NOT_FOUND', {
+                                            identifier: result[0].identifier
+                                        }).
+                                        then(function(translatedMessage) {
+                                            toastr.error(translatedMessage);
+                                        });
+                                    } else {
+                                        ctrl.assetSelected(result.data.assets[0], result.data.assets[0]);
+                                    }
+                                })
+                                .catch(function(err) {
+                                    $translate('TOASTR.CANNOT_GET_ENTITY_INFO').
+                                    then(function(translatedMessage) {
+                                        toastr.error(translatedMessage);
+                                    });
+                                });
                         }
                     });
                 },
@@ -13706,11 +13762,11 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
         ctrl.uiSelectActions = [];
 
         if (!ctrl.actions) {
-            angular.forEach(uiSelectActionsDefinition, function (action) {
+            angular.forEach(uiSelectActionsDefinition, function(action) {
                 ctrl.uiSelectActions.push(action);
             });
         } else {
-            angular.forEach(ctrl.actions, function (action) {
+            angular.forEach(ctrl.actions, function(action) {
                 var finalAction;
                 switch (action.type) {
                     case 'create':
@@ -13724,7 +13780,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
 
         }
 
-        ctrl.$onChanges = function (changesObj) {
+        ctrl.$onChanges = function(changesObj) {
             if (changesObj && changesObj.identifier) {
                 mapIdentifier(changesObj.identifier.currentValue);
             }
@@ -13749,7 +13805,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
                     if (angular.isArray(identifier)) {
                         ctrl.asset = [];
 
-                        angular.forEach(identifier, function (idTmp) {
+                        angular.forEach(identifier, function(idTmp) {
                             ctrl.asset.push({
                                 provision: {
                                     administration: {
