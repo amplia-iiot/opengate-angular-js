@@ -5,8 +5,8 @@
         <helper-dialog helper-id="{{form.helperid}}" helper-exclusive="{{form.exclusive}}" helper-type="{{form.helperType}}" specific-type="{{form.specificType}}" organization="{{form.organization}}" channel="{{form.channel}}" ng-required="form.required">
             <helper-ui-select id="{{form.id}}" name="{{form.name}}" label-text="{{form.title}}" helper-model="$$value$$" sf-field-model="replaceAll" label-error="{{form.labelerror}}" ng-required="form.required">
                 <helper-ui-select-input>
-                    <label for="{{form.name}}">{{form.title}} {{form.helperid}} {{form.exclusive}} <field-optionsng-required="form.required" /></label>
-                    <input class="form-control" name="{{form.name}}" type="text" id="{{form.id}}" ng-model="$$value$$" sf-field-model="replaceAll" ng-required="form.required">
+                    <label for="{{form.name}}">{{form.title}} {{form.helperid}} {{form.exclusive}} <field-options required="form.required" /></label>
+                    <input class="form-control" name="{{form.name}}" type="text" id="{{form.id}}" ng-model="$$value$$" sf-field-model="replaceAll" ng-required="form.required" ng-disabled='form.readonly || form.disabled'>
                 </helper-ui-select-input>
             </helper-ui-select>
         </helper-dialog>

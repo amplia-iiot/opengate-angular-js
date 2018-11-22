@@ -3,7 +3,7 @@
         <label for="$$value$$" ng-model="$$value$$">{{ form.title }}</label><br>
         <div class="btn-group">
             <label ng-repeat="data in form.titleMap  track by $index" class="btn btn-sm" ng-class="{ 'btn-primary': data.value === $$value$$, 'btn-default': data.value !== $$value$$ }" sf-field-model="replaceAll">
-                <input type="radio" id="$$value$$" name="$$value$$" ng-model="$$value$$" sf-field-model="replaceAll" ng-value="data.value" style="display:none;" sf-changed="form">
+                <input type="radio" id="$$value$$" name="$$value$$" ng-model="$$value$$" sf-field-model="replaceAll" ng-value="data.value" style="display:none;" sf-changed="form" ng-disabled='form.readonly || form.disabled'>
                 <span ng-bind-html="data.name" class="text-left"></span>
             </label>
         </div>

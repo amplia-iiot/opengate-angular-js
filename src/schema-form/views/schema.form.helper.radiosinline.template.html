@@ -3,7 +3,7 @@
         <label for="{{$$value$$}}" ng-model="$$value$$" sf-field-model="replaceAll">{{ form.title }}</label><br>
         <div class="radio radio-primary" ng-if="form.titleMap" ng-repeat="data in form.titleMap track by $index" style="display: inline;">
             <label>
-                <input type="radio" id="{{$$value$$ + '_' + $index}}" name="{{$$value$$}}" ng-model="$$value$$" sf-field-model="replaceAll" value="{{data.value}}" sf-changed="form" ng-disabled="form.readonly" schema-validate="form" ng-model-options="form.ngModelOptions" >
+                <input type="radio" id="{{$$value$$ + '_' + $index}}" name="{{$$value$$}}" ng-model="$$value$$" sf-field-model="replaceAll" value="{{data.value}}" sf-changed="form" ng-disabled='form.readonly || form.disabled' schema-validate="form" ng-model-options="form.ngModelOptions" >
                 <span class="circle"></span>
                 <span class="check"></span> 
                 <p ng-bind-html="data.name" class="text-left"></p>    

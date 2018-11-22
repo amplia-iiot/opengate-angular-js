@@ -1,6 +1,6 @@
 <div class="form-group {{form.htmlClass}}">
     <label class="control-label" ng-show="showTitle()">{{form.title}} <field-options required="form.required" multiple="form.multiple" /></label>
-    <datetime-select id="{{form.id}}" name="{{form.name}}" ng-model="$$value$$" sf-changed="form" schema-validate="form" sf-field-model="replaceAll" ng-disabled="form.readonly" ng-required="form.required" placeholder="{{form.date.placeholder }}" mode="{{form.type}}"
-        format="{{form.date.format}}" ng-value="form.value" />
+    <datetime-select id="{{form.id}}" name="{{form.name}}" ng-model="$$value$$" sf-changed="form" schema-validate="form" sf-field-model="replaceAll" ng-disabled="form.readonly || form.disabled" ng-required="form.required" placeholder="{{form.date.placeholder }}"
+        mode="{{form.type}}" format="{{form.date.format}}" ng-value="form.value" />
     <div class="help-block" sf-message="form.description"></div>
 </div>

@@ -3,7 +3,7 @@
         <label>{{ form.title }}</label><br>
         <div class="checkbox" ng-if="form.titleMap" ng-repeat="val in titleMapValues track by $index">
             <label>
-                <input type="checkbox" id="$$value$$" ng-disabled="form.readonly" sf-changed="form" name="$$value$$"  ng-model="titleMapValues[$index]">
+                <input type="checkbox" id="$$value$$" ng-disabled="form.readonly || form.disabled" sf-changed="form" name="$$value$$"  ng-model="titleMapValues[$index]">
                 <span class="checkbox-material ">
                     <span class="check"></span>
                 </span>

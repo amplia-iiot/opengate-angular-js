@@ -1,6 +1,6 @@
 <div ng-class="{'has-error': hasError(), 'has-success': hasSuccess(), 'has-feedback': form.feedback !== false }" class="form-group {{form.htmlClass}}">
     <!-- Surrounding DIV for sfField builder to add a sfField directive to. -->
-    <custom-ui-map label="form.title" ng-required="form.required" only-map="form.onlyMap" disabled="form.disabled" on-select-item="evalExpr(form.onselectitem, {$item: $$value$$, $model: $model})" on-remove="evalExpr(form.onremove, {$item: $$value$$, $model: $model})"
+    <custom-ui-map label="form.title" ng-required="form.required" only-map="form.onlyMap" disabled="form.readonly || form.disabled" on-select-item="evalExpr(form.onselectitem, {$item: $$value$$, $model: $model})" on-remove="evalExpr(form.onremove, {$item: $$value$$, $model: $model})"
         location="$$value$$" sf-field-model="replaceAll">
     </custom-ui-map>
 </div>

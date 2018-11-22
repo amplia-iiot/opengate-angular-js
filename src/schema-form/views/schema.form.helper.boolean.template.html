@@ -1,7 +1,7 @@
 <div class="form-group" class="{{form.schema?form.schema.htmlClass:''}}">
     <div class="checkbox" ng-class="{'has-error': hasError(), 'has-success': hasSuccess(), 'has-feedback': form.feedback !== false }">
         <label>
-            <input type="checkbox" id="$$value$$" name="$$value$$" ng-model="$$value$$" sf-field-model="replaceAll" sf-changed="form" ng-model-options="form.ngModelOptions" schema-validate="form">
+            <input type="checkbox" id="$$value$$" name="$$value$$" ng-model="$$value$$" sf-field-model="replaceAll" sf-changed="form" ng-model-options="form.ngModelOptions" schema-validate="form" ng-disabled='form.readonly || form.disabled'>
             <span class="checkbox-material">
                 <span class="check"></span>
             </span>
