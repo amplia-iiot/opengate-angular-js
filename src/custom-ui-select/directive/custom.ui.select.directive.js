@@ -143,20 +143,10 @@ angular.module('opengate-angular-js')
                                         } else {
                                             _processingData(datas);
                                         }
-
-                                        //$scope.$apply();
                                     } else {
                                         uiConfig.collection.splice(0, uiConfig.collection.length);
-
-                                        if (data.statusCode !== 204) {
-                                            //toastr.error('Loading error');
-                                            // console.error(JSON.stringify(data));
-                                        } else {
-                                            //   console.log(JSON.stringify(data));
-                                        }
-                                        //$scope.$apply();
                                     }
-
+                                    $scope.$apply();
                                 }
                             ).catch(function(err) {
                                 console.error(err);

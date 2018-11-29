@@ -6,7 +6,7 @@ angular.module("opengate-angular-js").run(["$templateCache", function($templateC
 $templateCache.put("components/views/custom.ui.map.html","<div class=no-margin><div class=\"col-xs-12 no-padding\"><label class=custom-ui-select-label>{{ ($ctrl.label?$ctrl.label:\'FORM.LABEL.ENTITY_KEY\') | translate }}<field-options required=$ctrl.required multiple=$ctrl.multiple loading=$ctrl.reloadingInfo></field-options></label></div><div class=row ng-if=!$ctrl.disabled><div class=\"col-xs-3 form-group no-margin\"><input ng-required=$ctrl.required type=number class=form-control title=\"{{ \'FORM.TITLE.LATITUDE\' | translate }}\" placeholder=\"{{ \'FORM.TITLE.LATITUDE\' | translate }}\" ng-model=$ctrl.coordsObj.new.lat></div><div class=\"col-xs-3 form-group no-margin\"><input ng-required=$ctrl.required type=number class=form-control title=\"{{ \'FORM.TITLE.LONGITUDE\' | translate }}\" placeholder=\"{{ \'FORM.TITLE.LONGITUDE\' | translate }}\" ng-model=$ctrl.coordsObj.new.lng></div><div class=\"col-xs-2 form-group no-margin\"><button type=button ng-disabled=\"$ctrl.coordsObj.current.lat === $ctrl.coordsObj.new.lat && $ctrl.coordsObj.current.lng === $ctrl.coordsObj.new.lng\" class=\"btn btn-info no-margin\" ng-click=$ctrl.searchCoords()><i class=\"fa fa-search\"></i></button> <button type=button ng-if=!$ctrl.disabled class=\"btn btn-default no-margin\" ng-click=$ctrl.applyCoords()><i class=\"fa fa-map-marker\"></i></button></div></div><div class=col-xs-12><small>{{ $ctrl.display_name }}&nbsp;</small></div><leaflet ng-if=$ctrl.showMap id=\"{{ $ctrl.map.id }}\" lf-center=$ctrl.map.center layers=$ctrl.map.layers controls=$ctrl.map.controls event-broadcast=$ctrl.map.events markers=$ctrl.map.markers width=100% height=150px></leaflet><div class=row ng-if=\"!$ctrl.disabled && !$ctrl.onlyMap\"><div class=\"col-xs-12 col-md-5 form-group no-margin\"><input ng-required=$ctrl.required type=text class=form-control title=\"{{ \'FORM.TITLE.ADDRESS\' | translate }}\" placeholder=\"{{ \'FORM.TITLE.ADDRESS\' | translate }}\" ng-model=$ctrl.location.address></div><div class=\"col-xs-12 col-md-5 form-group no-margin\"><input ng-required=$ctrl.required type=text class=form-control title=\"{{ \'FORM.TITLE.TOWN\' | translate }}\" placeholder=\"{{ \'FORM.TITLE.TOWN\' | translate }}\" ng-model=$ctrl.location.town></div><div class=\"col-xs-12 col-md-2 form-group no-margin\"><input ng-required=$ctrl.required type=text class=form-control title=\"{{ \'FORM.TITLE.POSTAL_CODE\' | translate }}\" placeholder=\"{{ \'FORM.TITLE.POSTAL_CODE\' | translate }}\" ng-model=$ctrl.location.postal></div></div><div class=row ng-if=\"!$ctrl.disabled && !$ctrl.onlyMap\"><div class=\"col-xs-12 col-md-5 form-group no-margin\"><input ng-required=$ctrl.required type=text class=form-control title=\"{{ \'FORM.TITLE.PROVINCE\' | translate }}\" placeholder=\"{{ \'FORM.TITLE.PROVINCE\' | translate }}\" ng-model=$ctrl.location.province></div><div class=\"col-xs-12 col-md-5 form-group no-margin\"><input ng-required=$ctrl.required type=text class=form-control title=\"{{ \'FORM.TITLE.REGION\' | translate }}\" placeholder=\"{{ \'FORM.TITLE.REGION\' | translate }}\" ng-model=$ctrl.location.region></div><div class=\"col-xs-12 col-md-2 form-group no-margin\"><input ng-required=$ctrl.required type=text class=form-control title=\"{{ \'FORM.TITLE.COUNTRY.NAME\' | translate }}\" placeholder=\"{{ \'FORM.TITLE.COUNTRY.NAME\' | translate }}\" ng-model=$ctrl.location.country></div></div></div>");
 $templateCache.put("components/views/fieldOptions.html","<small class=ux-txt-danger ng-if=$ctrl.required title=\"{{ \'FORM.FIELD.REQUIRED\' | translate }}\">*</small> <small class=ux-txt-warning ng-if=$ctrl.optional title=\"{{ \'FORM.FIELD.OPTIONAL\' | translate }}\">(-)</small> <small class=ux-txt-info ng-if=$ctrl.multiple title=\"{{ \'FORM.FIELD.MULTIPLE\' | translate }}\"><span class=fa-stack style=font-size:0.5em;><i class=\"fa fa-clone fa-stack-2x\"></i> <i class=\"fa fa-check fa-stack-1x\"></i></span></small> <small class=ux-txt-info ng-if=$ctrl.loading><span class=\"fa fa-spinner fa-spin\" style=font-size:1.2em;></span></small>");
 $templateCache.put("custom-ui-select/views/custom.ui.select.area.html","<div class=\"form-group no-margin\" mass-autocomplete ng-if=$ctrl.multiple><label class=custom-ui-select-label>{{ \'FORM.LABEL.AREA\' | translate }}<field-options required=$ctrl.required multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=area ng-model=$ctrl.area theme=bootstrap title=\"{{ \'FORM.PLACEHOLDER.AREA_MULTI\' | translate }}\" custom-ui-select multiple=true custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.areaSelected($item, $model)\" on-remove=\"$ctrl.areaRemove($item, $model)\" ng-required=$ctrl.required><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.AREA_MULTI\' | translate }}\" allow-clear=true>{{$item.identifier}}</ui-select-match><ui-select-choices repeat=\"area in $ctrl.ownConfig.collection | filter:$select.search track by $index\"><div><span ng-bind-html=\"area.identifier | highlight: $select.search\"></span> - <span ng-bind-html=\"area.name | highlight: $select.search\"></span><br><span ng-bind-html=\"area.organization | highlight: $select.search\"></span></div></ui-select-choices></ui-select></div><div class=\"form-group no-margin\" mass-autocomplete ng-if=!$ctrl.multiple><label class=custom-ui-select-label>{{ \'FORM.LABEL.AREA\' | translate }}<field-options required=$ctrl.required multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=area ng-model=$ctrl.area theme=bootstrap title=\"Choose an area\" custom-ui-select multiple=false custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.areaSelected($item, $model)\" on-remove=\"$ctrl.areaRemove($item, $model)\" ng-required=$ctrl.required><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.AREA\' | translate }}\" allow-clear=true>{{$item.identifier}}</ui-select-match><ui-select-choices repeat=\"area in $ctrl.ownConfig.collection | filter:$select.search track by $index\"><div><span ng-bind-html=\"area.identifier | highlight: $select.search\"></span> - <span ng-bind-html=\"area.name | highlight: $select.search\"></span><br><span ng-bind-html=\"area.organization | highlight: $select.search\"></span></div></ui-select-choices></ui-select></div>");
-$templateCache.put("custom-ui-select/views/custom.ui.select.asset.html","<div class=\"form-group no-margin\" mass-autocomplete ng-if=$ctrl.multiple><label ng-if=$ctrl.label class=custom-ui-select-label>{{ $ctrl.label | translate }}<field-options required=$ctrl.ngRequired multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig ng-disabled=$ctrl.disabled name=asset ng-model=$ctrl.asset theme=bootstrap title=\"Choose a asset\" custom-ui-select custom-ui-select-action=$ctrl.action multiple=true custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.assetSelected($item, $model)\" on-remove=\"$ctrl.assetRemove($item, $model)\" ng-required=$ctrl.ngRequired><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ $ctrl.placeholder || \'FORM.PLACEHOLDER.ENTITY\' | translate }}\" allow-clear=true>{{$item.provision.administration.identifier._current.value || $item.identifier}}</ui-select-match><ui-select-choices repeat=\"assetData in $ctrl.ownConfig.collection track by $index\"><span ng-bind-html=\"assetData.provision.administration.identifier._current.value | highlight: $select.search\"></span> <small><div ng-if=assetData.provision.asset.specificType._current.value>{{ \'FORM.LABEL.SPECIFIC_TYPE\' | translate }}: <span ng-bind-html=\"assetData.provision.asset.specificType._current.value | highlight: $select.search\"></span></div><div ng-if=assetData.provision.asset.name._current.value>{{ \'FORM.LABEL.NAME\' | translate }}: <span ng-bind-html=\"\'\'+assetData.provision.asset.name._current.value | highlight: $select.search\"></span></div></small></ui-select-choices></ui-select></div><div class=\"form-group no-margin\" mass-autocomplete ng-if=!$ctrl.multiple><label ng-if=$ctrl.label class=custom-ui-select-label>{{ $ctrl.label | translate }}<field-options required=$ctrl.ngRequired multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig ng-disabled=$ctrl.disabled name=asset ng-model=$ctrl.asset theme=bootstrap title=\"Choose an asset\" custom-ui-select multiple=false custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.assetSelected($item, $model)\" on-remove=\"$ctrl.assetRemove($item, $model)\" ng-required=$ctrl.ngRequired><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ $ctrl.placeholder || \'FORM.PLACEHOLDER.ENTITY\' | translate }}\" allow-clear=true>{{$item.provision.administration.identifier._current.value || $item.identifier}}</ui-select-match><ui-select-choices repeat=\"assetData in $ctrl.ownConfig.collection track by $index\"><span ng-bind-html=\"assetData.provision.administration.identifier._current.value | highlight: $select.search\"></span> <small><div ng-if=assetData.provision.asset.specificType._current.value>{{ \'FORM.LABEL.SPECIFIC_TYPE\' | translate }}: <span ng-bind-html=\"assetData.provision.asset.specificType._current.value | highlight: $select.search\"></span></div><div ng-if=assetData.provision.asset.name._current.value>{{ \'FORM.LABEL.NAME\' | translate }}: <span ng-bind-html=\"\'\'+assetData.provision.asset.name._current.value | highlight: $select.search\"></span></div></small></ui-select-choices></ui-select></div><action-button ng-if=!$ctrl.disabled actions=$ctrl.uiSelectActions></action-button>");
+$templateCache.put("custom-ui-select/views/custom.ui.select.asset.html","<div class=\"form-group no-margin\" mass-autocomplete ng-if=$ctrl.multiple><label ng-if=$ctrl.label class=custom-ui-select-label>{{ $ctrl.label | translate }}<field-options required=$ctrl.ngRequired multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig ng-disabled=$ctrl.disabled name=asset ng-model=$ctrl.asset theme=bootstrap title=\"Choose an asset\" custom-ui-select custom-ui-select-action=$ctrl.action multiple=true custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.assetSelected($item, $model)\" on-remove=\"$ctrl.assetRemove($item, $model)\" ng-required=$ctrl.ngRequired><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ $ctrl.placeholder || \'FORM.PLACEHOLDER.ENTITY\' | translate }}\" allow-clear=true>{{$item.provision.administration.identifier._current.value || $item.identifier}}</ui-select-match><ui-select-choices repeat=\"assetData in $ctrl.ownConfig.collection track by $index\"><span ng-bind-html=\"assetData.provision.administration.identifier._current.value | highlight: $select.search\"></span> <small><div ng-if=assetData.provision.asset.specificType._current.value>{{ \'FORM.LABEL.SPECIFIC_TYPE\' | translate }}: <span ng-bind-html=\"assetData.provision.asset.specificType._current.value | highlight: $select.search\"></span></div><div ng-if=assetData.provision.asset.name._current.value>{{ \'FORM.LABEL.NAME\' | translate }}: <span ng-bind-html=\"\'\'+assetData.provision.asset.name._current.value | highlight: $select.search\"></span></div></small></ui-select-choices></ui-select></div><div class=\"form-group no-margin\" mass-autocomplete ng-if=!$ctrl.multiple><label ng-if=$ctrl.label class=custom-ui-select-label>{{ $ctrl.label | translate }}<field-options required=$ctrl.ngRequired multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig ng-disabled=$ctrl.disabled name=asset ng-model=$ctrl.asset theme=bootstrap title=\"Choose an asset\" custom-ui-select multiple=false custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.assetSelected($item, $model)\" on-remove=\"$ctrl.assetRemove($item, $model)\" ng-required=$ctrl.ngRequired><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ $ctrl.placeholder || \'FORM.PLACEHOLDER.ENTITY\' | translate }}\" allow-clear=true>{{$item.provision.administration.identifier._current.value || $item.identifier}}</ui-select-match><ui-select-choices repeat=\"assetData in $ctrl.ownConfig.collection track by $index\"><span ng-bind-html=\"assetData.provision.administration.identifier._current.value | highlight: $select.search\"></span> <small><div ng-if=assetData.provision.asset.specificType._current.value>{{ \'FORM.LABEL.SPECIFIC_TYPE\' | translate }}: <span ng-bind-html=\"assetData.provision.asset.specificType._current.value | highlight: $select.search\"></span></div><div ng-if=assetData.provision.asset.name._current.value>{{ \'FORM.LABEL.NAME\' | translate }}: <span ng-bind-html=\"\'\'+assetData.provision.asset.name._current.value | highlight: $select.search\"></span></div></small></ui-select-choices></ui-select></div><action-button ng-if=!$ctrl.disabled actions=$ctrl.uiSelectActions></action-button>");
 $templateCache.put("custom-ui-select/views/custom.ui.select.bundle.html","<div class=\"form-group no-margin\" mass-autocomplete ng-if=$ctrl.multiple><label class=custom-ui-select-label>{{ \'FORM.LABEL.BUNDLE_NAME\' | translate }}<field-options required=$ctrl.required multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=bundle ng-model=$ctrl.bundle theme=bootstrap title=\"{{ \'FORM.PLACEHOLDER.BUNDLE_MULTI\' | translate }}\" custom-ui-select multiple=true custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.bundleSelected($item, $model)\" on-remove=\"$ctrl.bundleRemove($item, $model)\" ng-required=$ctrl.required><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.BUNDLE_MULTI\' | translate }}\" allow-clear=true>{{$item.name}} (v{{$item.version}})</ui-select-match><ui-select-choices repeat=\"bundle in $ctrl.ownConfig.collection | filter:$select.search track by $index\"><div><span ng-bind-html=\"bundle.name | highlight: $select.search\"></span> - <span ng-bind-html=\"bundle.version | highlight: $select.search\"></span><br><span ng-bind-html=\"bundle.description | highlight: $select.search\"></span></div></ui-select-choices></ui-select></div><div class=\"form-group no-margin\" mass-autocomplete ng-if=!$ctrl.multiple><label class=custom-ui-select-label>{{ \'FORM.LABEL.BUNDLE_NAME\' | translate }}<field-options required=$ctrl.required multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=bundle ng-model=$ctrl.bundle theme=bootstrap title=\"Choose an bundle\" custom-ui-select multiple=false custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.bundleSelected($item, $model)\" on-remove=\"$ctrl.bundleRemove($item, $model)\" ng-required=$ctrl.required><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.BUNDLE\' | translate }}\" allow-clear=true>{{$item.name}} (v{{$item.version}})</ui-select-match><ui-select-choices repeat=\"bundle in $ctrl.ownConfig.collection | filter:$select.search track by $index\"><div><span ng-bind-html=\"bundle.name | highlight: $select.search\"></span> (v<span ng-bind-html=\"bundle.version | highlight: $select.search\"></span>)<br><span ng-bind-html=\"bundle.description | highlight: $select.search\"></span></div></ui-select-choices></ui-select></div>");
 $templateCache.put("custom-ui-select/views/custom.ui.select.certificate.html","<div class=\"form-group no-margin\" mass-autocomplete ng-if=$ctrl.multiple><label ng-if=$ctrl.label class=custom-ui-select-label>{{ $ctrl.label | translate }}<field-options required=$ctrl.ngRequired multiple=$ctrl.multiple></field-options></label><ui-select name=certificate custom-ui-select-config=$ctrl.ownConfig ng-model=$ctrl.certificate theme=bootstrap title=\"{{ \'FORM.PLACEHOLDER.CERTIFICATE\' | translate }}\" custom-ui-select multiple=true custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.certificateSelected($item, $model)\" on-remove=\"$ctrl.certificateRemove($item, $model)\" ng-required=$ctrl.required><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.CERTIFICATE\' | translate }}\" allow-clear=true>{{ $item.id || $item }}</ui-select-match><ui-select-choices repeat=\"certificate in $ctrl.ownConfig.collection track by $index\"><div><span ng-bind-html=\"certificate.name | highlight: $select.search\"></span> - <span ng-bind-html=\"\'\'+certificate.version| highlight: $select.search\"></span></div><small>{{ FORM.LABEL.ENTITY.ID | translate }} <span ng-bind-html=\"certificate.id | highlight: $select.search\"></span><p></p>{{ FORM.LABEL.ENTITY.STATE | translate }} <span ng-bind-html=\"certificate.administrativeState | highlight: $select.search\"></span> {{ FORM.LABEL.SERIAL_NUMBER | translate:\'{ punctuationMark: \":\" }\' }} <span ng-bind-html=\"certificate.serialNumber | highlight: $select.search\"></span><p></p>{{ FORM.LABEL.ENTITY.VALID_FROM | translate }} <span ng-bind-html=\"certificate.valid.from | highlight: $select.search\"></span> {{ FORM.LABEL.ENTITY.UNTIL | translate }} <span ng-bind-html=\"certificate.valid.until | highlight: $select.search\"></span><p></p></small></ui-select-choices></ui-select></div><div class=\"form-group no-margin\" mass-autocomplete ng-if=!$ctrl.multiple><label ng-if=$ctrl.label class=custom-ui-select-label>{{ $ctrl.label | translate }}<field-options required=$ctrl.ngRequired multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=certificate ng-model=$ctrl.certificate theme=bootstrap title=\"{{ \'FORM.PLACEHOLDER.CERTIFICATE\' | translate }}\" custom-ui-select multiple=false custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.certificateSelected($item, $model)\" on-remove=\"$ctrl.certificateRemove($item, $model)\" ng-required=$ctrl.ngRequired><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.CERTIFICATE\' | translate }}\" allow-clear=true>{{ $item.id || $item }}</ui-select-match><ui-select-choices repeat=\"certificate in $ctrl.ownConfig.collection track by $index\"><div><span ng-bind-html=\"certificate.name | highlight: $select.search\"></span> - <span ng-bind-html=\"\'\'+certificate.version| highlight: $select.search\"></span></div><small>{{ FORM.LABEL.ENTITY.ID | translate }} <span ng-bind-html=\"certificate.id | highlight: $select.search\"></span><p></p>{{ FORM.LABEL.ENTITY.STATE | translate }} <span ng-bind-html=\"certificate.administrativeState | highlight: $select.search\"></span> {{ FORM.LABEL.SERIAL_NUMBER | translate:\'{ punctuationMark: \":\" }\' }} <span ng-bind-html=\"certificate.serialNumber | highlight: $select.search\"></span><p></p>{{ FORM.LABEL.ENTITY.VALID_FROM | translate }} <span ng-bind-html=\"certificate.valid.from | highlight: $select.search\"></span> {{ FORM.LABEL.ENTITY.UNTIL | translate }} <span ng-bind-html=\"certificate.valid.until | highlight: $select.search\"></span><p></p></small></ui-select-choices></ui-select></div>");
 $templateCache.put("custom-ui-select/views/custom.ui.select.channel.html","<div class=\"form-group no-margin\" mass-autocomplete ng-if=$ctrl.multiple><label ng-if=$ctrl.label class=custom-ui-select-label>{{ $ctrl.label | translate }}<field-options required=$ctrl.ngRequired multiple=true></field-options></label><ui-select name=channel custom-ui-select-config=$ctrl.ownConfig ng-model=$ctrl.channel theme=bootstrap title=\"Choose a channel\" custom-ui-select multiple=true custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.channelSelected($item, $model)\" on-remove=\"$ctrl.channelRemove($item, $model)\" ng-required=$ctrl.ngRequired><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.CHOOSE_A_CHANNEL\' | translate }}\" allow-clear=true>{{$item.provision.administration.identifier._current.value}}</ui-select-match><ui-select-choices repeat=\"channel in $ctrl.ownConfig.collection track by $index\"><span ng-bind-html=\"channel.provision.administration.identifier._current.value | highlight: $select.search\"></span> <small>(<span ng-bind-html=\"channel.provision.administration.organization._current.value | highlight: $select.search\"></span>)</small></ui-select-choices></ui-select></div><div class=\"form-group no-margin\" mass-autocomplete ng-if=!$ctrl.multiple><label ng-if=$ctrl.label class=custom-ui-select-label>{{ $ctrl.label | translate }}<field-options required=$ctrl.ngRequired multiple=false></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=channel ng-model=$ctrl.channel theme=bootstrap title=\"Choose a channel\" custom-ui-select multiple=false custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.channelSelected($item, $model)\" on-remove=\"$ctrl.channelRemove($item, $model)\" ng-required=$ctrl.ngRequired><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.CHOOSE_A_CHANNEL\' | translate }}\" allow-clear=true>{{$item.provision.administration.identifier._current.value}}</ui-select-match><ui-select-choices repeat=\"channel in $ctrl.ownConfig.collection track by $index\"><span ng-bind-html=\"channel.provision.administration.identifier._current.value | highlight: $select.search\"></span> <small>(<span ng-bind-html=\"channel.provision.administration.organization._current.value | highlight: $select.search\"></span>)</small></ui-select-choices></ui-select></div>");
@@ -46,7 +46,7 @@ $templateCache.put("schema-form/views/schema.form.organization.template.html","<
 $templateCache.put("schema-form/views/schema.form.serviceGroup.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-service-group label=form.title on-select-item=\"evalExpr(form.onselectitem, {$item: $$value$$, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $$value$$, $model: $model})\" service-group=form.dummy identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll ng-model=$$value$$ ng-required=form.required ui-select-match-class=form.uiSelectMatchClass entity-type=form.entityType disabled=\"form.readonly || form.disabled\"></custom-ui-select-service-group></div>");
 $templateCache.put("schema-form/views/schema.form.subscription.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-subscription label=form.title specific-type={{form.specificType}} on-select-item=\"evalExpr(form.onselectitem, {$item: $item, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $item, $model: $model})\" identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll entity=form.dummy ng-model=$$value$$ placeholder=\"{{form.placeholder || \'FORM.PLACEHOLDER.ELEMENT\' | translate }}\" title=\"{{form.title || \'ENTITY.SUBSCRIPTION\' | translate }}\" ng-required=form.required exclude-devices=form.excludeDevices organization={{form.organization}} channel={{form.channel}} oql={{form.oql}} quick-search-fields={{form.quickSearchFields}} ui-select-match-path={{form.uiSelectMatchPath}} ui-select-match-class={{form.uiSelectMatchClass}} actions=form.actions disabled=\"form.readonly || form.disabled\"></custom-ui-select-subscription></div>");
 $templateCache.put("window-time-select/views/datetime.select.view.html","<p class=\"datetime-container input-group form-group no-margin\"><input readonly type=text class=\"form-control text-left no-margin\" ng-model=rawdata ng-required=required ng-disabled=ngDisabled button-bar=customButtonBar ng-click=openCalendar() datetime-picker={{visibleFormat}} is-open=calendarOpen datepicker-options=pickerOptions.datePicker timepicker-options=pickerOptions.timePicker popup-placement=\"auto top-right\" enable-date=enableDate enable-time=enableTime datepicker-append-to-body=true placeholder={{placeholder}} ng-change=changedRawdata()> <span class=input-group-btn><button class=\"btn btn-default no-padding fa\" ng-class=\"{\'fa-calendar\' : enableDate, \'fa-clock-o\' : !enableDate && enableTime}\" ng-click=openCalendar() aria-hidden=true></button></span></p>");
-$templateCache.put("window-time-select/views/window-time.select.view.html","<div permission permission-only=\"\'dateFilter\'\" class=window-time-container><button type=button class=\"btn btn-xs\" ng-class=oneDayClass ng-click=oneDay() translate>BUTTON.TITLE.LAST_DAY</button> <button type=button class=\"btn btn-xs\" ng-class=oneWeekClass ng-click=oneWeek() translate=BUTTON.TITLE.LAST_NUMBER_DAY translate-values=\"{ number: \'7\' }\"></button> <button type=button class=\"btn btn-xs\" ng-class=oneMonthClass ng-click=oneMonth() translate=BUTTON.TITLE.LAST_NUMBER_DAY translate-values=\"{ number: \'30\' }\"></button> <button type=button class=\"btn btn-xs\" ng-class=customClass ng-click=custom() translate>BUTTON.TITLE.CUSTOM</button> <button type=button class=\"btn btn-xs btn-info\" ng-if=filterApplied ng-click=clear() translate>BUTTON.TITLE.CLEAR</button><div ng-if=customEnabled class=\"window-time-body panel panel-body\"><div class=col-xs-12><div class=row><div class=\"col-xs-6 text-left\"><label translate>BUTTON.TITLE.CUSTOM</label></div><div class=\"col-xs-6 text-right\"><button type=button class=\"btn btn-xs oux-button-margin btn-success\" ng-disabled=\"!!errorCustomWindow || fromCalendarOpen || toCalendarOpen\" ng-click=applyCustom() translate>BUTTON.TITLE.APPLY</button></div></div><div class=row><div class=\"col-xs-12 col-md-2 text-left\"><label class=control-label><i class=\"fa fa-calendar\" aria-hidden=true></i> {{ \'FORM.LABEL.FROM\' | translate }}: {{fromDate | date:\'fullDate\'}}</label></div><div class=\"col-xs-12 col-md-4\"><input readonly type=text class=\"form-control text-left no-margin\" ng-model=date.from button-bar=customButtonBar ng-click=openCalendarFrom() ng-required=true datetime-picker={{format}} is-open=fromCalendarOpen datepicker-options=fromOptions.datePicker timepicker-options=fromOptions.timePicker when-closed=fromChange(args) popup-placement=\"auto top-right\" datepicker-append-to-body=true></div><div class=\"col-xs-12 col-md-2 text-left\"><label class=control-label><i class=\"fa fa-calendar\" aria-hidden=true></i> {{ \'FORM.LABEL.TO\' | translate }}: {{fromDate | date:\'fullDate\'}}</label></div><div class=\"col-xs-12 col-md-4\"><input readonly type=text class=\"form-control text-left no-margin\" ng-model=date.to button-bar=customButtonBar ng-click=openCalendarTo() ng-required=true datetime-picker={{format}} is-open=toCalendarOpen datepicker-options=toOptions.datePicker timepicker-options=toOptions.timePicker when-closed=toChange(args) popup-placement=\"auto top-right\" datepicker-append-to-body=true></div></div></div><alert type=danger ng-show=errorCustomWindow class=text-danger style=\"display: block;text-align: center;\"><span ng-bind=errorCustomWindow></span></alert></div></div>");}]);
+$templateCache.put("window-time-select/views/window-time.select.view.html","<div permission permission-only=\"\'dateFilter\'\" class=window-time-container><button type=button class=\"btn btn-xs no-margin\" ng-class=oneDayClass ng-click=oneDay() translate>BUTTON.TITLE.LAST_DAY</button> <button type=button class=\"btn btn-xs no-margin\" ng-class=oneWeekClass ng-click=oneWeek() translate=BUTTON.TITLE.LAST_NUMBER_DAY translate-values=\"{ number: \'7\' }\"></button> <button type=button class=\"btn btn-xs no-margin\" ng-class=oneMonthClass ng-click=oneMonth() translate=BUTTON.TITLE.LAST_NUMBER_DAY translate-values=\"{ number: \'30\' }\"></button> <button type=button class=\"btn btn-xs no-margin\" ng-class=customClass ng-click=custom() translate>BUTTON.TITLE.CUSTOM</button> <button type=button class=\"btn btn-xs no-margin btn-info\" ng-if=filterApplied ng-click=clear() translate>BUTTON.TITLE.CLEAR</button><div ng-if=customEnabled class=\"window-time-body panel panel-body\"><div class=col-xs-12><div class=row><div class=\"col-xs-6 text-left\"><label translate>BUTTON.TITLE.CUSTOM</label></div><div class=\"col-xs-6 text-right\"><button type=button class=\"btn btn-xs oux-button-margin btn-success\" ng-disabled=\"!!errorCustomWindow || fromCalendarOpen || toCalendarOpen\" ng-click=applyCustom() translate>BUTTON.TITLE.APPLY</button></div></div><div class=row><div class=\"col-xs-12 col-md-2 text-left\"><label class=control-label><i class=\"fa fa-calendar\" aria-hidden=true></i> {{ \'FORM.LABEL.FROM\' | translate }}: {{fromDate | date:\'fullDate\'}}</label></div><div class=\"col-xs-12 col-md-4\"><input readonly type=text class=\"form-control text-left no-margin\" ng-model=date.from button-bar=customButtonBar ng-click=openCalendarFrom() ng-required=true datetime-picker={{format}} is-open=fromCalendarOpen datepicker-options=fromOptions.datePicker timepicker-options=fromOptions.timePicker when-closed=fromChange(args) popup-placement=\"auto top-right\" datepicker-append-to-body=true></div><div class=\"col-xs-12 col-md-2 text-left\"><label class=control-label><i class=\"fa fa-calendar\" aria-hidden=true></i> {{ \'FORM.LABEL.TO\' | translate }}: {{fromDate | date:\'fullDate\'}}</label></div><div class=\"col-xs-12 col-md-4\"><input readonly type=text class=\"form-control text-left no-margin\" ng-model=date.to button-bar=customButtonBar ng-click=openCalendarTo() ng-required=true datetime-picker={{format}} is-open=toCalendarOpen datepicker-options=toOptions.datePicker timepicker-options=toOptions.timePicker when-closed=toChange(args) popup-placement=\"auto top-right\" datepicker-append-to-body=true></div></div></div><alert type=danger ng-show=errorCustomWindow class=text-danger style=\"display: block;text-align: center;\"><span ng-bind=errorCustomWindow></span></alert></div></div>");}]);
 
 
 angular.module('uxleaflet')
@@ -10580,280 +10580,6 @@ angular.module('opengate-angular-js').component('helperUiSelect', {
 });
 
 
-angular.module('opengate-angular-js')
-    .directive('customUiSelect', ['$compile', 'Filter',
-        function($compile, Filter) {
-            var button = angular.element('<div title="Toggle Advanced/Basic filter search" ng-click="complex()" style="cursor:pointer" class="custom-ui-select-button input-group-addon"><i class="fa fa-filter"></i><i class="filter-icon fa fa-bold text-muted"></i></div>');
-            var container = angular.element('<div class="custom-ui-select-container input-group"></div>');
-
-            var setRefresh = function(obj, fnc) {
-                var choices = obj.querySelectorAll('ui-select-choices');
-                choices.attr('refresh', fnc);
-                choices.attr('refresh-delay', '0');
-            };
-
-            return {
-                require: 'uiSelect',
-                scope: true,
-                bindToController: true,
-                controller: ["$scope", "$element", "$attrs", "$q", "$timeout", function($scope, $element, $attrs, $q, $timeout) {
-                    var uiConfig = getConfig();
-
-                    function processFilter(_filter) {
-                        if (uiConfig.prefilter) {
-                            var filter = {
-                                and: []
-                            };
-                            filter.and.push(uiConfig.prefilter);
-                            filter.and.push(_filter);
-                            return filter;
-                        }
-                        return _filter;
-                    }
-
-                    function getConfig() {
-                        var configPath = $attrs.customUiSelectConfig.split('.');
-                        if (configPath.length === 1) {
-                            return $scope[$attrs.customUiSelectConfig];
-                        } else {
-                            var config = $scope;
-                            configPath.forEach(function(path) {
-                                config = config[path];
-                            });
-                            return config;
-                        }
-                    }
-
-                    //Filtro asistido con mass-autocomplete
-                    $scope.complexfilter = function(search) {
-                        //console.log(search);
-                        Filter.parseQuery(search || '')
-                            .then(function(data) {
-                                var filter = data.filter;
-                                //Solo filtramos si no se trata de un filtro vacio
-                                if (Object.keys(filter).length > 0) {
-                                    _loadCollection(processFilter(filter));
-                                    // console.log('Final filter: ' + filter);
-                                } else {
-                                    //lo tratamos igual que si fuera un filtro no valido
-                                    uiConfig.collection.splice(0, uiConfig.collection.length);
-                                }
-                            })
-                            .catch(function(err) {
-                                console.error(err);
-                                //Si el filtro no es valido borramos la lista de opciones del ui-select
-                                uiConfig.collection.splice(0, uiConfig.collection.length);
-                                // Tratar el error
-                            });
-                    };
-
-                    //Filtro simple con or-like
-                    $scope.asyncfilter = function(search) {
-                        _loadCollection(processFilter(uiConfig.filter(search)));
-                    };
-
-                    $scope._complex = $attrs.$$button.querySelectorAll('.fa-filter').hasClass('text-primary');
-                    $scope.complex = function() {
-                        if (!uiConfig.simpleMode) {
-                            $scope._complex = !$scope._complex;
-                            if ($scope._complex) {
-                                $element.css('display', '').removeClass('custom-ui-select-hide');
-                                $attrs.$$cloneElement.css('display', 'none').addClass('custom-ui-select-hide');
-                                $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-bold').removeClass('text-muted').addClass('fa-font').addClass('text-primary');
-                            } else {
-                                $element.css('display', 'none').addClass('custom-ui-select-hide');
-                                $attrs.$$cloneElement.css('display', '').removeClass('custom-ui-select-hide');
-                                $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-font').addClass('text-muted').addClass('fa-bold').removeClass('text-primary');
-                            }
-                        }
-                    };
-
-                    $scope.customUiTagTransform = function(value) {
-                        return null;
-                    };
-
-                    // Retraso de la peticion de recarga para no saturar (OUW-431)
-                    var lastTimeout = null;
-
-                    function _loadCollection(filter) {
-                        if (lastTimeout) clearTimeout(lastTimeout);
-
-                        lastTimeout = setTimeout(function() {
-                            _loadCollectionTimeout(filter);
-                        }, 500);
-                    }
-
-                    var lastFilter = null;
-
-                    function _loadCollectionTimeout(filter) {
-                        var builder = uiConfig.builder,
-                            id = uiConfig.rootKey,
-                            limit = uiConfig.limit ? uiConfig.limit : 25,
-                            isGet = uiConfig.isGet ? uiConfig.isGet : false;
-
-                        function _processingData(datas) {
-                            var _collection = [];
-                            if (!angular.isArray(datas)) {
-                                angular.forEach(datas, function(data, key) {
-                                    _collection.push(data);
-                                });
-                            } else {
-                                angular.copy(datas, _collection);
-                            }
-                            angular.copy(_collection, uiConfig.collection);
-
-                        }
-                        if (!lastFilter || !angular.equals(lastFilter, filter)) {
-                            lastFilter = angular.copy(filter);
-                            $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-bold').removeClass('fa-font').addClass('fa-spinner').addClass('fa-spin');
-                            var builderToExecute = isGet ? builder : builder.limit(limit).filter(filter).build().execute();
-                            builderToExecute.then(
-                                function(data) {
-                                    if ($scope._complex) {
-                                        $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-font');
-                                    } else {
-                                        $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-bold');
-                                    }
-
-                                    if (data.statusCode === 200) {
-                                        var datas = id ? data.data[id] : data.data;
-
-                                        if (angular.isFunction(uiConfig.processingData)) {
-                                            uiConfig.processingData(data, datas).then(_processingData);
-                                        } else {
-                                            _processingData(datas);
-                                        }
-
-                                        //$scope.$apply();
-                                    } else {
-                                        uiConfig.collection.splice(0, uiConfig.collection.length);
-
-                                        if (data.statusCode !== 204) {
-                                            //toastr.error('Loading error');
-                                            // console.error(JSON.stringify(data));
-                                        } else {
-                                            //   console.log(JSON.stringify(data));
-                                        }
-                                        //$scope.$apply();
-                                    }
-
-                                }
-                            ).catch(function(err) {
-                                console.error(err);
-                                $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-filter');
-                            });
-                        }
-
-                    }
-                }],
-                compile: function(templateElement, templateAttributes) {
-                    templateAttributes.$$button = button.clone();
-                    templateAttributes.$$container = container.clone();
-                    var simple = templateAttributes.multiple !== 'true';
-                    var taggFunction = templateAttributes.tagging;
-                    if (simple) {
-                        templateElement.attr('limit', '1');
-                        templateAttributes.limit = '1';
-                        templateAttributes.searchEnabled = '!$select.selected || $select.selected.length === 0';
-                        templateElement.attr('search-enabled', '!$select.selected || $select.selected.length === 0');
-                        templateElement.addClass('custom-ui-select-no-multiple');
-                    }
-
-                    if (!taggFunction || taggFunction.trim().length === 0) {
-                        templateElement.attr('tagging', 'customUiTagTransform');
-                        templateAttributes.tagging = 'customUiTagTransform';
-                    }
-
-                    var asyncFilter = 'asyncfilter($select.search);';
-                    var complexFilter = 'complexfilter($select.search);';
-
-
-                    if (templateAttributes.customMassAutocompleteItem) {
-                        setRefresh(templateElement, complexFilter);
-                        var _templateElement = angular.element(templateElement.clone());
-                        _templateElement.removeAttr('custom-ui-select');
-                        setRefresh(_templateElement, asyncFilter);
-                        templateAttributes.$$templateElement = _templateElement;
-                    } else {
-                        setRefresh(templateElement, asyncFilter);
-                    }
-
-                    return function link($scope, $element, $attrs, $select) {
-                        var maus = 'mass-autocomplete-ui-select';
-                        var aus = 'async-ui-select';
-
-                        if ($attrs.customMassAutocompleteItem) {
-                            $element.addClass(maus);
-                            var massAutocompleteItem = getAttribute('customMassAutocompleteItem');
-
-                            if (!massAutocompleteItem.suggest) {
-                                massAutocompleteItem.suggest = Filter.suggest_field_delimited;
-                            }
-                            var filterInput = $element.querySelectorAll('input.ui-select-search');
-                            filterInput.attr('mass-autocomplete-item', $attrs.customMassAutocompleteItem);
-                            //filterInput.attr('ng-change', 'debugQuery()');
-                            $compile(filterInput)($scope);
-
-                            $attrs.$$container.empty();
-                            $element.before($attrs.$$container);
-                            $element.detach();
-
-                            $attrs.$$container.append($element);
-                            var template = $attrs.$$templateElement.clone();
-                            var _cloneElement = $compile(template)($scope, function(clonedElement, $scope) {
-                                $attrs.$$container.append(clonedElement);
-                            });
-                            _cloneElement.addClass(aus);
-                            $attrs.$$cloneElement = _cloneElement;
-
-                            $compile($attrs.$$button)($scope);
-                            $attrs.$$container.append($attrs.$$button);
-                            $element.css('display', 'none').addClass('custom-ui-select-hide');
-
-                            var keys = [];
-                            $attrs.$$container.bind('keydown', function(e) {
-                                keys.push(e.keyCode);
-                            });
-                            $attrs.$$container.bind('keyup', function(e) {
-                                if (keys.length > 0) {
-                                    if (angular.equals(keys, [17, 18, 70])) {
-                                        $scope.complex();
-                                    }
-                                    keys.splice(0, keys.length);
-                                }
-                            });
-
-
-                        } else {
-                            $element.addClass(aus);
-                        }
-
-
-
-                        function getAttribute(attr) {
-                            if ($attrs[attr]) {
-
-                                var configPath = $attrs[attr].split('.');
-                                if (configPath.length === 1) {
-                                    return $scope[$attrs[attr]];
-                                } else {
-                                    var config = $scope;
-                                    configPath.forEach(function(path) {
-                                        config = config[path];
-                                    });
-                                    return config;
-                                }
-                            } else {
-                                return;
-                            }
-                        }
-                    };
-                }
-            };
-        }
-    ]);
-
-
 
 angular.module('opengate-angular-js').controller('uiSelectResourceTypeController', ['$scope', '$element', '$attrs', '$api', function ($scope, $element, $attrs, $api) {
     var ctrl = this;
@@ -13977,6 +13703,270 @@ angular.module('opengate-angular-js').component('customUiSelectArea', {
         uiSelectMatchClass: '@?'
     }
 });
+
+
+angular.module('opengate-angular-js')
+    .directive('customUiSelect', ['$compile', 'Filter',
+        function($compile, Filter) {
+            var button = angular.element('<div title="Toggle Advanced/Basic filter search" ng-click="complex()" style="cursor:pointer" class="custom-ui-select-button input-group-addon"><i class="fa fa-filter"></i><i class="filter-icon fa fa-bold text-muted"></i></div>');
+            var container = angular.element('<div class="custom-ui-select-container input-group"></div>');
+
+            var setRefresh = function(obj, fnc) {
+                var choices = obj.querySelectorAll('ui-select-choices');
+                choices.attr('refresh', fnc);
+                choices.attr('refresh-delay', '0');
+            };
+
+            return {
+                require: 'uiSelect',
+                scope: true,
+                bindToController: true,
+                controller: ["$scope", "$element", "$attrs", "$q", "$timeout", function($scope, $element, $attrs, $q, $timeout) {
+                    var uiConfig = getConfig();
+
+                    function processFilter(_filter) {
+                        if (uiConfig.prefilter) {
+                            var filter = {
+                                and: []
+                            };
+                            filter.and.push(uiConfig.prefilter);
+                            filter.and.push(_filter);
+                            return filter;
+                        }
+                        return _filter;
+                    }
+
+                    function getConfig() {
+                        var configPath = $attrs.customUiSelectConfig.split('.');
+                        if (configPath.length === 1) {
+                            return $scope[$attrs.customUiSelectConfig];
+                        } else {
+                            var config = $scope;
+                            configPath.forEach(function(path) {
+                                config = config[path];
+                            });
+                            return config;
+                        }
+                    }
+
+                    //Filtro asistido con mass-autocomplete
+                    $scope.complexfilter = function(search) {
+                        //console.log(search);
+                        Filter.parseQuery(search || '')
+                            .then(function(data) {
+                                var filter = data.filter;
+                                //Solo filtramos si no se trata de un filtro vacio
+                                if (Object.keys(filter).length > 0) {
+                                    _loadCollection(processFilter(filter));
+                                    // console.log('Final filter: ' + filter);
+                                } else {
+                                    //lo tratamos igual que si fuera un filtro no valido
+                                    uiConfig.collection.splice(0, uiConfig.collection.length);
+                                }
+                            })
+                            .catch(function(err) {
+                                console.error(err);
+                                //Si el filtro no es valido borramos la lista de opciones del ui-select
+                                uiConfig.collection.splice(0, uiConfig.collection.length);
+                                // Tratar el error
+                            });
+                    };
+
+                    //Filtro simple con or-like
+                    $scope.asyncfilter = function(search) {
+                        _loadCollection(processFilter(uiConfig.filter(search)));
+                    };
+
+                    $scope._complex = $attrs.$$button.querySelectorAll('.fa-filter').hasClass('text-primary');
+                    $scope.complex = function() {
+                        if (!uiConfig.simpleMode) {
+                            $scope._complex = !$scope._complex;
+                            if ($scope._complex) {
+                                $element.css('display', '').removeClass('custom-ui-select-hide');
+                                $attrs.$$cloneElement.css('display', 'none').addClass('custom-ui-select-hide');
+                                $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-bold').removeClass('text-muted').addClass('fa-font').addClass('text-primary');
+                            } else {
+                                $element.css('display', 'none').addClass('custom-ui-select-hide');
+                                $attrs.$$cloneElement.css('display', '').removeClass('custom-ui-select-hide');
+                                $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-font').addClass('text-muted').addClass('fa-bold').removeClass('text-primary');
+                            }
+                        }
+                    };
+
+                    $scope.customUiTagTransform = function(value) {
+                        return null;
+                    };
+
+                    // Retraso de la peticion de recarga para no saturar (OUW-431)
+                    var lastTimeout = null;
+
+                    function _loadCollection(filter) {
+                        if (lastTimeout) clearTimeout(lastTimeout);
+
+                        lastTimeout = setTimeout(function() {
+                            _loadCollectionTimeout(filter);
+                        }, 500);
+                    }
+
+                    var lastFilter = null;
+
+                    function _loadCollectionTimeout(filter) {
+                        var builder = uiConfig.builder,
+                            id = uiConfig.rootKey,
+                            limit = uiConfig.limit ? uiConfig.limit : 25,
+                            isGet = uiConfig.isGet ? uiConfig.isGet : false;
+
+                        function _processingData(datas) {
+                            var _collection = [];
+                            if (!angular.isArray(datas)) {
+                                angular.forEach(datas, function(data, key) {
+                                    _collection.push(data);
+                                });
+                            } else {
+                                angular.copy(datas, _collection);
+                            }
+                            angular.copy(_collection, uiConfig.collection);
+
+                        }
+                        if (!lastFilter || !angular.equals(lastFilter, filter)) {
+                            lastFilter = angular.copy(filter);
+                            $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-bold').removeClass('fa-font').addClass('fa-spinner').addClass('fa-spin');
+                            var builderToExecute = isGet ? builder : builder.limit(limit).filter(filter).build().execute();
+                            builderToExecute.then(
+                                function(data) {
+                                    if ($scope._complex) {
+                                        $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-font');
+                                    } else {
+                                        $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-bold');
+                                    }
+
+                                    if (data.statusCode === 200) {
+                                        var datas = id ? data.data[id] : data.data;
+
+                                        if (angular.isFunction(uiConfig.processingData)) {
+                                            uiConfig.processingData(data, datas).then(_processingData);
+                                        } else {
+                                            _processingData(datas);
+                                        }
+                                    } else {
+                                        uiConfig.collection.splice(0, uiConfig.collection.length);
+                                    }
+                                    $scope.$apply();
+                                }
+                            ).catch(function(err) {
+                                console.error(err);
+                                $attrs.$$button.querySelectorAll('.filter-icon').removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-filter');
+                            });
+                        }
+
+                    }
+                }],
+                compile: function(templateElement, templateAttributes) {
+                    templateAttributes.$$button = button.clone();
+                    templateAttributes.$$container = container.clone();
+                    var simple = templateAttributes.multiple !== 'true';
+                    var taggFunction = templateAttributes.tagging;
+                    if (simple) {
+                        templateElement.attr('limit', '1');
+                        templateAttributes.limit = '1';
+                        templateAttributes.searchEnabled = '!$select.selected || $select.selected.length === 0';
+                        templateElement.attr('search-enabled', '!$select.selected || $select.selected.length === 0');
+                        templateElement.addClass('custom-ui-select-no-multiple');
+                    }
+
+                    if (!taggFunction || taggFunction.trim().length === 0) {
+                        templateElement.attr('tagging', 'customUiTagTransform');
+                        templateAttributes.tagging = 'customUiTagTransform';
+                    }
+
+                    var asyncFilter = 'asyncfilter($select.search);';
+                    var complexFilter = 'complexfilter($select.search);';
+
+
+                    if (templateAttributes.customMassAutocompleteItem) {
+                        setRefresh(templateElement, complexFilter);
+                        var _templateElement = angular.element(templateElement.clone());
+                        _templateElement.removeAttr('custom-ui-select');
+                        setRefresh(_templateElement, asyncFilter);
+                        templateAttributes.$$templateElement = _templateElement;
+                    } else {
+                        setRefresh(templateElement, asyncFilter);
+                    }
+
+                    return function link($scope, $element, $attrs, $select) {
+                        var maus = 'mass-autocomplete-ui-select';
+                        var aus = 'async-ui-select';
+
+                        if ($attrs.customMassAutocompleteItem) {
+                            $element.addClass(maus);
+                            var massAutocompleteItem = getAttribute('customMassAutocompleteItem');
+
+                            if (!massAutocompleteItem.suggest) {
+                                massAutocompleteItem.suggest = Filter.suggest_field_delimited;
+                            }
+                            var filterInput = $element.querySelectorAll('input.ui-select-search');
+                            filterInput.attr('mass-autocomplete-item', $attrs.customMassAutocompleteItem);
+                            //filterInput.attr('ng-change', 'debugQuery()');
+                            $compile(filterInput)($scope);
+
+                            $attrs.$$container.empty();
+                            $element.before($attrs.$$container);
+                            $element.detach();
+
+                            $attrs.$$container.append($element);
+                            var template = $attrs.$$templateElement.clone();
+                            var _cloneElement = $compile(template)($scope, function(clonedElement, $scope) {
+                                $attrs.$$container.append(clonedElement);
+                            });
+                            _cloneElement.addClass(aus);
+                            $attrs.$$cloneElement = _cloneElement;
+
+                            $compile($attrs.$$button)($scope);
+                            $attrs.$$container.append($attrs.$$button);
+                            $element.css('display', 'none').addClass('custom-ui-select-hide');
+
+                            var keys = [];
+                            $attrs.$$container.bind('keydown', function(e) {
+                                keys.push(e.keyCode);
+                            });
+                            $attrs.$$container.bind('keyup', function(e) {
+                                if (keys.length > 0) {
+                                    if (angular.equals(keys, [17, 18, 70])) {
+                                        $scope.complex();
+                                    }
+                                    keys.splice(0, keys.length);
+                                }
+                            });
+
+
+                        } else {
+                            $element.addClass(aus);
+                        }
+
+
+
+                        function getAttribute(attr) {
+                            if ($attrs[attr]) {
+
+                                var configPath = $attrs[attr].split('.');
+                                if (configPath.length === 1) {
+                                    return $scope[$attrs[attr]];
+                                } else {
+                                    var config = $scope;
+                                    configPath.forEach(function(path) {
+                                        config = config[path];
+                                    });
+                                    return config;
+                                }
+                            } else {
+                                return;
+                            }
+                        }
+                    };
+                }
+            };
+        }
+    ]);
 angular.module('opengate-angular-js')
     .service('$provisionDatastreamsUtils', [function() {
         
@@ -15544,6 +15534,108 @@ DataUrlFormatter.prototype.format = function (value) {
 function DataUrlFormatter() {}
 
 
+/**
+ * Edits by Ryan Hutchison
+ * Credit: https://github.com/paulyoder/angular-bootstrap-show-errors */
+
+angular.module('opengate-angular-js')
+    .directive('showErrors', ['$timeout', '$interpolate', function($timeout, $interpolate) {
+        var linkFn = function(scope, el, attrs, formCtrl) {
+            var inputEl, inputName, inputNgEl, options, showSuccess, toggleClasses,
+                initCheck = false,
+                showValidationMessages = false,
+                blurred = false;
+
+            options = scope.$eval(attrs.showErrors) || {};
+            showSuccess = options.showSuccess || false;
+            inputEl = el[0].querySelector('.form-control[name]') || el[0].querySelector('[name]');
+            inputNgEl = angular.element(inputEl);
+            inputName = $interpolate(inputNgEl.attr('name') || '')(scope);
+
+            if (!inputName) {
+                throw 'show-errors element has no child input elements with a \'name\' attribute class';
+            }
+
+            var reset = function() {
+                return $timeout(function() {
+                    el.removeClass('has-error');
+                    el.removeClass('has-success');
+                    showValidationMessages = false;
+                }, 0, false);
+            };
+
+            scope.$watch(function() {
+                return formCtrl[inputName] && formCtrl[inputName].$invalid;
+            }, function(invalid) {
+                return toggleClasses(invalid);
+            });
+
+            scope.$on('show-errors-check-validity', function(event, name) {
+                if (angular.isUndefined(name) || formCtrl.$name === name) {
+                    initCheck = true;
+                    showValidationMessages = true;
+
+                    return toggleClasses(formCtrl[inputName].$invalid);
+                }
+            });
+
+            scope.$on('show-errors-reset', function(event, name) {
+                if (angular.isUndefined(name) || formCtrl.$name === name) {
+                    return reset();
+                }
+            });
+
+            toggleClasses = function(invalid) {
+                el.toggleClass('has-error', showValidationMessages && invalid);
+                if (showSuccess) {
+                    return el.toggleClass('has-success', showValidationMessages && !invalid);
+                }
+            };
+        };
+
+        return {
+            restrict: 'A',
+            require: '^form',
+            compile: function(elem, attrs) {
+                if (attrs.showErrors.indexOf('skipFormGroupCheck') === -1) {
+                    if (!(elem.hasClass('form-group') || elem.hasClass('input-group'))) {
+                        throw 'show-errors element does not have the \'form-group\' or \'input-group\' class';
+                    }
+                }
+                return linkFn;
+            }
+        };
+    }]);
+
+
+angular.module('opengate-angular-js')
+    .directive('elemReady', ["$parse", function($parse) {
+        return {
+            restrict: 'A',
+            link: function($scope, elem, attrs) {
+                elem.ready(function() {
+                    $scope.$apply(function() {
+                        var func = $parse(attrs.elemReady);
+                        func($scope);
+                    });
+                });
+            }
+        };
+    }]);
+
+
+angular.module('opengate-angular-js').directive('disallowSpaces', function() {
+    return {
+        restrict: 'A',
+        link: function($scope, $element) {
+            $element.bind('input', function() {
+                window.$(this).val(window.$(this).val().replace(/ /g, ''));
+            });
+        }
+    };
+});
+
+
 angular.module('opengate-angular-js')
 
 .filter('communicationsInterface', function() {
@@ -15678,108 +15770,6 @@ angular.module('opengate-angular-js')
             return input;
         };
     });
-
-
-/**
- * Edits by Ryan Hutchison
- * Credit: https://github.com/paulyoder/angular-bootstrap-show-errors */
-
-angular.module('opengate-angular-js')
-    .directive('showErrors', ['$timeout', '$interpolate', function($timeout, $interpolate) {
-        var linkFn = function(scope, el, attrs, formCtrl) {
-            var inputEl, inputName, inputNgEl, options, showSuccess, toggleClasses,
-                initCheck = false,
-                showValidationMessages = false,
-                blurred = false;
-
-            options = scope.$eval(attrs.showErrors) || {};
-            showSuccess = options.showSuccess || false;
-            inputEl = el[0].querySelector('.form-control[name]') || el[0].querySelector('[name]');
-            inputNgEl = angular.element(inputEl);
-            inputName = $interpolate(inputNgEl.attr('name') || '')(scope);
-
-            if (!inputName) {
-                throw 'show-errors element has no child input elements with a \'name\' attribute class';
-            }
-
-            var reset = function() {
-                return $timeout(function() {
-                    el.removeClass('has-error');
-                    el.removeClass('has-success');
-                    showValidationMessages = false;
-                }, 0, false);
-            };
-
-            scope.$watch(function() {
-                return formCtrl[inputName] && formCtrl[inputName].$invalid;
-            }, function(invalid) {
-                return toggleClasses(invalid);
-            });
-
-            scope.$on('show-errors-check-validity', function(event, name) {
-                if (angular.isUndefined(name) || formCtrl.$name === name) {
-                    initCheck = true;
-                    showValidationMessages = true;
-
-                    return toggleClasses(formCtrl[inputName].$invalid);
-                }
-            });
-
-            scope.$on('show-errors-reset', function(event, name) {
-                if (angular.isUndefined(name) || formCtrl.$name === name) {
-                    return reset();
-                }
-            });
-
-            toggleClasses = function(invalid) {
-                el.toggleClass('has-error', showValidationMessages && invalid);
-                if (showSuccess) {
-                    return el.toggleClass('has-success', showValidationMessages && !invalid);
-                }
-            };
-        };
-
-        return {
-            restrict: 'A',
-            require: '^form',
-            compile: function(elem, attrs) {
-                if (attrs.showErrors.indexOf('skipFormGroupCheck') === -1) {
-                    if (!(elem.hasClass('form-group') || elem.hasClass('input-group'))) {
-                        throw 'show-errors element does not have the \'form-group\' or \'input-group\' class';
-                    }
-                }
-                return linkFn;
-            }
-        };
-    }]);
-
-
-angular.module('opengate-angular-js')
-    .directive('elemReady', ["$parse", function($parse) {
-        return {
-            restrict: 'A',
-            link: function($scope, elem, attrs) {
-                elem.ready(function() {
-                    $scope.$apply(function() {
-                        var func = $parse(attrs.elemReady);
-                        func($scope);
-                    });
-                });
-            }
-        };
-    }]);
-
-
-angular.module('opengate-angular-js').directive('disallowSpaces', function() {
-    return {
-        restrict: 'A',
-        link: function($scope, $element) {
-            $element.bind('input', function() {
-                window.$(this).val(window.$(this).val().replace(/ /g, ''));
-            });
-        }
-    };
-});
 
 
 
