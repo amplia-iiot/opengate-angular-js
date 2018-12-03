@@ -13134,7 +13134,7 @@ angular.module('opengate-angular-js').component('customUiSelectDatastream', {
 
 
 angular.module('opengate-angular-js').controller('customUiSelectChannelController', ['$scope', '$element', '$attrs', '$api', '$q',
-    function($scope, $element, $attrs, $api, $q) {
+    function ($scope, $element, $attrs, $api, $q) {
         var ctrl = this;
         var firstLoad = ctrl.ngRequired || ctrl.required;
         var defaultQuickSearchFields = 'provision.channel.identifier,provision.channel.description';
@@ -13150,7 +13150,7 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
             var filter = {
                 or: []
             };
-            fields.forEach(function(field) {
+            fields.forEach(function (field) {
                 var _like = {
                     like: {}
                 };
@@ -13162,7 +13162,7 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
 
         ctrl.ownConfig = {
             builder: $api().channelsSearchBuilder(),
-            filter: function(search) {
+            filter: function (search) {
                 var filter = _getQuickSerachFields(search);
 
                 if (!!ctrl.organization) {
@@ -13183,28 +13183,17 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
             rootKey: 'channels',
             collection: [],
             customSelectors: $api().channelsSearchBuilder(),
-            processingData: function(result, channels) {
+            processingData: function (result, channels) {
                 if (firstLoad) {
-                    //var _selectedChannel = ctrl.channel && ctrl.channel.selected && ctrl.channel.selected.length === 1;
-                    var _selectedChannel = ctrl.channel && ctrl.channel.length > 0;
-                    if (!_selectedChannel && ctrl.organization && ctrl.ngRequired) {
-                        if (ctrl.multiple) {
-                            ctrl.channel = channels.filter(function(channel) {
-                                return channel.provision.administration.organization._current.value === ctrl.organization;
-                            });
+                    var _selectedChannel = ctrl.channel && ctrl.channel.selected && ctrl.channel.selected.length === 1;
+                    if (!_selectedChannel && ctrl.organization) {
+                        ctrl.channel = channels.filter(function (channel) {
+                            return channel.provision.administration.organization._current.value === ctrl.organization;
+                        });
+                    }
 
-                            ctrl.channelSelected(ctrl.channel, ctrl.channel);
-                        } else {
-                            var orgChannels = channels.filter(function(channel) {
-                                return channel.provision.administration.organization._current.value === ctrl.organization;
-                            });
-
-                            if (orgChannels === 1) {
-                                ctrl.channel = orgChannels;
-
-                                ctrl.channelSelected(ctrl.channel[0], ctrl.channel[0]);
-                            }
-                        }
+                    if (ctrl.multiple) {
+                        ctrl.channel = ctrl.channel.length > 1 ? undefined : [ctrl.channel[0]];
                     }
 
                     firstLoad = false;
@@ -13218,11 +13207,11 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
             }
         };
 
-        ctrl.channelSelected = function($item, $model) {
+        ctrl.channelSelected = function ($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = [];
 
-                angular.forEach(ctrl.channel, function(channelTmp) {
+                angular.forEach(ctrl.channel, function (channelTmp) {
                     identifierTmp.push(channelTmp.provision.administration.identifier._current.value);
                 });
 
@@ -13239,7 +13228,7 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
             }
         };
 
-        ctrl.channelRemove = function($item, $model) {
+        ctrl.channelRemove = function ($item, $model) {
             if (ctrl.onRemove) {
                 var returnObj = {};
                 returnObj.$item = $item;
@@ -13257,9 +13246,9 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
         };
 
 
-        ctrl.$onChanges = function(changesObj) {
+        ctrl.$onChanges = function (changesObj) {
             if (changesObj) {
-                Object.keys(changesObj).forEach(function(key) {
+                Object.keys(changesObj).forEach(function (key) {
                     switch (key) {
                         case 'identifier':
                             mapIdentifier(changesObj.identifier.currentValue);
@@ -13323,7 +13312,7 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
                 }
                 if (ctrl.multiple) {
                     if (angular.isArray(identifier)) {
-                        angular.forEach(identifier, function(idTmp) {
+                        angular.forEach(identifier, function (idTmp) {
                             ctrl.channel.push(_getChannel(idTmp));
                         });
                     }
