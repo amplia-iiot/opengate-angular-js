@@ -118,7 +118,11 @@ function CollectedJsonFinderHelper() {
             'homeOperator': 'device.communicationModules[].subscription.mobile.homeOperator',
             'subscriptionRegisteredOperator': 'device.communicationModules[].subscription.mobile.registeredOperator',
             'registereOperator': 'device.communicationModules[].subscription.mobile.registeredOperator',
-            'sigfoxDeviceType': 'device.communicationModules[].subscription.sigfox.deviceType'
+            'sigfoxDeviceType': 'device.communicationModules[].subscription.sigfox.deviceType',
+
+            'radiusUserName': 'provision.device.communicationModules[].subscription.mobile.radius.userName',
+            'radiusUserPassword': 'provision.device.communicationModules[].subscription.mobile.radius.userPassword',
+            'radiusFramedIpNetmask': 'provision.device.communicationModules[].subscription.mobile.radius.framedIpNetmask'
         },
         writable: false
     });
