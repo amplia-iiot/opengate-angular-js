@@ -60,7 +60,7 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
                         });
                     }
 
-                    if (ctrl.multiple) {
+                    if (!ctrl.multiple) {
                         ctrl.channel = ctrl.channel.length > 1 ? undefined : [ctrl.channel[0]];
                     }
 
