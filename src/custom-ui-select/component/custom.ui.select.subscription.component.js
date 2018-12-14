@@ -2,7 +2,7 @@
 
 
 angular.module('opengate-angular-js').controller('customUiSelectSubscriptionController', ['$scope', '$element', '$attrs', '$api', '$entityExtractor', '$translate', '$doActions', '$jsonFinderHelper', 'jsonPath', 'Filter',
-    function ($scope, $element, $attrs, $api, $entityExtractor, $translate, $doActions, $jsonFinderHelper, jsonPath, Filter) {
+    function($scope, $element, $attrs, $api, $entityExtractor, $translate, $doActions, $jsonFinderHelper, jsonPath, Filter) {
         var ctrl = this;
         var defaultQuickSearchFields = "provision.device.communicationModules[].subscription.identifier, device.communicationModules[].subscription.identifier";
 
@@ -12,7 +12,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             var filter = {
                 or: []
             };
-            fields.forEach(function (field) {
+            fields.forEach(function(field) {
                 var _like = {
                     like: {}
                 };
@@ -28,7 +28,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             return _filter.and || ([_filter] || []);
         }
 
-        ctrl.getSelectMatch = function (item) {
+        ctrl.getSelectMatch = function(item) {
             if (!item) return item;
             var defaultPath = 'provision.subscription.identifier';
             var path = ctrl.uiSelectMatchPath || defaultPath;
@@ -41,98 +41,114 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
 
         ctrl.ownConfig = {
             builder: $api().subscriptionsSearchBuilder().provisioned(),
-            filter: function (search) {
-                var filter = _getQuickSearchFields(search);
-                if (!!ctrl.specificType) {
+            filter: function(search) {
+                var filter;
+
+                if (search) {
                     filter = {
-                        'and': [
-                            filter,
-                            {
-                                'or': [{
-                                        'eq': {
-                                            'device.communicationModules[].subscription.specificType': ctrl.specificType
-                                        }
-                                    },
-                                    {
-                                        'eq': {
-                                            'provision.device.communicationModules[].subscription.specificType': ctrl.specificType
-                                        }
-                                    }
-                                ]
-                            }
+                        'or': [
+                            { 'like': { 'provision.device.communicationModules[].subscriber.identifier': search } },
+                            { 'like': { 'device.communicationModules[].subscriber.identifier': search } },
+                            { 'like': { 'provision.device.communicationModules[].subscriber.mobile.icc': search } }
                         ]
                     };
                 }
 
-                if (ctrl.excludeDevices) {
-                    if (filter.and) {
-                        filter.and.push({
-                            'eq': {
-                                'resourceType': 'entity.subscription'
-                            }
-                        });
+                if (!!ctrl.specificType) {
+                    if (filter) {
+                        filter = {
+                            'and': [filter]
+                        };
                     } else {
                         filter = {
-                            'and': [
-                                filter,
-                                {
-                                    'eq': {
-                                        'resourceType': 'entity.subscription'
-                                    }
-                                }
-                            ]
+                            and: []
                         };
                     }
+
+                    filter.and.push({
+                        'or': [{
+                                'eq': {
+                                    'device.communicationModules[].subscription.specificType': ctrl.specificType
+                                }
+                            },
+                            {
+                                'eq': {
+                                    'provision.device.communicationModules[].subscription.specificType': ctrl.specificType
+                                }
+                            }
+                        ]
+                    });
+                }
+
+                if (ctrl.excludeDevices) {
+                    if (filter && !filter.and) {
+                        filter = {
+                            'and': [filter]
+                        };
+                    } else if (!filter) {
+                        filter = {
+                            and: []
+                        };
+                    }
+
+                    filter.and.push({
+                        'eq': {
+                            'resourceType': 'entity.subscription'
+                        }
+                    });
                 }
                 if (ctrl.organization && typeof ctrl.organization === 'string') {
-                    if (filter.and) {
-                        filter.and.push({
-                            'eq': {
-                                'provision.administration.organization': ctrl.organization
-                            }
-                        });
-                    } else {
+                    if (filter && !filter.and) {
                         filter = {
-                            'and': [
-                                filter,
-                                {
-                                    'eq': {
-                                        'provision.administration.organization': ctrl.organization
-                                    }
-                                }
-                            ]
+                            'and': [filter]
+                        };
+                    } else if (!filter) {
+                        filter = {
+                            and: []
                         };
                     }
+
+                    filter.and.push({
+                        'eq': {
+                            'provision.administration.organization': ctrl.organization
+                        }
+                    });
                 }
                 if (ctrl.channel && typeof ctrl.channel === 'string') {
-                    if (filter.and) {
-                        filter.and.push({
-                            'eq': {
-                                'provision.administration.channel': ctrl.channel
-                            }
-                        });
-                    } else {
+                    if (filter && !filter.and) {
                         filter = {
-                            'and': [
-                                filter,
-                                {
-                                    'eq': {
-                                        'provision.administration.channel': ctrl.channel
-                                    }
-                                }
-                            ]
+                            'and': [filter]
+                        };
+                    } else if (!filter) {
+                        filter = {
+                            and: []
                         };
                     }
+
+                    filter.and.push({
+                        'eq': {
+                            'provision.administration.channel': ctrl.channel
+                        }
+                    });
                 }
+
                 if (ctrl.oql) {
                     var _oql = _getFilter(ctrl.oql);
-                    if (!filter.and)
+
+                    if (!filter) {
+                        filter = {
+                            'and': []
+                        };
+                    } else if (!filter.and) {
                         filter = {
                             and: [filter]
                         };
+                    }
+
                     var _and = filter.and.concat(_oql);
                     filter.and = _and;
                 }
+
                 return filter;
             },
             rootKey: 'devices',
@@ -146,11 +162,11 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             quickSearchFields: ctrl.quickSearchFields
         };
 
-        ctrl.entitySelected = function ($item, $model) {
+        ctrl.entitySelected = function($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = [];
 
-                angular.forEach(ctrl.entity, function (entityTmp) {
+                angular.forEach(ctrl.entity, function(entityTmp) {
                     identifierTmp.push(ctrl.getSelectMatch(entityTmp));
                 });
 
@@ -167,7 +183,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             }
         };
 
-        ctrl.entityRemove = function ($item, $model) {
+        ctrl.entityRemove = function($item, $model) {
             if (ctrl.onRemove) {
                 var returnObj = {};
                 returnObj.$item = $item;
@@ -188,14 +204,14 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             return {
                 title: $translate.instant('BUTTON.TITLE.EXECUTE_OPERATION'),
                 icon: 'glyphicon glyphicon-flash',
-                action: function () {
+                action: function() {
                     $doActions.executeModal('executeOperation', {
                         keys: jsonPath(ctrl.entity, '$..' + $jsonFinderHelper.subscription.provisioned.getPath('identifier') + '._current.value') || [],
                         entityType: 'SUBSCRIPTION',
                         operation: operationSelected ? operationSelected.trim().toUpperCase() : undefined
                     });
                 },
-                disable: function () {
+                disable: function() {
                     return !ctrl.entity || ctrl.entity.length === 0;
                 },
                 permissions: 'executeOperation'
@@ -207,8 +223,8 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             create: {
                 title: $translate.instant('FORM.LABEL.NEW'),
                 icon: 'glyphicon glyphicon-plus-sign',
-                action: function () {
-                    $doActions.executeModal('createSubscription', {}, function (result) {
+                action: function() {
+                    $doActions.executeModal('createSubscription', {}, function(result) {
                         if (result && result.length > 0) {
                             ctrl.entity = !ctrl.entity ? [] : ctrl.entity;
                             ctrl.entity.push({
@@ -240,11 +256,11 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
         ctrl.uiSelectActions = [];
 
         if (!ctrl.actions) {
-            angular.forEach(uiSelectActionsDefinition, function (action) {
+            angular.forEach(uiSelectActionsDefinition, function(action) {
                 ctrl.uiSelectActions.push(action);
             });
         } else {
-            angular.forEach(ctrl.actions, function (action) {
+            angular.forEach(ctrl.actions, function(action) {
                 var finalAction;
                 switch (action.type) {
                     case 'operation':
@@ -265,7 +281,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             ctrl.ngRequired = ctrl.required;
         }
 
-        ctrl.$onChanges = function (changesObj) {
+        ctrl.$onChanges = function(changesObj) {
             if (changesObj && changesObj.identifier) {
                 mapIdentifier(changesObj.identifier.currentValue);
             }
@@ -286,7 +302,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
                     if (angular.isArray(identifier)) {
                         ctrl.entity = [];
 
-                        angular.forEach(identifier, function (idTmp) {
+                        angular.forEach(identifier, function(idTmp) {
                             ctrl.entity.push({
                                 provision: {
                                     administration: {

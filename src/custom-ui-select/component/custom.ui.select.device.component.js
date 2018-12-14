@@ -73,35 +73,51 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
         ctrl.ownConfig = {
             builder: deviceBuilder,
             filter: function(search) {
-                var filter = _getQuickSearchFields(search);
+                var filter;
+
+                if (search) {
+                    filter = _getQuickSearchFields(search);
+                }
 
                 if (!!ctrl.specificType) {
-                    filter = {
-                        'and': [
-                            filter,
+                    if (filter) {
+                        filter = {
+                            'and': [filter]
+                        };
+                    } else {
+                        filter = {
+                            and: []
+                        };
+                    }
+
+                    filter.and.push({
+                        'or': [{
+                                'eq': {
+                                    'device.specificType': ctrl.specificType
+                                }
+                            },
                             {
-                                'or': [{
-                                        'eq': {
-                                            'device.specificType': ctrl.specificType
-                                        }
-                                    },
-                                    {
-                                        'eq': {
-                                            'provision.device.specificType': ctrl.specificType
-                                        }
-                                    }
-                                ]
+                                'eq': {
+                                    'provision.device.specificType': ctrl.specificType
+                                }
                             }
                         ]
-                    };
+                    });
                 }
 
                 if (ctrl.oql) {
                     var _oql = _getFilter(ctrl.oql);
-                    if (!filter.and)
+
+                    if (!filter) {
+                        filter = {
+                            'and': []
+                        };
+                    } else if (!filter.and) {
                         filter = {
                             and: [filter]
                         };
+                    }
+
                     var _and = filter.and.concat(_oql);
                     filter.and = _and;
                 }

@@ -49,15 +49,19 @@ angular.module('opengate-angular-js').controller('customUiSelectEntityController
         ctrl.ownConfig = {
             builder: $api().entitiesSearchBuilder().select(selectBuilder),
             filter: function(search) {
-                return {
-                    'or': [
-                        { 'like': { 'provision.administration.identifier': search } },
-                        { 'like': { 'provision.device.specificType': search } },
-                        { 'like': { 'device.specificType': search } },
-                        { 'like': { 'provision.entity.specificType': search } },
-                        { 'like': { 'provision.device.communicationModules[].specificType': search } }
-                    ]
-                };
+                if (search) {
+                    return {
+                        'or': [
+                            { 'like': { 'provision.administration.identifier': search } },
+                            { 'like': { 'provision.device.specificType': search } },
+                            { 'like': { 'device.specificType': search } },
+                            { 'like': { 'provision.entity.specificType': search } },
+                            { 'like': { 'provision.device.communicationModules[].specificType': search } }
+                        ]
+                    };
+                } else {
+                    return null;
+                }
             },
             rootKey: 'entities',
             collection: [],

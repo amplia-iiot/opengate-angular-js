@@ -8,94 +8,97 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriberContro
         ctrl.ownConfig = {
             builder: $api().subscribersSearchBuilder().provisioned(),
             filter: function(search) {
-                var filter = {
-                    'or': [
-                        { 'like': { 'provision.device.communicationModules[].subscriber.identifier': search } },
-                        { 'like': { 'device.communicationModules[].subscriber.identifier': search } },
-                        { 'like': { 'provision.device.communicationModules[].subscriber.mobile.icc': search } }
-                    ]
-                };
-                if (!!ctrl.specificType) {
+                var filter;
+
+                if (search) {
                     filter = {
-                        'and': [
-                            filter,
-                            {
-                                'or': [{
-                                        'eq': {
-                                            'device.communicationModules[].subscriber.specificType': ctrl.specificType
-                                        }
-                                    },
-                                    {
-                                        'eq': {
-                                            'provision.device.communicationModules[].subscriber.specificType': ctrl.specificType
-                                        }
-                                    }
-                                ]
-                            }
+                        'or': [
+                            { 'like': { 'provision.device.communicationModules[].subscriber.identifier': search } },
+                            { 'like': { 'device.communicationModules[].subscriber.identifier': search } },
+                            { 'like': { 'provision.device.communicationModules[].subscriber.mobile.icc': search } }
                         ]
                     };
                 }
 
-                if (ctrl.excludeDevices) {
-                    if (filter.and) {
-                        filter.and.push({
-                            'eq': {
-                                'resourceType': 'entity.subscriber'
-                            }
-                        });
+                if (!!ctrl.specificType) {
+                    if (filter) {
+                        filter = {
+                            'and': [filter]
+                        };
                     } else {
                         filter = {
-                            'and': [
-                                filter,
-                                {
-                                    'eq': {
-                                        'resourceType': 'entity.subscriber'
-                                    }
-                                }
-                            ]
+                            and: []
                         };
                     }
+
+                    filter.and.push({
+                        'or': [{
+                                'eq': {
+                                    'device.communicationModules[].subscriber.specificType': ctrl.specificType
+                                }
+                            },
+                            {
+                                'eq': {
+                                    'provision.device.communicationModules[].subscriber.specificType': ctrl.specificType
+                                }
+                            }
+                        ]
+                    });
+                }
+
+                if (ctrl.excludeDevices) {
+                    if (filter && !filter.and) {
+                        filter = {
+                            'and': [filter]
+                        };
+                    } else if (!filter) {
+                        filter = {
+                            and: []
+                        };
+                    }
+
+                    filter.and.push({
+                        'eq': {
+                            'resourceType': 'entity.subscriber'
+                        }
+                    });
+
                 }
 
                 if (ctrl.organization) {
-                    if (filter.and) {
-                        filter.and.push({
-                            'eq': {
-                                'provision.administration.organization': ctrl.organization
-                            }
-                        });
-                    } else {
+                    if (filter && !filter.and) {
                         filter = {
-                            'and': [
-                                filter,
-                                {
-                                    'eq': {
-                                        'provision.administration.organization': ctrl.organization
-                                    }
-                                }
-                            ]
+                            'and': [filter]
+                        };
+                    } else if (!filter) {
+                        filter = {
+                            and: []
                         };
                     }
+
+                    filter.and.push({
+                        'eq': {
+                            'provision.administration.organization': ctrl.organization
+                        }
+                    });
                 }
+
                 if (ctrl.channel) {
-                    if (filter.and) {
-                        filter.and.push({
-                            'eq': {
-                                'provision.administration.channel': ctrl.channel
-                            }
-                        });
-                    } else {
+                    if (filter && !filter.and) {
                         filter = {
-                            'and': [
-                                filter,
-                                {
-                                    'eq': {
-                                        'provision.administration.channel': ctrl.channel
-                                    }
-                                }
-                            ]
+                            'and': [filter]
+                        };
+                    } else if (!filter) {
+                        filter = {
+                            and: []
                         };
                     }
+
+                    filter.and.push({
+                        'eq': {
+                            'provision.administration.channel': ctrl.channel
+                        }
+                    });
                 }
 
                 return filter;
@@ -116,7 +119,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriberContro
             ctrl.onSelectItem(returnObj);
         };
 
-        ctrl.entityRemove = function ($item, $model) {
+        ctrl.entityRemove = function($item, $model) {
             var returnObj = {};
             returnObj.$item = $item;
             returnObj.$model = $model;

@@ -10,7 +10,7 @@ angular.module('opengate-angular-js').controller('customUiSelectBundleController
             ctrl.lastSearch = search;
 
             if (!search) {
-                return {};
+                return null;
             } else {
                 return {
                     'or': [

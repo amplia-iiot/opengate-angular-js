@@ -29,7 +29,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAreaController',
                 };
             } else {
                 if (!search) {
-                    return {};
+                    return null;
                 } else {
                     return {
                         'or': [

@@ -59,37 +59,56 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
         ctrl.ownConfig = {
             builder: $api().assetsSearchBuilder().select(selectBuilder),
             filter: function(search) {
-                var filter = _getQuickSearchFields(search);
+                var filter;
+
+                if (search) {
+                    filter = _getQuickSearchFields(search);
+                }
 
                 if (!!ctrl.specificType) {
-                    filter = {
-                        'and': [
-                            filter,
+                    if (filter) {
+                        filter = {
+                            'and': [filter]
+                        };
+                    } else {
+                        filter = {
+                            and: []
+                        };
+                    }
+
+                    filter.and.push({
+                        'or': [{
+                                'eq': {
+                                    'asset.specificType': ctrl.specificType
+                                }
+                            },
                             {
-                                'or': [{
-                                        'eq': {
-                                            'asset.specificType': ctrl.specificType
-                                        }
-                                    },
-                                    {
-                                        'eq': {
-                                            'provision.asset.specificType': ctrl.specificType
-                                        }
-                                    }
-                                ]
+                                'eq': {
+                                    'provision.asset.specificType': ctrl.specificType
+                                }
                             }
                         ]
-                    };
+                    });
                 }
+
+
                 if (ctrl.oql) {
                     var _oql = _getFilter(ctrl.oql);
-                    if (!filter.and)
+
+                    if (!filter) {
+                        filter = {
+                            'and': []
+                        };
+                    } else if (!filter.and) {
                         filter = {
                             and: [filter]
                         };
+                    }
+
                     var _and = filter.and.concat(_oql);
                     filter.and = _and;
                 }
+
                 return filter;
             },
             rootKey: 'assets',

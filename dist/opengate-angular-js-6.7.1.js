@@ -10948,15 +10948,19 @@ angular.module('opengate-angular-js').controller('customUiSelectTicketController
     ctrl.ownConfig = {
         builder: $api().ticketsSearchBuilder(),
         filter: function(search) {
-            return {
-                'or': [
-                    { 'like': { 'provision.administration.identifier': search } },
-                    { 'like': { 'provision.ticket.specificType': search } },
-                    { 'like': { 'provision.ticket.name': search } },
-                    { 'like': { 'provision.ticket.type': search } },
-                    { 'like': { 'provision.ticket.entity': search } }
-                ]
-            };
+            if (search) {
+                return {
+                    'or': [
+                        { 'like': { 'provision.administration.identifier': search } },
+                        { 'like': { 'provision.ticket.specificType': search } },
+                        { 'like': { 'provision.ticket.name': search } },
+                        { 'like': { 'provision.ticket.type': search } },
+                        { 'like': { 'provision.ticket.entity': search } }
+                    ]
+                };
+            } else {
+                return null;
+            }
         },
         rootKey: 'tickets',
         collection: [],
@@ -10970,7 +10974,7 @@ angular.module('opengate-angular-js').controller('customUiSelectTicketController
         ctrl.onSelectItem(returnObj);
     };
 
-    ctrl.ticketRemove = function ($item, $model) {
+    ctrl.ticketRemove = function($item, $model) {
         var returnObj = {};
         returnObj.$item = $item;
         returnObj.$model = $model;
@@ -10996,7 +11000,7 @@ angular.module('opengate-angular-js').component('customUiSelectTicket', {
 
 
 angular.module('opengate-angular-js').controller('customUiSelectSubscriptionController', ['$scope', '$element', '$attrs', '$api', '$entityExtractor', '$translate', '$doActions', '$jsonFinderHelper', 'jsonPath', 'Filter',
-    function ($scope, $element, $attrs, $api, $entityExtractor, $translate, $doActions, $jsonFinderHelper, jsonPath, Filter) {
+    function($scope, $element, $attrs, $api, $entityExtractor, $translate, $doActions, $jsonFinderHelper, jsonPath, Filter) {
         var ctrl = this;
         var defaultQuickSearchFields = "provision.device.communicationModules[].subscription.identifier, device.communicationModules[].subscription.identifier";
 
@@ -11006,7 +11010,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             var filter = {
                 or: []
             };
-            fields.forEach(function (field) {
+            fields.forEach(function(field) {
                 var _like = {
                     like: {}
                 };
@@ -11022,7 +11026,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             return _filter.and || ([_filter] || []);
         }
 
-        ctrl.getSelectMatch = function (item) {
+        ctrl.getSelectMatch = function(item) {
             if (!item) return item;
             var defaultPath = 'provision.subscription.identifier';
             var path = ctrl.uiSelectMatchPath || defaultPath;
@@ -11035,98 +11039,114 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
 
         ctrl.ownConfig = {
             builder: $api().subscriptionsSearchBuilder().provisioned(),
-            filter: function (search) {
-                var filter = _getQuickSearchFields(search);
-                if (!!ctrl.specificType) {
+            filter: function(search) {
+                var filter;
+
+                if (search) {
                     filter = {
-                        'and': [
-                            filter,
-                            {
-                                'or': [{
-                                        'eq': {
-                                            'device.communicationModules[].subscription.specificType': ctrl.specificType
-                                        }
-                                    },
-                                    {
-                                        'eq': {
-                                            'provision.device.communicationModules[].subscription.specificType': ctrl.specificType
-                                        }
-                                    }
-                                ]
-                            }
+                        'or': [
+                            { 'like': { 'provision.device.communicationModules[].subscriber.identifier': search } },
+                            { 'like': { 'device.communicationModules[].subscriber.identifier': search } },
+                            { 'like': { 'provision.device.communicationModules[].subscriber.mobile.icc': search } }
                         ]
                     };
                 }
 
-                if (ctrl.excludeDevices) {
-                    if (filter.and) {
-                        filter.and.push({
-                            'eq': {
-                                'resourceType': 'entity.subscription'
-                            }
-                        });
+                if (!!ctrl.specificType) {
+                    if (filter) {
+                        filter = {
+                            'and': [filter]
+                        };
                     } else {
                         filter = {
-                            'and': [
-                                filter,
-                                {
-                                    'eq': {
-                                        'resourceType': 'entity.subscription'
-                                    }
-                                }
-                            ]
+                            and: []
                         };
                     }
+
+                    filter.and.push({
+                        'or': [{
+                                'eq': {
+                                    'device.communicationModules[].subscription.specificType': ctrl.specificType
+                                }
+                            },
+                            {
+                                'eq': {
+                                    'provision.device.communicationModules[].subscription.specificType': ctrl.specificType
+                                }
+                            }
+                        ]
+                    });
+                }
+
+                if (ctrl.excludeDevices) {
+                    if (filter && !filter.and) {
+                        filter = {
+                            'and': [filter]
+                        };
+                    } else if (!filter) {
+                        filter = {
+                            and: []
+                        };
+                    }
+
+                    filter.and.push({
+                        'eq': {
+                            'resourceType': 'entity.subscription'
+                        }
+                    });
                 }
                 if (ctrl.organization && typeof ctrl.organization === 'string') {
-                    if (filter.and) {
-                        filter.and.push({
-                            'eq': {
-                                'provision.administration.organization': ctrl.organization
-                            }
-                        });
-                    } else {
+                    if (filter && !filter.and) {
                         filter = {
-                            'and': [
-                                filter,
-                                {
-                                    'eq': {
-                                        'provision.administration.organization': ctrl.organization
-                                    }
-                                }
-                            ]
+                            'and': [filter]
+                        };
+                    } else if (!filter) {
+                        filter = {
+                            and: []
                         };
                     }
+
+                    filter.and.push({
+                        'eq': {
+                            'provision.administration.organization': ctrl.organization
+                        }
+                    });
                 }
                 if (ctrl.channel && typeof ctrl.channel === 'string') {
-                    if (filter.and) {
-                        filter.and.push({
-                            'eq': {
-                                'provision.administration.channel': ctrl.channel
-                            }
-                        });
-                    } else {
+                    if (filter && !filter.and) {
                         filter = {
-                            'and': [
-                                filter,
-                                {
-                                    'eq': {
-                                        'provision.administration.channel': ctrl.channel
-                                    }
-                                }
-                            ]
+                            'and': [filter]
+                        };
+                    } else if (!filter) {
+                        filter = {
+                            and: []
                         };
                     }
+
+                    filter.and.push({
+                        'eq': {
+                            'provision.administration.channel': ctrl.channel
+                        }
+                    });
                 }
+
                 if (ctrl.oql) {
                     var _oql = _getFilter(ctrl.oql);
-                    if (!filter.and)
+
+                    if (!filter) {
+                        filter = {
+                            'and': []
+                        };
+                    } else if (!filter.and) {
                         filter = {
                             and: [filter]
                         };
+                    }
+
                     var _and = filter.and.concat(_oql);
                     filter.and = _and;
                 }
+
                 return filter;
             },
             rootKey: 'devices',
@@ -11140,11 +11160,11 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             quickSearchFields: ctrl.quickSearchFields
         };
 
-        ctrl.entitySelected = function ($item, $model) {
+        ctrl.entitySelected = function($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = [];
 
-                angular.forEach(ctrl.entity, function (entityTmp) {
+                angular.forEach(ctrl.entity, function(entityTmp) {
                     identifierTmp.push(ctrl.getSelectMatch(entityTmp));
                 });
 
@@ -11161,7 +11181,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             }
         };
 
-        ctrl.entityRemove = function ($item, $model) {
+        ctrl.entityRemove = function($item, $model) {
             if (ctrl.onRemove) {
                 var returnObj = {};
                 returnObj.$item = $item;
@@ -11182,14 +11202,14 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             return {
                 title: $translate.instant('BUTTON.TITLE.EXECUTE_OPERATION'),
                 icon: 'glyphicon glyphicon-flash',
-                action: function () {
+                action: function() {
                     $doActions.executeModal('executeOperation', {
                         keys: jsonPath(ctrl.entity, '$..' + $jsonFinderHelper.subscription.provisioned.getPath('identifier') + '._current.value') || [],
                         entityType: 'SUBSCRIPTION',
                         operation: operationSelected ? operationSelected.trim().toUpperCase() : undefined
                     });
                 },
-                disable: function () {
+                disable: function() {
                     return !ctrl.entity || ctrl.entity.length === 0;
                 },
                 permissions: 'executeOperation'
@@ -11201,8 +11221,8 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             create: {
                 title: $translate.instant('FORM.LABEL.NEW'),
                 icon: 'glyphicon glyphicon-plus-sign',
-                action: function () {
-                    $doActions.executeModal('createSubscription', {}, function (result) {
+                action: function() {
+                    $doActions.executeModal('createSubscription', {}, function(result) {
                         if (result && result.length > 0) {
                             ctrl.entity = !ctrl.entity ? [] : ctrl.entity;
                             ctrl.entity.push({
@@ -11234,11 +11254,11 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
         ctrl.uiSelectActions = [];
 
         if (!ctrl.actions) {
-            angular.forEach(uiSelectActionsDefinition, function (action) {
+            angular.forEach(uiSelectActionsDefinition, function(action) {
                 ctrl.uiSelectActions.push(action);
             });
         } else {
-            angular.forEach(ctrl.actions, function (action) {
+            angular.forEach(ctrl.actions, function(action) {
                 var finalAction;
                 switch (action.type) {
                     case 'operation':
@@ -11259,7 +11279,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             ctrl.ngRequired = ctrl.required;
         }
 
-        ctrl.$onChanges = function (changesObj) {
+        ctrl.$onChanges = function(changesObj) {
             if (changesObj && changesObj.identifier) {
                 mapIdentifier(changesObj.identifier.currentValue);
             }
@@ -11280,7 +11300,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
                     if (angular.isArray(identifier)) {
                         ctrl.entity = [];
 
-                        angular.forEach(identifier, function (idTmp) {
+                        angular.forEach(identifier, function(idTmp) {
                             ctrl.entity.push({
                                 provision: {
                                     administration: {
@@ -11365,94 +11385,97 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriberContro
         ctrl.ownConfig = {
             builder: $api().subscribersSearchBuilder().provisioned(),
             filter: function(search) {
-                var filter = {
-                    'or': [
-                        { 'like': { 'provision.device.communicationModules[].subscriber.identifier': search } },
-                        { 'like': { 'device.communicationModules[].subscriber.identifier': search } },
-                        { 'like': { 'provision.device.communicationModules[].subscriber.mobile.icc': search } }
-                    ]
-                };
-                if (!!ctrl.specificType) {
+                var filter;
+
+                if (search) {
                     filter = {
-                        'and': [
-                            filter,
-                            {
-                                'or': [{
-                                        'eq': {
-                                            'device.communicationModules[].subscriber.specificType': ctrl.specificType
-                                        }
-                                    },
-                                    {
-                                        'eq': {
-                                            'provision.device.communicationModules[].subscriber.specificType': ctrl.specificType
-                                        }
-                                    }
-                                ]
-                            }
+                        'or': [
+                            { 'like': { 'provision.device.communicationModules[].subscriber.identifier': search } },
+                            { 'like': { 'device.communicationModules[].subscriber.identifier': search } },
+                            { 'like': { 'provision.device.communicationModules[].subscriber.mobile.icc': search } }
                         ]
                     };
                 }
 
-                if (ctrl.excludeDevices) {
-                    if (filter.and) {
-                        filter.and.push({
-                            'eq': {
-                                'resourceType': 'entity.subscriber'
-                            }
-                        });
+                if (!!ctrl.specificType) {
+                    if (filter) {
+                        filter = {
+                            'and': [filter]
+                        };
                     } else {
                         filter = {
-                            'and': [
-                                filter,
-                                {
-                                    'eq': {
-                                        'resourceType': 'entity.subscriber'
-                                    }
-                                }
-                            ]
+                            and: []
                         };
                     }
+
+                    filter.and.push({
+                        'or': [{
+                                'eq': {
+                                    'device.communicationModules[].subscriber.specificType': ctrl.specificType
+                                }
+                            },
+                            {
+                                'eq': {
+                                    'provision.device.communicationModules[].subscriber.specificType': ctrl.specificType
+                                }
+                            }
+                        ]
+                    });
+                }
+
+                if (ctrl.excludeDevices) {
+                    if (filter && !filter.and) {
+                        filter = {
+                            'and': [filter]
+                        };
+                    } else if (!filter) {
+                        filter = {
+                            and: []
+                        };
+                    }
+
+                    filter.and.push({
+                        'eq': {
+                            'resourceType': 'entity.subscriber'
+                        }
+                    });
+
                 }
 
                 if (ctrl.organization) {
-                    if (filter.and) {
-                        filter.and.push({
-                            'eq': {
-                                'provision.administration.organization': ctrl.organization
-                            }
-                        });
-                    } else {
+                    if (filter && !filter.and) {
                         filter = {
-                            'and': [
-                                filter,
-                                {
-                                    'eq': {
-                                        'provision.administration.organization': ctrl.organization
-                                    }
-                                }
-                            ]
+                            'and': [filter]
+                        };
+                    } else if (!filter) {
+                        filter = {
+                            and: []
                         };
                     }
+
+                    filter.and.push({
+                        'eq': {
+                            'provision.administration.organization': ctrl.organization
+                        }
+                    });
                 }
+
                 if (ctrl.channel) {
-                    if (filter.and) {
-                        filter.and.push({
-                            'eq': {
-                                'provision.administration.channel': ctrl.channel
-                            }
-                        });
-                    } else {
+                    if (filter && !filter.and) {
                         filter = {
-                            'and': [
-                                filter,
-                                {
-                                    'eq': {
-                                        'provision.administration.channel': ctrl.channel
-                                    }
-                                }
-                            ]
+                            'and': [filter]
+                        };
+                    } else if (!filter) {
+                        filter = {
+                            and: []
                         };
                     }
+
+                    filter.and.push({
+                        'eq': {
+                            'provision.administration.channel': ctrl.channel
+                        }
+                    });
                 }
 
                 return filter;
@@ -11473,7 +11496,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriberContro
             ctrl.onSelectItem(returnObj);
         };
 
-        ctrl.entityRemove = function ($item, $model) {
+        ctrl.entityRemove = function($item, $model) {
             var returnObj = {};
             returnObj.$item = $item;
             returnObj.$model = $model;
@@ -12268,15 +12291,19 @@ angular.module('opengate-angular-js').controller('customUiSelectEntityController
         ctrl.ownConfig = {
             builder: $api().entitiesSearchBuilder().select(selectBuilder),
             filter: function(search) {
-                return {
-                    'or': [
-                        { 'like': { 'provision.administration.identifier': search } },
-                        { 'like': { 'provision.device.specificType': search } },
-                        { 'like': { 'device.specificType': search } },
-                        { 'like': { 'provision.entity.specificType': search } },
-                        { 'like': { 'provision.device.communicationModules[].specificType': search } }
-                    ]
-                };
+                if (search) {
+                    return {
+                        'or': [
+                            { 'like': { 'provision.administration.identifier': search } },
+                            { 'like': { 'provision.device.specificType': search } },
+                            { 'like': { 'device.specificType': search } },
+                            { 'like': { 'provision.entity.specificType': search } },
+                            { 'like': { 'provision.device.communicationModules[].specificType': search } }
+                        ]
+                    };
+                } else {
+                    return null;
+                }
             },
             rootKey: 'entities',
             collection: [],
@@ -12399,30 +12426,34 @@ angular.module('opengate-angular-js').component('customUiSelectEntity', {
 
 
 
-angular.module('opengate-angular-js').controller('customUiSelectDomainController', ['$scope', '$element', '$attrs', '$api', '$q', function ($scope, $element, $attrs, $api, $q) {
+angular.module('opengate-angular-js').controller('customUiSelectDomainController', ['$scope', '$element', '$attrs', '$api', '$q', function($scope, $element, $attrs, $api, $q) {
     var ctrl = this;
     var firstLoad = ctrl.ngRequired || ctrl.required;
     ctrl.ownConfig = {
         builder: $api().domainsSearchBuilder(),
         rootKey: 'domains',
         collection: [],
-        filter: function (search) {
-            return {
-                'or': [{
-                        'like': {
-                            'domain.name': search
+        filter: function(search) {
+            if (search) {
+                return {
+                    'or': [{
+                            'like': {
+                                'domain.name': search
+                            }
+                        },
+                        {
+                            'like': {
+                                'domain.description': search
+                            }
                         }
-                    },
-                    {
-                        'like': {
-                            'domain.description': search
-                        }
-                    }
-                ]
-            };
+                    ]
+                };
+            } else {
+                return null;
+            }
         },
         customSelectors: $api().domainsSearchBuilder(),
-        processingData: function (result, domains) {
+        processingData: function(result, domains) {
             if (firstLoad) {
                 var _selectedDomain = Array.isArray(ctrl.domain) ? ctrl.domain : (ctrl.domain && [ctrl.domain]);
                 ctrl.domain = _selectedDomain || [domains[0]];
@@ -12437,14 +12468,14 @@ angular.module('opengate-angular-js').controller('customUiSelectDomainController
         }
     };
 
-    ctrl.domainSelected = function ($item, $model) {
+    ctrl.domainSelected = function($item, $model) {
         var returnObj = {};
         returnObj.$item = $item;
         returnObj.$model = $model;
         ctrl.onSelectItem(returnObj);
     };
 
-    ctrl.domainRemove = function ($item, $model) {
+    ctrl.domainRemove = function($item, $model) {
         var returnObj = {};
         returnObj.$item = $item;
         returnObj.$model = $model;
@@ -12542,35 +12573,51 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
         ctrl.ownConfig = {
             builder: deviceBuilder,
             filter: function(search) {
-                var filter = _getQuickSearchFields(search);
+                var filter;
+
+                if (search) {
+                    filter = _getQuickSearchFields(search);
+                }
 
                 if (!!ctrl.specificType) {
-                    filter = {
-                        'and': [
-                            filter,
+                    if (filter) {
+                        filter = {
+                            'and': [filter]
+                        };
+                    } else {
+                        filter = {
+                            and: []
+                        };
+                    }
+
+                    filter.and.push({
+                        'or': [{
+                                'eq': {
+                                    'device.specificType': ctrl.specificType
+                                }
+                            },
                             {
-                                'or': [{
-                                        'eq': {
-                                            'device.specificType': ctrl.specificType
-                                        }
-                                    },
-                                    {
-                                        'eq': {
-                                            'provision.device.specificType': ctrl.specificType
-                                        }
-                                    }
-                                ]
+                                'eq': {
+                                    'provision.device.specificType': ctrl.specificType
+                                }
                             }
                         ]
-                    };
+                    });
                 }
 
                 if (ctrl.oql) {
                     var _oql = _getFilter(ctrl.oql);
-                    if (!filter.and)
+
+                    if (!filter) {
+                        filter = {
+                            'and': []
+                        };
+                    } else if (!filter.and) {
                         filter = {
                             and: [filter]
                         };
+                    }
+
                     var _and = filter.and.concat(_oql);
                     filter.and = _and;
                 }
@@ -13134,14 +13181,14 @@ angular.module('opengate-angular-js').component('customUiSelectDatastream', {
 
 
 angular.module('opengate-angular-js').controller('customUiSelectChannelController', ['$scope', '$element', '$attrs', '$api', '$q',
-    function ($scope, $element, $attrs, $api, $q) {
+    function($scope, $element, $attrs, $api, $q) {
         var ctrl = this;
         var firstLoad = ctrl.ngRequired || ctrl.required;
         var defaultQuickSearchFields = 'provision.channel.identifier,provision.channel.description';
         ctrl.organization = ctrl.organization === 'LOG.LOADING' && undefined;
         ctrl.channel = ctrl.channel || (ctrl.ngModel && ([_getChannel(ctrl.ngModel)]));
 
-        function _getQuickSerachFields(search) {
+        function _getQuickSearchFields(search) {
             var _quickSerachFields = ctrl.quickSearchFields || defaultQuickSearchFields;
             var fields = _quickSerachFields.split(/[,|, ]+/);
             if (!ctrl.organization) {
@@ -13150,7 +13197,7 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
             var filter = {
                 or: []
             };
-            fields.forEach(function (field) {
+            fields.forEach(function(field) {
                 var _like = {
                     like: {}
                 };
@@ -13162,8 +13209,8 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
 
         ctrl.ownConfig = {
             builder: $api().channelsSearchBuilder(),
-            filter: function (search) {
-                var filter = _getQuickSerachFields(search);
+            filter: function(search) {
+                var filter = _getQuickSearchFields(search);
 
                 if (!!ctrl.organization) {
                     filter = {
@@ -13183,11 +13230,11 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
             rootKey: 'channels',
             collection: [],
             customSelectors: $api().channelsSearchBuilder(),
-            processingData: function (result, channels) {
+            processingData: function(result, channels) {
                 if (firstLoad) {
                     var _selectedChannel = ctrl.channel && ctrl.channel.selected && ctrl.channel.selected.length === 1;
                     if (!_selectedChannel && ctrl.organization) {
-                        ctrl.channel = channels.filter(function (channel) {
+                        ctrl.channel = channels.filter(function(channel) {
                             return channel.provision.administration.organization._current.value === ctrl.organization;
                         });
                     }
@@ -13207,11 +13254,11 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
             }
         };
 
-        ctrl.channelSelected = function ($item, $model) {
+        ctrl.channelSelected = function($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = [];
 
-                angular.forEach(ctrl.channel, function (channelTmp) {
+                angular.forEach(ctrl.channel, function(channelTmp) {
                     identifierTmp.push(channelTmp.provision.administration.identifier._current.value);
                 });
 
@@ -13228,7 +13275,7 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
             }
         };
 
-        ctrl.channelRemove = function ($item, $model) {
+        ctrl.channelRemove = function($item, $model) {
             if (ctrl.onRemove) {
                 var returnObj = {};
                 returnObj.$item = $item;
@@ -13246,9 +13293,9 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
         };
 
 
-        ctrl.$onChanges = function (changesObj) {
+        ctrl.$onChanges = function(changesObj) {
             if (changesObj) {
-                Object.keys(changesObj).forEach(function (key) {
+                Object.keys(changesObj).forEach(function(key) {
                     switch (key) {
                         case 'identifier':
                             mapIdentifier(changesObj.identifier.currentValue);
@@ -13312,7 +13359,7 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
                 }
                 if (ctrl.multiple) {
                     if (angular.isArray(identifier)) {
-                        angular.forEach(identifier, function (idTmp) {
+                        angular.forEach(identifier, function(idTmp) {
                             ctrl.channel.push(_getChannel(idTmp));
                         });
                     }
@@ -13501,7 +13548,7 @@ angular.module('opengate-angular-js').controller('customUiSelectBundleController
             ctrl.lastSearch = search;
 
             if (!search) {
-                return {};
+                return null;
             } else {
                 return {
                     'or': [
@@ -13605,37 +13652,56 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
         ctrl.ownConfig = {
             builder: $api().assetsSearchBuilder().select(selectBuilder),
             filter: function(search) {
-                var filter = _getQuickSearchFields(search);
+                var filter;
+
+                if (search) {
+                    filter = _getQuickSearchFields(search);
+                }
 
                 if (!!ctrl.specificType) {
-                    filter = {
-                        'and': [
-                            filter,
+                    if (filter) {
+                        filter = {
+                            'and': [filter]
+                        };
+                    } else {
+                        filter = {
+                            and: []
+                        };
+                    }
+
+                    filter.and.push({
+                        'or': [{
+                                'eq': {
+                                    'asset.specificType': ctrl.specificType
+                                }
+                            },
                             {
-                                'or': [{
-                                        'eq': {
-                                            'asset.specificType': ctrl.specificType
-                                        }
-                                    },
-                                    {
-                                        'eq': {
-                                            'provision.asset.specificType': ctrl.specificType
-                                        }
-                                    }
-                                ]
+                                'eq': {
+                                    'provision.asset.specificType': ctrl.specificType
+                                }
                             }
                         ]
-                    };
+                    });
                 }
+
+
                 if (ctrl.oql) {
                     var _oql = _getFilter(ctrl.oql);
-                    if (!filter.and)
+
+                    if (!filter) {
+                        filter = {
+                            'and': []
+                        };
+                    } else if (!filter.and) {
                         filter = {
                             and: [filter]
                         };
+                    }
+
                     var _and = filter.and.concat(_oql);
                     filter.and = _and;
                 }
+
                 return filter;
             },
             rootKey: 'assets',
@@ -13912,7 +13978,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAreaController',
                 };
             } else {
                 if (!search) {
-                    return {};
+                    return null;
                 } else {
                     return {
                         'or': [
@@ -13956,6 +14022,5568 @@ angular.module('opengate-angular-js').component('customUiSelectArea', {
         uiSelectMatchClass: '@?'
     }
 });
+
+
+// Use Applicaion configuration module to register a new module
+//ApplicationConfiguration.registerModule('uxleaflet', ['opengate-angular-js']);
+/** 
+ * [uxleaflet/client]
+ * Parches para leaflet 0.7.7 
+ * Funcionalidad de edición de geometrías.
+ * Requerido por L.Editable
+ * 
+ * Pendiente de mover a mapUxService
+ */
+(function() {
+
+    
+
+    if (L.version !== '0.7.7') {
+        // si ya no es necesario entonces eliminar este fichero.
+        console.warn('Ux-leaflet-patch only is applicable to leaflet 0.7.7. No applied to leaflet ' + L.version);
+        return;
+    }
+
+    /* L 1043 */
+    L.DomUtil.getPosition = function (el) {
+        // (*) this method is only used for elements previously positioned using setPosition,
+        // so it's safe to cache the position for performance
+
+        // jshint camelcase: false
+        return el._leaflet_pos || new L.Point(0, 0);
+    };
+
+    /* L 1010 */
+    var old_getTranslateString = L.DomUtil.getTranslateString;
+    L.DomUtil.getTranslateString = function (point) {
+        if (!point || point.x === undefined || point.y === undefined) {
+            // old_getTranslateString would fails
+            return '';
+        } else {
+            return old_getTranslateString(point);
+        }
+    };
+
+    /* L 4656 */
+    var _baseUpdateStyle = L.Path.prototype._updateStyle;
+
+    L.Path.prototype._updateStyle = function () {
+        // (*) 
+        _baseUpdateStyle.apply(this, arguments);
+        if (!this.options.fill) {
+            this._path.setAttribute('fill-opacity', 0);
+        }
+    };
+
+    /* L 6397 */
+    // cambiar --> obj.addEventListener(type, handler, false);
+    //  por -->  obj.addEventListener(type, handler, {passive: false} );
+
+
+    /* L 6711 */
+    var _baseOnMove = L.Draggable.prototype._onMove;
+
+    L.Draggable.prototype._onMove = function (e) {
+        // (*) 
+        _baseOnMove.apply(this, arguments);
+        this._lastEvent = e;
+    };
+        // TODO - arreglar lo de ... en ese mismo método. Solucionará lo del arrastre.
+        //    this._startPos = L.DomUtil.getPosition(this._element).subtract(offset);
+
+    console.info('Ux-leaflet-patch applied to leaflet ' + L.version);
+
+})();
+/**
+ * https://github.com/jieter/leaflet-clonelayer/blob/master/index.js
+ * Solo un archivo.
+ * Versión 1.0.2.  Compatible con leaflet 0.7.7
+ */
+(function (exports) {
+
+    
+
+    // Add as L.Util if not exist
+    if (!L.Util.cloneLayer) {
+        L.Util.cloneLayer = cloneLayer;
+    }
+
+    // add as export
+    if (typeof exports === 'object') {
+        module.exports = cloneLayer;
+    }
+
+    /**
+     * main function.
+     * @param {*} layer 
+     */
+    function cloneLayer(layer) {
+        var options = cloneLayerOptions(layer.options);
+
+        // we need to test for the most specific class first, i.e.
+        // Circle before CircleMarker
+
+        // Renderers
+        if (layer instanceof L.SVG) {
+            return L.svg(options);
+        }
+        if (layer instanceof L.Canvas) {
+            return L.canvas(options);
+        }
+
+        // Tile layers
+        if (layer instanceof L.TileLayer) {
+            return L.tileLayer(layer._url, options);
+        }
+        if (layer instanceof L.ImageOverlay) {
+            return L.imageOverlay(layer._url, layer._bounds, options);
+        }
+
+        // Marker layers
+        if (layer instanceof L.Marker) {
+            return L.marker(layer.getLatLng(), options);
+        }
+
+        if (layer instanceof L.Circle) {
+            return L.circle(layer.getLatLng(), layer.getRadius(), options);
+        }
+        if (layer instanceof L.CircleMarker) {
+            return L.circleMarker(layer.getLatLng(), options);
+        }
+
+        if (layer instanceof L.Rectangle) {
+            return L.rectangle(layer.getBounds(), options);
+        }
+        if (layer instanceof L.Polygon) {
+            return L.polygon(layer.getLatLngs(), options);
+        }
+        if (layer instanceof L.Polyline) {
+            return L.polyline(layer.getLatLngs(), options);
+        }
+
+        if (layer instanceof L.GeoJSON) {
+            return L.geoJson(layer.toGeoJSON(), options);
+        }
+
+        if (layer instanceof L.LayerGroup) {
+            return L.layerGroup(cloneInnerLayers(layer));
+        }
+        if (layer instanceof L.FeatureGroup) {
+            return L.FeatureGroup(cloneInnerLayers(layer));
+        }
+
+        throw 'Unknown layer, cannot clone this layer. Leaflet-version: ' + L.version;
+    }
+
+    function cloneLayerOptions(options) {
+        var ret = {};
+        for (var i in options) {
+            var item = options[i];
+            if (item && item.clone) {
+                ret[i] = item.clone();
+            } else if (item instanceof L.Layer) {
+                ret[i] = cloneLayer(item);
+            } else {
+                ret[i] = item;
+            }
+        }
+        return ret;
+    }
+
+    function cloneInnerLayers(layer) {
+        var layers = [];
+        layer.eachLayer(function (inner) {
+            layers.push(cloneLayer(inner));
+        });
+        return layers;
+    }
+
+})(window.exports);
+/**
+ * [uxleaflet/client]
+ * Usado en OSS. En UX no es usado todavía.
+ * 
+ * Closure for Special Markers used by OSS: amplia.maps.EntityMarker and amplia.maps.QuadrantMarker.
+ * Estos marcadores están basados en un DIV en lugar de un IMAGE.
+ * Están basados en la clase L.Marker. Solo se añade la característica de que el icono pasado
+ * como parte de las 'opciones' es un objeto DivIcon.
+ * El marcador se compone:
+ * * De un DIV con una imagen de fondo establecida por css
+ * * Otro DIV interno cuya colocación e imagen de fondo es también establecida por css
+ */
+(function() {
+    
+
+    if (!window.L) {
+        throw new Error('L.Control.Markers needs Leaflet');
+    }
+
+    /** package definition (this ux-markers or ux-map ) */
+    if (!L.ux) {
+        L.ux = {};
+    }
+
+    // Clases css para Status:
+    // status-ok, status-warn, status.error
+
+    // Clases para tipos de entidad
+    // t-
+
+    var IMAGE_HEIGHT = 40;
+    var IMAGE_WIDTH = 40;
+
+    /**
+     * Clase base para UxMarker. 
+     * Implementa lo necesario para mostrar un marcador en un mapa de amplia
+     */
+    L.ux.Marker = L.Marker.extend({
+
+        _isMarker: true,
+        _feature: null,
+        _latlng: null,
+        _bocadilloOffset: new L.Point(0, -42),
+
+        initialize: function(latlng, feature) {
+            /* keep feature: properties accesible with _getPrroperty */
+            this._feature = feature;
+            /* keep latlon. Used by showPopup */
+            this._latlng = latlng;
+            var myIcon = this.createIcon();
+            var sTitle = this.createTitle();
+            L.Marker.prototype.initialize.call(this, latlng, { title: sTitle, icon: myIcon });
+        },
+
+        showPopup: function(map, htmlTemplate, handlePopupAction, hidingOthers) {
+            if (this._popup === null) {
+                // implementar fill en este fichero
+                var divContent = map.fillPopup(this._feature, htmlTemplate, handlePopupAction);
+                var latLon = this._latlng;
+                var bocadilloOffset = this._bocadilloOffset;
+                this._popup = L.popup({ offset: bocadilloOffset })
+                    .setLatLng(latLon)
+                    .setContent(divContent);
+            }
+            this._popup.openOn(map);
+        },
+
+        createIcon: function() {
+            return L.marker();
+        },
+
+        createTitle: function() {
+            return 'Marker';
+        },
+
+        _getProperty: function(name) {
+            getProperty('entitytype', this._feature);
+        },
+
+        _end: 0
+
+    });
+
+    /**
+     * Special subclass ofr Marker for render an Entity.
+     * Only needed a required parameter: feature
+     */
+    L.ux.EntityMarker = L.ux.Marker.extend({
+
+        _isEntityMarker: true,
+        _bocadilloOffset: new L.Point(0, -42),
+
+        createIcon: function() {
+            var status = this._feature.properties.status || 'unknown';
+            var cssName = 'status-' + status + ' t-' + this._getProperty('entitytype');
+            // Creamos un ojbeto DivIcon al que le pasamos el contenido personalizados HTML
+            var icon = L.divIcon({
+                iconSize: [40, 40],
+                iconAnchor: [20, 40],
+                html: '<div class=\'m2m-type\'></div>',
+                className: cssName
+            });
+            return icon;
+        },
+
+        createTitle: function() {
+            return this._getProperty('entityKeyAsString');
+        },
+
+        _end: 0
+
+    });
+
+    /**
+     * Method for creation of a EntityMarker.
+     * @param latlng
+     * @param feature
+     */
+    L.ux.entityMarker = function (latlng, feature) {
+        return new L.ux.maps.EntityMarker(latlng, feature);
+    };
+
+
+    /**
+     * Special subclass ofr Marker for render an Entity.
+     * Only needed a required parameter: feature
+     */
+    L.ux.QuadrantMarker = L.ux.Marker.extend({
+
+        _isQuadrantMarker: true,
+        _bocadilloOffset: new L.Point(0, -17),
+
+        createIcon: function() {
+            // El estilo es el mismo que el usado por el clusterMaker
+            var cssName = 'marker-cluster marker-cluster-small quadranKey';
+            // Creamos un ojbeto DivIcon al que le pasamos el contenido personalizados HTML
+            var icon = L.divIcon({
+                iconSize: [40, 40],
+                iconAnchor: [20, 20],
+                html: '<div class=\'\'><span>G</span></div>',
+                className: cssName
+            });
+            return icon;
+        },
+
+        createTitle: function() {
+            var sTitle = 'Agrupador: ' + this._getProperty('quadrantKeyAsString');
+            return sTitle;
+        },
+
+        _end: 0
+
+    });
+
+    /**
+     * Method for creation of a EntityMarker.
+     * @param latlng
+     * @param feature
+     */
+    L.ux.quadrantMarker = function (latlng, feature) {
+        return new L.ux.maps.QuadrantMarker(latlng, feature);
+    };
+
+
+    /** return the value of a property containing into a feature */
+    function getProperty(name, feature) {
+        var v = feature.properties[name];
+        if (v === undefined) {
+            // add a breakpoint for debugging
+            v = 'not-found-' + name;
+        }
+        return v;
+    }
+
+})();
+
+
+/* 
+ * Customization of L.Map and L.Control.Layers:
+ * - override default options (zoomInText, maxZoom, ...)
+ * - override initialize. Check url value.
+ * - management of layerControl: base layers (including offline layer), overlays, ...
+ * - Change default options for LeafLet classes
+ * - Minimap synchorinization
+ * - Local layer management
+ */
+(function() {
+
+    // L.UxMap extends L.Map
+    // L.Control.UxLayers extends L.Control.Layers
+    var USE_INHERITANCE = false; // true: uses L.Control.extends, false: modify original class
+    var BASE_CLASS;
+    if (!L.UxMap && !L.Map_ixUx) {
+
+        BASE_CLASS = L.Map;
+        var _BASE_; // or BASE_CLASS.prototype if USE_INHERITANCE is true
+
+        var _uxMap_members = {
+            /* -- */
+            initialize: function() {
+                var isSimpleMap = isSimpleUxMap(this, arguments); // cómo detectar mapa simple
+                // default initialize of L.Map
+                _BASE_.initialize.apply(this, arguments);
+                console.info('Ux L.Map initialize');
+                // uxMap initialize
+                var mapOptions = this.options;
+                if (mapOptions.editPointSize && L.Editable && L.Editable.VertexIcon) {
+                    var size = parseInt(mapOptions.editPointSize);
+                    if (size > 5 && size < 30) {
+                        // Ojo. De momento se cambia para 'todos'
+                        L.Editable.VertexIcon.prototype.options.iconSize = new L.Point(size, size);
+                    }
+                }
+                // init
+                if (isSimpleMap) {
+                    initSimpleUxMap(this);
+                }
+            },
+            /** Use this method for synchronize ng config object with L.Map */
+            setNgScope: function(optScope) {
+                if (!this._$ScopeConfig) {
+                    this._$ScopeConfig = optScope && optScope.config;
+                    // TODO - test method
+                    enableMinimapSynchronization(this, optScope); // it use optScope.controls
+                }
+            },
+            _enableMinimapSynchronization: function(optScope) {
+
+            },
+            addControl: function(control) {
+                _BASE_.addControl.apply(this, arguments);
+                // UX dashboard theme for nodes classed with leaflet-control-layers
+                var elemClasses = control && control._container && control._container.classList;
+                if (elemClasses && elemClasses.contains('leaflet-control-layers')) {
+                    if (!this._mainLayerControl && (control instanceof L.Control.Layers)) {
+                        this._mainLayerControl = control;
+                    }
+                    this._layerControlPosition = control.options.position;
+                }
+                // move layer-control to end (se intenta solo cuando se añade nuevo control en misma esquina)
+                if (this._layerControlPosition === control.options.position) {
+                    var lc = $(this._container).find('.leaflet-control-layers.leaflet-control')[0];
+                    if (lc && lc !== control._container) {
+                        var p = lc.parentNode;
+                        p.removeChild(lc);
+                        p.appendChild(lc);
+                    }
+                }
+            }
+        };
+
+        if (USE_INHERITANCE) {
+            _BASE_ = BASE_CLASS.prototype;
+            L.UxMap = BASE_CLASS.extend(_uxMap_members);
+            L.UxMap._isUx = true;
+        } else {
+            _BASE_ = {};
+            __overrideClass(BASE_CLASS, _uxMap_members, _BASE_);
+        }
+
+        // default values
+        L.Map._isUx = true; // set flag or fails if L.Map not exist.
+        L.Map._isDemoEnabled = !!localStorage.getItem('isUxDemo'); // localStorage.setItem('isUxDemo', '1')
+
+        // Default options in all known widgets. Remove default + - texts. UX uses awesome fonts
+        var opt = L.Control.Zoom.prototype.options; /* leaflet:7997 */
+        opt.zoomInText = '';
+        opt.zoomOutText = '';
+        opt.maxZoom = 20;
+
+        // ensure async.
+        if (!L.Map.prototype._removeZoomContent) {
+            L.Map.prototype._removeZoomContent = true;
+        }
+
+    }
+
+    /**
+     * En prueba. Refresca capas offline a partir del resultado de 'browse' sobre ficheros locales
+     * @param {*} oLayer 
+     * @param {*} files 
+     */
+    function refreshOfflineLayer(oLayer, files) {
+        var primero = files[0];
+        if (!primero) {
+            console.debug('carga de tiles locales cancelada');
+            return;
+        }
+        // En pruebas. solo se considera el primero.
+        loadGeoJsonFromFile(primero, function(err, sData) {
+            if (err) {
+                console.error('Error cartgando fichero', err);
+                return;
+            }
+            var obj;
+            try {
+                L.TileLayer.prototype.changeTileDataFromJson.call(oLayer, sData);
+            } catch (err) {
+                throw 'Invalid JSON data';
+            }
+        });
+        console.debug('Cambiando tiles a capa: ' + oLayer.name);
+    }
+
+    /**
+     * L.Control.UxLayers extends L.Control.Layers
+     * L.Control.Layers is an original Leaflet Control to allow users to switch between different layers on the map.
+     * The code above customize it for UX.
+     * (Futura clase L.Controls.UxLayers)
+     */
+    if (!L.Control.UxLayers) {
+
+        BASE_CLASS = L.Control.Layers;
+        var _uxBase; // or BASE_CLASS.prototype if USE_INHERITANCE is true
+        var OFFLINE_PREFIX = 'Offline'; // provisional. 
+
+        /* overrider members of UxLayerControl over L.Controls.Layer */
+        var _uxLayerControl_members = {
+
+            initialize: function(baseLayers, overlays, options) {
+                _uxBase.initialize.apply(this, arguments); // call to base initialize
+                this._localLayer = null; // unique instance of local layer
+            },
+
+            _initLayout: function() {
+                _uxBase._initLayout.apply(this, arguments); // call to base _initLayout
+                // Custom UX.
+                this._container.classList.add('navbar');
+                this._container.classList.add('navbar-primary');
+                // form child
+                this._form.classList.add('navbar');
+                this._form.classList.add('navbar-primary');
+            },
+
+            addBaseLayer: function(layer, name) {
+                _uxBase.addBaseLayer.apply(this, arguments);
+                if (layer._isUsingLocalTiles) {
+                    if (this._localLayer === null) {
+                        this._localLayer = layer;
+                    } else {
+                        console.warn('Another locallayer already exists. ' + this._localLayer.layerName);
+                    }
+                }
+                return this;
+            },
+
+            removeLayer: function(layer) {
+                _uxBase.removeLayer.apply(this, arguments);
+                if (layer._isUsingLocalTiles && this._localLayer === layer) {
+                    // TODO - esto la quita del mapa, no del control ?
+                    // this._localLayer = null;
+                }
+                return this;
+            },
+
+            _addItem: function(obj) {
+                var node = _uxBase._addItem.apply(this, arguments);
+                // al añadir un objeto 'label' para el desplegable ...
+                if (obj.name.startsWith(OFFLINE_PREFIX)) {
+                    // Añade un botón de broswe-file para esta capa
+                    var input = document.createElement('input');
+                    input.textContent = 'Seleccionar';
+                    input.type = 'file';
+
+                    Object.defineProperty(input, 'layerId', { // parche para L.Map._onInputClick
+                        get: function() {
+                            return obj.layer._leaflet_id;
+                        }
+                    });
+
+                    // $('.leaflet-control-layers.leaflet-control')[0].classList.add('leaflet-control-layers-expanded');
+                    input.style.width = '160px';
+                    input.style.position = 'absolute';
+                    // input.classList.add('btn');
+                    // input.classList.add('btn-default');
+                    input.style.left = '0px';
+                    input.style.top = '-24px';
+                    input.style.display = 'none';
+                    $(input).click(function(evt) {
+                        evt.stopPropagation();
+                    });
+                    input.onchange = function(evt) {
+                        evt.stopPropagation();
+                        refreshOfflineLayer(obj.layer, evt.target.files);
+                    };
+
+                    var mainInput = node.children[0];
+                    var parent = node.parentNode;
+                    $(parent).click(function() {
+                        // click any menu.
+                        var inputDisplay = (mainInput.checked) ? 'inherit' : 'none';
+                        input.style.display = inputDisplay;
+                    });
+
+                    // OJO: Debe estar antes que el input[radio]
+                    var grParent = parent.parentNode;
+                    grParent.insertBefore(input, grParent.firstChild);
+                }
+            },
+
+            _refreshOfflineLayer: function(oLayer, files) {
+                var firstFile = files[0];
+                if (!firstFile) {
+                    console.debug('carga de tiles locales cancelada');
+                    return;
+                } else if (files.length > 1) {
+                    console.warn('selected ' + (files.length - 1) + ' files after first is ignored');
+                }
+                // only fisrt file
+                loadGeoJsonFromFile(firstFile, function(err, sData) {
+                    if (err) {
+                        console.error('Error cartgando fichero', err);
+                        return;
+                    }
+                    var obj;
+                    try {
+                        L.TileLayer.prototype.changeTileDataFromJson.call(oLayer, sData);
+                    } catch (err) {
+                        throw 'Invalid JSON data';
+                    }
+                });
+                console.debug('Cambiando tiles a capa: ' + oLayer.name);
+            }
+
+        };
+
+
+
+        if (USE_INHERITANCE) {
+            // new control for layers. Default control used by UxMap
+            _uxBase = BASE_CLASS.prototype;
+            L.Control.UxLayers = BASE_CLASS.extend(_uxLayerControl_members);
+        } else {
+            // change original BASE_CLASS, overriding some methods
+            _uxBase = {}; // container of old methods
+            __overrideClass(BASE_CLASS, _uxLayerControl_members, _uxBase);
+        }
+
+    }
+
+
+    /**
+     * Devuelve true si el mapa pasado como parámetro se debe configurar con lo mínimo.
+     * @param {*} map 
+     * @param {*} args passed to L.Map or L.UxMap
+     */
+    function isSimpleUxMap(map, args) {
+        var container = args[0];
+        if (typeof container === 'string') {
+            return false;
+        }
+        var mapId = container.id;
+        // return (container.classList && container.classList.contains('ux-map-helper')) ||
+        //     mapId === 'map-marker' || mapId === 'map-finder';
+        return false;
+    }
+
+    /**
+     * No activar todavía. Ver cómo funciona por dentro leaflet-angular para elegir qué hacer
+     * 
+     * Intenta añadir las dos capas por defecto a un mapa UX, sin necesidad de pasar por configuración.
+     * @param {*} map 
+     * @param {*} args .  Debe existir _isSimpleUx como propiedad (y resultado true)
+     */
+    function initSimpleUxMap(map) {
+        var options = map.options || {};
+
+        // para probar tiles OFFLINE localStorage.setItem('localtiles', '1') 
+        // TODO - cómo pasarlo en opciones de mapa ?
+        var usingLocalTiles = map.options.usingLocalTiles || localStorage.getItem('localtiles');
+
+        // caso especial.
+        // cómo se añade _isSimpleUx:true en opciones de angular-leaflet ?
+        var tileLayers = {
+            osm: {
+                name: 'OpenStreetMap',
+                url: '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                type: 'xyz',
+                layerParams: {
+                    attribution: 'OpenStreet Map',
+                    maxZoom: 19
+                }
+            },
+            dark2: {
+                name: 'Dark Map',
+                url: '//{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+                layerParams: {
+                    attribution: 'Cartocdn Dark Map',
+                    maxZoom: 19
+                },
+                type: 'xyz'
+            },
+            ogWorld: {
+                name: 'OpenGate Maps',
+                url: 'http://172.19.18.248/osm_tiles/{z}/{x}/{y}.png',
+                layerParams: {
+                    attribution: 'OpenGate Maps',
+                    maxZoom: 19
+                },
+                type: 'xyz'
+            }
+        };
+        if (usingLocalTiles) {
+            // Podría buscarse en la carpeta de descargas un './currentlocaltiles.json'
+            //   que es el fichero que se descarga tras el 'robado' de tiles.
+            // tileLayers.local = {
+            //     name: 'Capa base Offline',
+            //     url: 'file://_$local_salonica25_{z}/{x}/{y}.png',
+            //     options: { attribution: '' },
+            //     visible: false
+            // }
+        }
+
+        var layerControl = new L.Control.Layers();
+        map.addControl(layerControl);
+        for (var key in tileLayers) {
+            var cfg = tileLayers[key];
+            var tileLayer = L.tileLayer(cfg.url, cfg.options);
+            layerControl.addBaseLayer(tileLayer, cfg.name);
+        }
+
+        // default util controls
+        map.addControl(new L.Control.MousePosition({}));
+        map.addControl(new L.Control.Fullscreen({}));
+        if (usingLocalTiles && L.Control.LocalTileControl) {
+            // quitar segunda condición cuando esté implementado
+            map.addControl(new L.Control.LocalTileControl({}));
+        }
+    }
+
+    /**
+     * Utilidad para sincronización de Minimap con mapa principal.
+     * En pruebas. Se puede implementar en otro lugar.
+     * @param {*} map 
+     * @param {*} scope 
+     */
+    function enableMinimapSynchronization(map, scope) {
+        // custom controls are referenced in scope.controls.custom
+        var customControls = scope && scope.controls && scope.controls.custom;
+        if (map._syncMinimapLayerenabled || !customControls) {
+            return;
+        }
+        map._syncMinimapLayerenabled = true;
+        map.on('baselayerchange', function(evt) {
+            // search minimap and change its layer
+            var minimapLayer = searchMapControl(customControls, L.Control.MiniMap);
+            if (minimapLayer) {
+                var tileLayer = new L.TileLayer(evt.layer._url);
+                minimapLayer.changeLayer(tileLayer);
+            }
+            // check baseTile for change home-control envelope
+            var gohomeControl = searchMapControl(customControls, L.Control.Gohome);
+            if (gohomeControl) {
+                var homeInfo = evt.layer.getHomeInfo && evt.layer.getHomeInfo();
+                if (homeInfo && homeInfo.center) {
+                    gohomeControl.changeTargetView(homeInfo.center, homeInfo.zoom);
+                } else {
+                    gohomeControl.restoreOriginalView();
+                }
+            }
+            // Check tile options for over-snap zoom levels.
+            // PRUEBA de 'saltado' de niveles de zoom.
+            // var mapZooms = evt.layer.options.zooms ||
+            //     (evt.layer._localTiles && [1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 15, 18]) ||
+            //     undefined;
+            // map.options.zooms = mapZooms;
+        });
+    }
+
+    /** Search a Control (given its type) from a Map passed as argument. */
+    function searchMapControl(mapControls, clazz) {
+        for (var index = 0; index < mapControls.length; index += 1) {
+            var cc = mapControls[index];
+            if (cc instanceof clazz) {
+                return cc;
+            }
+        }
+    }
+
+    ///
+    /// Utilidades
+    ///
+
+    L.DomUtil.uxLoadGeoJsonFromFile = loadGeoJsonFromFile;
+    /** 
+     * Utilidad implementada en mapContoller/geojson_service 
+     * It require FileReader (ecma6)
+     * */
+    function loadGeoJsonFromFile(file, callback) {
+        var fileName = file ? file.name : 'null';
+        var freader = new FileReader();
+        freader.onload = function() {
+            try {
+                var result = freader.result;
+                callback(null, result);
+            } catch (msg) {
+                callback(new Error('No valid GeoJson file: [' + fileName + ']\n' + msg), null);
+            }
+        };
+        try {
+            freader.readAsText(file);
+        } catch (err) {
+            callback(new Error('Invalid ' + fileName + '\n' + err.message), null);
+        }
+    }
+
+
+
+    /** 
+     * This method override an existing class. 
+     * WARN: it is not a processing of inheritance. Class will be changed.
+     * 
+     * angular-leaflet has hardcoded L.Map and L.Control.Layers as constructors. 
+     * Uxleaflet needs to use L.UxMap and L.Control.UxLayers instead.
+     * Then we use this 'class modification'
+     */
+    function __overrideClass(clazzToModify, newMembers, overriddenMembers) {
+        /*  Parche para modificar la clase (en vez de extender de ella)
+            Pendiente extender cuando sea posible personalizar Leaflet desde angular-leaflet */
+        console.warn('WARN: MapUx está usando __overrideClass. Class in development: ',
+            clazzToModify.constructor); // eliminar comentario si pruebas OK
+        var oldMembers = overriddenMembers || {};
+
+        function Message(text) {
+            this.getMessage = function() {
+                return text;
+            };
+        }
+        for (var key in newMembers) {
+            var methodName = key;
+            var oldMember = clazzToModify.prototype[methodName];
+            if (!oldMember) {
+                var oldName = methodName;
+                oldMember = new Message(' not exist ' + oldName).getMessage;
+            }
+            oldMembers[methodName] = oldMember;
+            var func = newMembers[methodName];
+            clazzToModify.prototype[methodName] = func;
+        }
+        return oldMembers;
+    }
+
+})();
+/*
+ * [uxleaflet/client] 
+ * https://github.com/ardhi/Leaflet.MousePosition
+ * File: l-mouseposition.js 
+ */
+
+(function () {
+    
+
+    L.Control.MousePosition = L.Control.extend({
+        options: {
+            position: 'bottomleft',
+            separator: ' : ',
+            emptyString: 'Unavailable',
+            lngFirst: false,
+            numDigits: 6,
+            lngFormatter: undefined,
+            latFormatter: undefined,
+            prefix: ''
+        },
+        _existMouse: false,
+
+        onAdd: function(map) {
+            this._container = L.DomUtil.create('div', 'leaflet-control-mouseposition');
+            L.DomEvent.disableClickPropagation(this._container);
+            map.on('mousemove', this._onMouseMove, this);
+            map.on('move', this._onMove, this); // for no-mouse device.
+            this._container.innerHTML = this.options.emptyString;
+            return this._container;
+        },
+
+        onRemove: function(map) {
+            map.off('mousemove', this._onMouseMove);
+        },
+
+        _setText: function(latlng) {
+            var lng = this.options.lngFormatter ? this.options.lngFormatter(latlng.lng) : L.Util.formatNum(latlng.lng, this.options.numDigits);
+            var lat = this.options.latFormatter ? this.options.latFormatter(latlng.lat) : L.Util.formatNum(latlng.lat, this.options.numDigits);
+            var value = this.options.lngFirst ? lng + this.options.separator + lat : lat + this.options.separator + lng;
+            var prefixAndValue = this.options.prefix + ' ' + value;
+            this._container.innerHTML = prefixAndValue;
+        },
+
+        _onMouseMove: function(e) {
+            this._existMouse = true;
+            this._setText(e.latlng);
+        },
+
+        _onMove: function(e) {
+            if (!this._existMouse) {
+                var map = e.target;
+                this._setText(map.getCenter());
+            }
+        },
+
+    });
+
+    L.Map.mergeOptions({
+        positionControl: false
+    });
+
+    L.Map.addInitHook(function() {
+        if (this.options.positionControl) {
+            this.positionControl = new L.Control.MousePosition();
+            this.addControl(this.positionControl);
+        }
+    });
+
+    L.control.mousePosition = function(options) {
+        return new L.Control.MousePosition(options);
+    };
+
+})();
+/** 
+ * [uxleaflet/client]
+ * L.Controls.MagnifyGlass closure.
+ * Implementación original para Leaflet 1 o superior. No hay implementación para versinoes anteriores.
+ * 
+ */
+(function() {
+
+    // TODO - hacer que tenga ref. a determinadas capas del mapa y hacer que
+    // se suscriba a eventos de add/remove de esas capas.
+    // Usar l.Util.CloneLayer para clonar nuevas subcapas.
+    // TODO - hacer PRIMERO que las 'entities' se añadan en capa propia
+    
+
+    if (!window.L) {
+        throw new Error('L.MagnifyingGlass needs Leaflet');
+    }
+
+    var _BASE_CLASS; // clase base de la que heredar.
+    var _isLeaflet_07;
+    if (L.Layer) {
+        // implementación original del widget.
+        _BASE_CLASS = L.Layer;
+        _isLeaflet_07 = false;
+    } else {
+        // Esta clase no estaba en versiones anteriores a Leaflet 0.8
+        // nueva implementación. Pendiente corregir lo que no funcione en 0.7
+        _BASE_CLASS = L.Class;
+        _isLeaflet_07 = true;
+    }
+
+    /**
+     * @class L.MagnifyingGlass 
+     * @augments {JSON options}
+     */
+    L.MagnifyingGlass = _BASE_CLASS.extend({
+        options: {
+            radius: 180,
+            zoomOffset: 3,
+            layers: [],
+            fixedPosition: false,
+            latLng: [0, 0],
+            fixedZoom: -1
+        },
+
+        initialize: function(options) {
+            L.Util.setOptions(this, options);
+            this._fixedZoom = (this.options.fixedZoom !== -1);
+            this._mainMap = null;
+            this._glassMap = null;
+        },
+
+        _shifPerformed: function(evt, isPressed) {
+            var opacity = isPressed ? '.6' : '1';
+            this._glassMap._container.style.opacity = opacity;
+        },
+
+        getMap: function() {
+            return this._glassMap;
+        },
+
+        _createMiniMap: function(elt) {
+            // TODO - usar la capa actual del mapa principal
+            return new L.Map(elt, {
+                layers: this.options.layers,
+                zoom: this._getZoom(),
+                maxZoom: this._mainMap.getMaxZoom(),
+                minZoom: this._mainMap.getMinZoom(),
+                crs: this._mainMap.options.crs,
+                fadeAnimation: false,
+                // disable every controls and interaction means
+                attributionControl: false,
+                zoomControl: false,
+                boxZoom: false,
+                touchZoom: false,
+                scrollWheelZoom: false,
+                doubleClickZoom: false,
+                dragging: false,
+                keyboard: false
+            });
+        },
+
+        _getZoom: function() {
+            return (this._fixedZoom) ?
+                this.options.fixedZoom :
+                this._mainMap.getZoom() + this.options.zoomOffset;
+        },
+
+        _updateZoom: function() {
+            this._glassMap.setZoom(this._getZoom());
+        },
+
+        setRadius: function(radius) {
+            this.options.radius = radius;
+            if (this._wrapperElt) {
+                this._wrapperElt.style.width = this.options.radius * 2 + 'px';
+                this._wrapperElt.style.height = this.options.radius * 2 + 'px';
+            }
+        },
+
+        setLatLng: function(latLng) {
+            this.options.latLng = latLng;
+            this._update(latLng);
+        },
+
+        _updateFromMouse: function(evt) {
+            this._update(evt.latlng, evt.layerPoint);
+        },
+
+        _updateFixed: function() {
+            this._update(this.options.latLng);
+        },
+
+        _update: function(latLng, layerPoint) {
+            // update mini map view, forcing no animation
+            this._glassMap.setView(latLng, this._getZoom(), {
+                pan: { animate: false }
+            });
+
+            // update the layer element position on the main map,
+            // using the one provided or reprojecting it
+            layerPoint = layerPoint || this._mainMap.latLngToLayerPoint(latLng);
+            this._wrapperElt.style.left = layerPoint.x - this.options.radius + 'px';
+            this._wrapperElt.style.top = layerPoint.y - this.options.radius + 'px';
+        },
+
+        /**
+         As defined by ILayer
+         */
+        onAdd: function(map) {
+            this._mainMap = map;
+            // create a wrapper element and a container for the map inside it
+            this._wrapperElt = L.DomUtil.create('div', 'leaflet-magnifying-glass');
+            var glassMapElt = L.DomUtil.create('div', '', this._wrapperElt);
+            // Webkit border-radius clipping workaround (see CSS)
+            if (L.Browser.webkit)
+                L.DomUtil.addClass(glassMapElt, 'leaflet-magnifying-glass-webkit');
+            // build the map
+            this._glassMap = this._createMiniMap(glassMapElt);
+
+            // forward some DOM events as Leaflet events
+            L.DomEvent.addListener(this._wrapperElt, 'click', this._fireClick, this);
+
+            var opts = this.options;
+
+            this.setRadius(opts.radius);
+            this.setLatLng(opts.latLng);
+
+            this._glassMap.whenReady(function() {
+                if (opts.fixedPosition) {
+                    this._mainMap.on('zoomend', this._updateFixed, this);
+                    // for now, hide the elements during zoom transitions
+                    L.DomUtil.addClass(this._wrapperElt, ('leaflet-zoom-hide'));
+                } else {
+                    this._mainMap.on('mousemove', this._updateFromMouse, this);
+                    if (!this._fixedZoom) {
+                        this._mainMap.on('zoomend', this._updateZoom, this);
+                    }
+                }
+            }, this);
+
+            // add the magnifying glass as a layer to the top-most pane
+            map.getPanes().popupPane.appendChild(this._wrapperElt);
+
+            // needed after the element has been added, otherwise tile loading is messy
+            this._glassMap.invalidateSize();
+
+            addShifEventListener(this._shifPerformed, this);
+
+            return this;
+        },
+
+        _fireClick: function(domMouseEvt) {
+            if (this.fire) {
+                // leaflet 1.0
+                this.fire('click', domMouseEvt);
+            } else {
+                // old leaflet
+            }
+            L.DomEvent.stopPropagation(domMouseEvt);
+        },
+
+        /**
+         As defined by ILayer
+         */
+        onRemove: function(map) {
+            map.off('viewreset', this._updateFixed, this);
+            map.off('mousemove', this._updateFromMouse, this);
+            map.off('zoomend', this._updateZoom, this);
+            // layers must be explicitely removed before map destruction,
+            // otherwise they can't be reused if the mg is re-added
+            for (var i = 0, l = this.options.layers.length; i < l; i++) {
+                this._glassMap.removeLayer(this.options.layers[i]);
+            }
+            this._glassMap.remove();
+            L.DomEvent.removeListener(this._wrapperElt, 'click', this._fireClick);
+            map.getPanes().popupPane.removeChild(this._wrapperElt);
+            this._mainMap = null;
+            removeShifEventListener(this._shifPerformed, this);
+            return this;
+        }
+    });
+
+    L.magnifyingGlass = function(options) {
+        return new L.MagnifyingGlass(options);
+    };
+
+    /**
+     * @class  L.Control.MagnifyingGlass
+     * @augments {JSON options}
+     */
+    L.Control.MagnifyingGlass = L.Control.extend({
+
+        _magnifyingGlass: false,
+
+        options: {
+            position: 'topleft',
+            title: 'Toggle Magnifying Glass',
+            forceSeparateButton: true
+        },
+
+        initialize: function(options) {
+            // Override default options
+            for (var i in options) {
+                if (options.hasOwnProperty(i) && this.options.hasOwnProperty(i)) {
+                    this.options[i] = options[i];
+                }
+            }
+        },
+
+        onAdd: function(map) {
+            var className = 'leaflet-control-magnifying-glass';
+            var container;
+            if (map.zoomControl && !this.options.forceSeparateButton) {
+                container = map.zoomControl._container;
+            } else {
+                container = L.DomUtil.create('div', className + ' leaflet-bar');
+            }
+
+            this._button = this._createButton(this.options.title, className, container, map);
+            return container;
+        },
+
+        _createButton: function(title, className, container, map) {
+            // TODO - generar el botón de la misma manera que el resto.
+            var _this = this;
+            var link = L.DomUtil.create('a', className, container);
+            link.href = '#';
+            link.title = title;
+
+            L.DomEvent
+                .addListener(link, 'click', L.DomEvent.stopPropagation)
+                .addListener(link, 'click', L.DomEvent.preventDefault)
+                .addListener(link, 'click', function() { _this._clicked(map); });
+
+            return link;
+        },
+
+        _clicked: function() {
+            var map = this._map;
+            if (!this._magnifyingGlass) {
+                this._magnifyingGlass = _temp_create_glass(map);
+            }
+
+            if (map.hasLayer(this._magnifyingGlass)) {
+                map.removeLayer(this._magnifyingGlass);
+                L.DomUtil.removeClass(this._button, 'active');
+            } else {
+                if (this._magnifyingGlass.addTo) {
+                    // leaflet >= 1
+                    this._magnifyingGlass.addTo(map);
+                } else {
+                    // leaflet < 1.  En pruebas
+                    map.addLayer(this._magnifyingGlass);
+                }
+                L.DomUtil.addClass(this._button, 'active');
+            }
+        }
+
+    });
+
+    L.control.magnifyingglass = function(options) {
+        return new L.Control.MagnifyingGlass(options);
+    };
+
+    addCSS();
+
+    function addCSS() {
+        // UPGRADE -añadir estilos por defecto
+    }
+
+    /** 
+     * Función temporal. Usar funcines de angular para suscripción a eventos de teclado
+     */
+    function addShifEventListener(func, context) {
+        var addEventListener = window.addEventListener ? document.addEventListener : document.attachEvent;
+        addEventListener('keydown', function(event) {
+            if (event.keyCode === 16 || event.charCode === 16) {
+                event._iskeydown = true;
+                func.call(context, event, true);
+            }
+        });
+        addEventListener('keyup', function(event) {
+            if (event.keyCode === 16 || event.charCode === 16) {
+                event._iskeyup = true;
+                func.call(context, event, false);
+            }
+        });
+    }
+
+    function removeShifEventListener(func, context) {
+        var removeEventListener = window.removeEventListener ? document.removeEventListener : function _foo() {};
+        removeEventListener('keydown', context);
+        removeEventListener('keyup', context);
+    }
+
+    /* Crea una instancia de L.MagnifyingGlass usando como capa la capa principal actual del mapa */
+    function _temp_create_glass(map) {
+
+        // código de la demos
+        var tileUrl = window.location.protocol + '//b.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        var tileOptions = {
+            attribution: '&copy; <a href=\'https://osm.org/copyright\'>OpenStreetMap</a> contributors'
+        };
+
+        // TODO - obtener desde 'map'
+        var currentBaseLayer = L.tileLayer(tileUrl, tileOptions);
+
+        var magnifyingGlass = L.magnifyingGlass({
+            zoomOffset: 3,
+            layers: [currentBaseLayer]
+        });
+        return magnifyingGlass;
+    }
+
+})(); //  L.Control.MagnifyingGlass
+/** 
+ * [uxleaflet/client]
+ * Versión extendida de GPlaceAutocomplete 
+ * Consta de un botón para mostrar ocultar el cuadro de texto.
+ * 
+ * Esta clase está preparada para esperar su inicialización hasta que se resuelva la carga de
+ * su la librería de la que depende: google.maps.places.Autocomplete.
+ * Es necesario un API-KEY de Google para que funcione. 
+ * Este API-KEY se está buscando en localStorage / 'google-key'
+ */
+(function() {
+
+    
+    
+    var BASE_CLASS = L.Control.GPlaceAutocomplete;
+    if (!BASE_CLASS) {
+        console.error('L.Control.GPlaceAutocomplete2 requires L.Control.GPlaceAutocomplete');
+        return;
+    }
+
+    L.Control.GPlaceAutocomplete2 = BASE_CLASS.extend({
+
+        _buildContainer: function(options) {
+            // Solo debe invocarse si existe google.maps.places.Autocomplete
+            var _that = this;
+            L.extraApi.ensureLib('google', ['google.maps.places.Autocomplete'], function() {
+                // called when available google-key
+                BASE_CLASS.prototype._buildContainer.call(_that, options);
+            });
+        },
+
+        addTo: function(map) {
+            // solo debe invocarse cuando exista this._container.
+            var _that = this;
+            var tInterval = window.setInterval(function() {
+                    if (_that.container) {
+                        window.clearInterval(tInterval);
+                        BASE_CLASS.prototype.addTo.call(_that, map);
+                    }
+                },
+                100); // check this._container each 100 ms
+        }
+
+    });
+
+
+    // comment this code in production
+    if (document.location.host.startsWith('172.') || document.location.host.startsWith('localhost')) {
+        var CHECK_EACH = 2000; // ms
+        var CHECK_TIMES = 3;
+        var times = CHECK_TIMES;
+        var interval = window.setInterval(function() {
+            var VAR_NAME = 'google-apikey';
+            var sApiKey = localStorage.getItem(VAR_NAME);
+            if (sApiKey && L.extraApi) {
+                console.info('Found apikey in locaStorage[\'' + VAR_NAME + '\']');
+                L.extraApi.setApikey('google', sApiKey);
+                times = -1;
+            } else {
+                console.debug('Not Found apikey in locaStorage[\'' + VAR_NAME + '\']');
+                // or l.extraApi not loaded yet
+            }
+            if ((times -= 1) < 0) {
+                window.clearInterval(interval);
+            }
+        }, CHECK_EACH);
+    }
+
+})();
+/*
+ * [uxleaflet/client]
+ * Google layer using Google Maps API.
+ * window.google.maps is required when constructor is called.
+ */
+(function() {
+
+    
+
+    if (!window.L) {
+        throw new Error('L.Google needs Leaflet');
+    }
+
+    L.Google = L.Class.extend({
+        includes: L.Mixin.Events,
+
+        options: {
+            minZoom: 0,
+            maxZoom: 18,
+            tileSize: 256,
+            subdomains: 'abc',
+            errorTileUrl: '',
+            attribution: '',
+            opacity: 1,
+            continuousWorld: false,
+            noWrap: false
+        },
+
+        // Possible types: SATELLITE, ROADMAP, HYBRID, TERRAIN
+        initialize: function(type, options) {
+            L.Util.setOptions(this, options);
+
+            this._ready = window.google !== undefined;
+            if (!this._ready) {
+                delayInit(this);
+            }
+
+            this._type = type || 'SATELLITE';
+        },
+
+        onAdd: function(map, insertAtTheBottom) {
+            this._map = map;
+            this._insertAtTheBottom = insertAtTheBottom;
+
+            // create a container div for tiles
+            this._initContainer();
+            this._initMapObject();
+
+            // set up events
+            map.on('viewreset', this._resetCallback, this);
+
+            this._limitedUpdate = L.Util.limitExecByInterval(this._update, 50, this);
+            map.on('move', this._update, this);
+            map.on('dragstart', this._update, this);
+            map.on('drag', this._update, this);
+            map.on('zoomstart', this._update, this);
+            map.on('zoomend', this._update, this);
+            map.on('autopanstart', this._update, this);
+
+            map._controlCorners.bottomright.style.marginBottom = '1em';
+
+            this._reset();
+            this._update();
+        },
+
+        onRemove: function(map) {
+            this._map._container.removeChild(this._container);
+            //this._container = null;
+
+            this._map.off('viewreset', this._resetCallback, this);
+
+            this._map.off('move', this._update, this);
+            map._controlCorners.bottomright.style.marginBottom = '0em';
+            //this._map.off('moveend', this._update, this);
+        },
+
+        getAttribution: function() {
+            return this.options.attribution;
+        },
+
+        setOpacity: function(opacity) {
+            this.options.opacity = opacity;
+            if (opacity < 1) {
+                L.DomUtil.setOpacity(this._container, opacity);
+            }
+        },
+
+        setElementSize: function(e, size) {
+            e.style.width = size.x + 'px';
+            e.style.height = size.y + 'px';
+        },
+
+        _initContainer: function() {
+            var tilePane = this._map._container,
+                first = tilePane.firstChild;
+
+            if (!this._container) {
+                this._container = L.DomUtil.create('div', 'leaflet-google-layer leaflet-top leaflet-left');
+                this._container.id = '_GMapContainer_' + L.Util.stamp(this);
+                this._container.style.zIndex = 'auto';
+            }
+
+            if (true) {
+                tilePane.insertBefore(this._container, first);
+
+                this.setOpacity(this.options.opacity);
+                this.setElementSize(this._container, this._map.getSize());
+            }
+        },
+
+        _initMapObject: function() {
+            if (!this._ready) return;
+            this._google_center = new google.maps.LatLng(0, 0);
+            var map = new google.maps.Map(this._container, {
+                center: this._google_center,
+                zoom: 0,
+                tilt: 0,
+                mapTypeId: google.maps.MapTypeId[this._type],
+                disableDefaultUI: true,
+                keyboardShortcuts: false,
+                draggable: false,
+                disableDoubleClickZoom: true,
+                scrollwheel: true,
+                streetViewControl: false
+            });
+
+            var _this = this;
+            this._reposition = google.maps.event.addListenerOnce(map, 'center_changed',
+                function() { _this.onReposition(); });
+
+            map.backgroundColor = '#ff0000';
+            this._google = map;
+        },
+
+        _resetCallback: function(e) {
+            this._reset(e.hard);
+        },
+
+        _reset: function(clearOldContainer) {
+            this._initContainer();
+        },
+
+        _update: function() {
+            if (!this._google) return;
+            this._resize();
+
+            var bounds = this._map.getBounds();
+            var ne = bounds.getNorthEast();
+            var sw = bounds.getSouthWest();
+            var google_bounds = new google.maps.LatLngBounds(
+                new google.maps.LatLng(sw.lat, sw.lng),
+                new google.maps.LatLng(ne.lat, ne.lng)
+            );
+            var center = this._map.getCenter();
+            var _center = new google.maps.LatLng(center.lat, center.lng);
+
+            this._google.setCenter(_center);
+            this._google.setZoom(this._map.getZoom());
+            //this._google.fitBounds(google_bounds);
+        },
+
+        _resize: function() {
+            var size = this._map.getSize();
+            if (this._container.style.width === size.x &&
+                this._container.style.height === size.y)
+                return;
+            this.setElementSize(this._container, size);
+            this.onReposition();
+        },
+
+        onReposition: function() {
+            if (!this._google) return;
+            google.maps.event.trigger(this._google, 'resize');
+        }
+    });
+
+
+    L.Google.asyncWait = [];
+
+    var ensureStarted = false;
+
+    function delayInit(obj) {
+        L.Google.asyncWait.push(obj);
+        if (ensureStarted) {
+            return;
+        }
+        ensureStarted = true;
+        L.extraApi.ensureLib('google', ['google.maps.Map'], function() {
+            var i;
+            for (i = 0; i < L.Google.asyncWait.length; i++) {
+                var o = L.Google.asyncWait[i];
+                o._ready = true;
+                if (o._container) {
+                    o._initMapObject();
+                    o._update();
+                }
+            }
+            L.Google.asyncWait = [];
+        });
+    }
+/*
+    function testPromise() {
+        var p = new Promise(function(resolve, reject) {
+            window.setTimeout(function() {
+                resolve('p-' + $scope.$id);
+            }, 2000);
+        })
+        p.then(
+            function(data) {
+                console.info('OK: ' + data);
+            }
+        );
+    }
+*/
+})();
+/** 
+ * [uxleaflet/client] 
+ * L.Controls.Gohome closure
+ */
+// (function() {
+
+
+if (!window.L) {
+    throw new Error('L.Control.Gohome needs Leaflet');
+}
+
+/**
+ * @class L.Control.GoHome 
+ * @augments {JSON options} bounds or center/zoom
+ */
+L.Control.Gohome = L.Control.extend({
+    includes: L.Mixin.Events,
+
+    options: {
+        className: ''
+    },
+
+    _isGohomeInstance: true,
+
+    initialize: function(options) {
+        if (L.Control.initialize) {
+            L.Control.initialize.apply(this, arguments);
+        }
+        L.Util.setOptions(this, options);
+        this._className = (this.options.className || '') + ' ux-home';
+        this.options.center = this.options.center || [40, -3.7];
+        this.options.zoom = this.options.zoom || 8;
+        this._originalView = { center: this.options.center, zoom: this.options.zoom };
+    },
+
+    onAdd: function(map) {
+        // add custom classname
+        var className = this._className + ' leaflet-control-home';
+        var container = L.DomUtil.create('div', className + ' leaflet-bar');
+
+        var fsTitle = this.options.fullscreenTitle || 'Go Home Location';
+        var fullClassName = className + ' leaflet-control-home';
+        this._createButton('', fsTitle, className, container, this.goHome, this);
+
+        return container;
+    },
+
+    _createButton: function(html, title, className, container, fn, context) {
+        var link = L.DomUtil.create('a', className + ' leaflet-bar-part', container);
+        link.innerHTML = html;
+        link.href = '#';
+        link.title = title;
+
+        var stop = L.DomEvent.stopPropagation;
+
+        L.DomEvent
+            .on(link, 'click', stop)
+            .on(link, 'mousedown', stop)
+            .on(link, 'dblclick', stop)
+            .on(link, 'click', L.DomEvent.preventDefault)
+            .on(link, 'click', fn, context)
+            .on(link, 'click', this._refocusOnMap, context);
+
+        return link;
+    },
+
+    goHome: function() {
+        if (this.options.bounds) {
+            this._map.fitBounds(this.options.bounds);
+        } else {
+            var zoom = this.options.zoom || 8;
+            var center = this.options.center;
+            var ll = new L.LatLng(center[0], center[1]);
+            this._map.setView(ll, zoom);
+        }
+        // force internal resize for map
+        this._map.invalidateSize();
+    },
+
+    saveCurrentViewOriginalView: function() {
+        this._originalView = { center: this.options.center, zoom: this.options.zoom };
+    },
+
+    restoreOriginalView: function() {
+        this.changeTargetView(this._originalView.center, this._originalView.zoom);
+    },
+
+    changeTargetView: function(center, zoom) {
+        if (!isNaN(center[0]) && !isNaN(center[1])) {
+            this.options.center = center;
+        } else if (!isNaN(center.lat) && !isNaN(center.lng)) {
+            this.options.center = [center.lat, center.lng];
+        } else {
+            throw 'unknowwn format for center: ' + center;
+        }
+        this.options.zoom = zoom;
+        this.options.bounds = undefined;
+    },
+
+    changeTargetViewToBounds: function(bounds) {
+        if (bounds.isValid) {
+            this.options.bounds = bounds;
+            this.options.zoom = undefined;
+            this.options.center = undefined;
+        } else {
+            throw 'Invalid bounds: ' + bounds;
+        }
+    },
+
+    _oldStyle: {}
+
+});
+
+L.gohome = function (opt) {
+    return new L.Control.Gohome(opt);
+};
+
+addCSS();
+
+function addCSS() {
+    // UPGRADE -añadir estilos por defecto
+}
+
+// })();
+/** 
+ * [uxleaflet/client]
+ * L.Controls.BoxSelection closure.
+ * OJO: No borrar todavía. Es una alternativa a L.BoxZoom 
+ * 
+ * OJO: Ejemplo en el que se basa este código usaba nuevas instrucciones ECMA6.
+ * Son incompatibles con jslint uado por tarea gulp.
+ */
+(function() {
+
+    
+
+    if (!window.L) {
+        throw new Error('L.Control.FeatureSelection needs Leaflet');
+    }
+
+    /**
+     * @class L.Control.FeatureSelection 
+     */
+    L.Control.FeatureSelection = L.Control.extend({
+        includes: L.Mixin.Events,
+
+        options: {
+            className: ''
+        },
+
+        _button: null,
+        _restriction: null,
+
+        initialize: function(options) {
+            if (!window.L.Map.SelectArea) {
+                throw new Error('L.Control.FeatureSelection needs L.Map.SelectArea (bower: leaflet-select-area');
+            }
+            if (L.Control.initialize) {
+                L.Control.initialize.apply(this, arguments);
+            }
+            L.Util.setOptions(this, options);
+
+        },
+
+        onAdd: function(map) {
+            this._map = map;
+
+            var className = (this._className || '') + ' leaflet-control-boxselection',
+                container = L.DomUtil.create('div', className + ' leaflet-bar');
+            var classNamePrefix = ' leaflet-control-boxselection'; // leaflet-select-control
+
+            var title = this.options.title || 'Select features on map';
+            title = 'IN DEVELOPMENT  --  Select features on map';
+            console.warn(title); // DELETE this line when ...
+            this._button = this._createButton('', title, className, container, this.goHome, this);
+
+            var result = document.querySelector('.info .result') || $('<div></div>');
+            // on select
+            map.on({
+                'areaselected': this.areaSelectedPerformed,
+                'areaselecttoggled': this.updateButton
+            });
+
+            // no necesario. Se seleccionará sin necesidad de ctrl
+            // L.DomEvent.on(document.querySelector('#restriction'), 'change', toggleRestriction);
+            // L.DomEvent.on(document.querySelector('#shift-key'), 'change', toggleShiftKey);
+            // L.DomEvent.on(document.querySelector('#ctrl-key'), 'change', toggleCtrlKey);
+
+            this._map.selectArea.setControlKey(false);
+
+            // enable
+            this.updateButton();
+
+            return container;
+        },
+
+        areaSelectedPerformed: function(evt) {
+            // Esto depende de los objetos a seleccionar.
+            // L.Util.requestAnimFrame(function() {
+            //     map.eachLayer(function(pointLayer) {
+            //         if (pointLayer instanceof L.CircleMarker) {
+            //             pointLayer.setStyle({
+            //                 color: evt.bounds.contains(pointLayer.getLatLng()) ? '#0f0' : '#f00'
+            //             });
+            //         }
+            //     });
+            // });
+            var sInner = evt.bounds.toBBoxString().split(',').join(',\n');
+            // result.innerHTML = '<pre>' + sInner + '</pre>';
+            console.info(sInner);
+        },
+
+        _createButton: function(html, title, className, container, fn, context) {
+            var _this = this;
+            var link = L.DomUtil.create('a', className + ' leaflet-bar-part', container);
+            link.innerHTML = html;
+            link.href = '#';
+            link.title = title;
+
+            var stop = L.DomEvent.stopPropagation;
+
+            L.DomEvent
+                .on(link, 'click', function() {
+                    _this._areaSelectToggled();
+                })
+                .on(link, 'mousedown', stop)
+                .on(link, 'dblclick', stop)
+                .on(link, 'click', L.DomEvent.preventDefault);
+
+            return link;
+        },
+
+        updateButton: function() {
+            if (this._button) {
+                L.DomUtil[this._map.selectArea.enabled() ? 'addClass' : 'removeClass'](this._button, 'active');
+            }
+        },
+
+        toggleRestriction: function() {
+            var map = this._map;
+            if (this._restriction) {
+                map.removeLayer(this._restriction);
+                map.selectArea.setValidate();
+                this._restriction = null;
+            } else {
+                var bounds = map.getBounds().pad(-0.25);
+                this._restriction = L.rectangle(bounds, {
+                    weight: 2,
+                    color: '#0ff',
+                    fillOpacity: 0,
+                    clickable: false,
+                    opacity: 0.7
+                }).addTo(map);
+                map.selectArea.setValidate(function(p) {
+                    return bounds.contains(map.layerPointToLatLng(p));
+                });
+            }
+        },
+
+        _areaSelectToggled: function() {
+            if (this._map.selectArea.enabled()) {
+                L.DomUtil.removeClass(this._button, 'active');
+                this._map.selectArea.disable();
+                console.info('Select area disabled');
+            } else {
+                L.DomUtil.addClass(this._button, 'active');
+                this._map.selectArea.enable();
+                console.info('Select area enabled');
+            }
+        },
+
+        toggleCtrlKey: function() {
+            this._map.selectArea.setControlKey(document.querySelector('#ctrl-key').checked);
+        },
+
+        toggleShiftKey: function() {
+            this._map.selectArea.selectArea.setShiftKey(document.querySelector('#shift-key').checked);
+        },
+
+        _oldStyle: {}
+
+    });
+
+    L.boxSelection = function (opt) {
+        return new L.Control.BoxSelection(opt);
+    };
+
+})();
+
+
+/**
+ * [uxleaflet/client]
+ * Editable. B version. 
+ * (Es posible que no sea necesaria, al igual que no lo es l-editable.js)
+ * 
+ */
+L.Editable = L.Class.extend({
+
+    _dev_version: '0.9.0',
+    _clazzName: 'L.Editable',
+
+    includes: [L.Mixin.Events],
+
+    statics: {
+        FORWARD: 1,
+        BACKWARD: -1
+    },
+
+    options: {
+        zIndex: 1000,
+        polygonClass: L.Polygon,
+        polylineClass: L.Polyline,
+        markerClass: L.Marker,
+        drawingCSSClass: 'leaflet-editable-drawing'
+    },
+
+    initialize: function(map, options) {
+        L.setOptions(this, options);
+        this._lastZIndex = this.options.zIndex;
+        this.map = map;
+        this.editLayer = this.createEditLayer();
+        this.featuresLayer = this.createFeaturesLayer();
+        this.newClickHandler = this.createNewClickHandler();
+        this.forwardLineGuide = this.createLineGuide();
+        this.backwardLineGuide = this.createLineGuide();
+    },
+
+    fireAndForward: function(type, e) {
+        e = e ||  {};
+        e.editTools = this;
+        this.fire(type, e);
+        this.map.fire(type, e);
+    },
+
+    createLineGuide: function() {
+        var options = L.extend({ dashArray: '5,10', weight: 1 }, this.options.lineGuideOptions);
+        return L.polyline([], options);
+    },
+
+    createVertexIcon: function(options) {
+        return L.Browser.touch ? new L.Editable.TouchVertexIcon(options) : new L.Editable.VertexIcon(options);
+    },
+
+    createNewClickHandler: function() {
+        return L.marker(this.map.getCenter(), {
+            icon: this.createVertexIcon({ className: 'leaflet-div-icon leaflet-drawing-icon' }),
+            opacity: 0,
+            zIndexOffset: this._lastZIndex
+        });
+    },
+
+    createEditLayer: function() {
+        return this.options.editLayer ||  new L.LayerGroup().addTo(this.map);
+    },
+
+    createFeaturesLayer: function() {
+        return this.options.featuresLayer ||  new L.LayerGroup().addTo(this.map);
+    },
+
+    moveForwardLineGuide: function(latlng) {
+        if (this.forwardLineGuide._latlngs.length) {
+            this.forwardLineGuide._latlngs[1] = latlng;
+            this.forwardLineGuide.redraw();
+        }
+    },
+
+    moveBackwardLineGuide: function(latlng) {
+        if (this.backwardLineGuide._latlngs.length) {
+            this.backwardLineGuide._latlngs[1] = latlng;
+            this.backwardLineGuide.redraw();
+        }
+    },
+
+    anchorForwardLineGuide: function(latlng) {
+        this.forwardLineGuide._latlngs[0] = latlng;
+        this.forwardLineGuide.redraw();
+    },
+
+    anchorBackwardLineGuide: function(latlng) {
+        this.backwardLineGuide._latlngs[0] = latlng;
+        this.backwardLineGuide.redraw();
+    },
+
+    attachForwardLineGuide: function() {
+        this.editLayer.addLayer(this.forwardLineGuide);
+    },
+
+    attachBackwardLineGuide: function() {
+        this.editLayer.addLayer(this.backwardLineGuide);
+    },
+
+    detachForwardLineGuide: function() {
+        this.forwardLineGuide._latlngs = [];
+        this.editLayer.removeLayer(this.forwardLineGuide);
+    },
+
+    detachBackwardLineGuide: function() {
+        this.backwardLineGuide._latlngs = [];
+        this.editLayer.removeLayer(this.backwardLineGuide);
+    },
+
+    updateNewClickHandlerZIndex: function() {
+        this._lastZIndex += 2;
+        this.newClickHandler.setZIndexOffset(this._lastZIndex);
+    },
+
+    registerForDrawing: function(editor) {
+        this.map.on('mousemove touchmove', editor.onMouseMove, editor);
+        if (this._drawingEditor) this.unregisterForDrawing(this._drawingEditor);
+        this._drawingEditor = editor;
+        this.editLayer.addLayer(this.newClickHandler);
+        this.newClickHandler.on('click', editor.onNewClickHandlerClicked, editor);
+        if (L.Browser.touch) this.map.on('click', editor.onTouch, editor);
+        L.DomUtil.addClass(this.map._container, this.options.drawingCSSClass);
+        this.updateNewClickHandlerZIndex();
+    },
+
+    unregisterForDrawing: function(editor) {
+        editor = editor || this._drawingEditor;
+        this.editLayer.removeLayer(this.newClickHandler);
+        if (!editor) return;
+        this.map.off('mousemove touchmove', editor.onMouseMove, editor);
+        this.newClickHandler.off('click', editor.onNewClickHandlerClicked, editor);
+        if (L.Browser.touch) this.map.off('click', editor.onTouch, editor);
+        if (editor !== this._drawingEditor) return;
+        delete this._drawingEditor;
+        if (editor.drawing) editor.cancelDrawing();
+        L.DomUtil.removeClass(this.map._container, this.options.drawingCSSClass);
+    },
+
+    stopDrawing: function() {
+        this.unregisterForDrawing();
+    },
+
+    connectCreatedToMap: function(layer) {
+        return this.featuresLayer.addLayer(layer);
+    },
+
+    startPolyline: function(latlng, options) {
+        var line = this.createPolyline([], options);
+        this.connectCreatedToMap(line);
+        var editor = line.enableEdit();
+        editor.startDrawingForward();
+        if (latlng) editor.newPointForward(latlng);
+        return line;
+    },
+
+    startPolygon: function(latlng, options) {
+        var polygon = this.createPolygon([], options);
+        this.connectCreatedToMap(polygon);
+        var editor = polygon.enableEdit();
+        editor.startDrawingForward();
+        if (latlng) editor.newPointForward(latlng);
+        return polygon;
+    },
+
+    startMarker: function(latlng, options) {
+        latlng = latlng ||  this.map.getCenter();
+        var marker = this.createMarker(latlng, options);
+        this.connectCreatedToMap(marker);
+        var editor = marker.enableEdit();
+        editor.startDrawing();
+        return marker;
+    },
+
+    startHole: function(editor, latlng) {
+        editor.newHole(latlng);
+    },
+
+    extendMultiPolygon: function(multi) {
+        var polygon = this.createPolygon([]);
+        multi.addLayer(polygon);
+        polygon.multi = multi;
+        var editor = polygon.enableEdit();
+        editor.startDrawingForward();
+        return polygon;
+    },
+
+    createPolyline: function(latlngs, options) {
+        options = L.Util.extend({ editOptions: { editTools: this } }, options);
+        var line = new this.options.polylineClass(latlngs, options);
+        this.fireAndForward('editable:created', { layer: line });
+        return line;
+    },
+
+    createPolygon: function(latlngs, options) {
+        options = L.Util.extend({ editOptions: { editTools: this } }, options);
+        var polygon = new this.options.polygonClass(latlngs, options);
+        this.fireAndForward('editable:created', { layer: polygon });
+        return polygon;
+    },
+
+    createMarker: function(latlng, options) {
+        options = L.Util.extend({ editOptions: { editTools: this } }, options);
+        var marker = new this.options.markerClass(latlng, options);
+        this.fireAndForward('editable:created', { layer: marker });
+        return marker;
+    }
+
+});
+
+L.Map.addInitHook(function() {
+
+    this.whenReady(function() {
+        if (this.options.editable !== false) {
+            // no está explicitamente deshabilitado
+            this.editTools = new L.Editable(this, this.options.editOptions);
+        }
+    });
+
+});
+
+L.Editable.VertexIcon = L.DivIcon.extend({
+
+    _clazzName: 'L.Editable.VertexIcon',
+    options: {
+        iconSize: new L.Point(8, 8)
+    }
+
+});
+
+L.Editable.TouchVertexIcon = L.Editable.VertexIcon.extend({
+
+    _clazzName: 'L.Editable.TouchVertexIcon',
+    options: {
+        iconSize: new L.Point(20, 20)
+    }
+
+});
+
+
+L.Editable.VertexMarker = L.Marker.extend({
+
+    _clazzName: 'L.Editable.VertexMarker',
+    options: {
+        draggable: true,
+        className: 'leaflet-div-icon leaflet-vertex-icon'
+    },
+
+    initialize: function(latlng, latlngs, editor, options) {
+        this.latlng = latlng;
+        this.latlngs = latlngs;
+        this.editor = editor;
+        L.Marker.prototype.initialize.call(this, latlng, options);
+        this.options.icon = this.editor.tools.createVertexIcon({ className: this.options.className });
+        this.latlng.__vertex = this;
+        this.editor.editLayer.addLayer(this);
+        this.setZIndexOffset(editor.tools._lastZIndex + 1);
+    },
+
+    onAdd: function(map) {
+        L.Marker.prototype.onAdd.call(this, map);
+        this.on('drag', this.onDrag);
+        this.on('dragstart', this.onDragStart);
+        this.on('dragend', this.onDragEnd);
+        this.on('click', this.onClick);
+        this.on('contextmenu', this.onContextMenu);
+        this.on('mousedown touchstart', this.onMouseDown);
+        this.addMiddleMarkers();
+    },
+
+    onRemove: function(map) {
+        if (this.middleMarker) this.middleMarker.delete();
+        delete this.latlng.__vertex;
+        this.off('drag', this.onDrag);
+        this.off('dragstart', this.onDragStart);
+        this.off('dragend', this.onDragEnd);
+        this.off('click', this.onClick);
+        this.off('contextmenu', this.onContextMenu);
+        this.off('mousedown touchstart', this.onMouseDown);
+        L.Marker.prototype.onRemove.call(this, map);
+    },
+
+    onDrag: function(e) {
+        e.vertex = this;
+        this.editor.onVertexMarkerDrag(e);
+        var iconPos = L.DomUtil.getPosition(this._icon),
+            latlng = this._map.layerPointToLatLng(iconPos);
+        this.latlng.lat = latlng.lat;
+        this.latlng.lng = latlng.lng;
+        this.editor.refresh();
+        if (this.middleMarker) {
+            this.middleMarker.updateLatLng();
+        }
+        var next = this.getNext();
+        if (next && next.middleMarker) {
+            next.middleMarker.updateLatLng();
+        }
+    },
+
+    onDragStart: function(e) {
+        e.vertex = this;
+        this.editor.onVertexMarkerDragStart(e);
+    },
+
+    onDragEnd: function(e) {
+        e.vertex = this;
+        this.editor.onVertexMarkerDragEnd(e);
+    },
+
+    onClick: function(e) {
+        e.vertex = this;
+        this.editor.onVertexMarkerClick(e);
+    },
+
+    onContextMenu: function(e) {
+        e.vertex = this;
+        this.editor.onVertexMarkerContextMenu(e);
+    },
+
+    onMouseDown: function(e) {
+        e.vertex = this;
+        this.editor.onVertexMarkerMouseDown(e);
+    },
+
+    delete: function() {
+        var next = this.getNext(); // Compute before changing latlng
+        this.latlngs.splice(this.latlngs.indexOf(this.latlng), 1);
+        this.editor.editLayer.removeLayer(this);
+        this.editor.onVertexDeleted({ latlng: this.latlng, vertex: this });
+        if (next) next.resetMiddleMarker();
+    },
+
+    getIndex: function() {
+        return this.latlngs.indexOf(this.latlng);
+    },
+
+    getLastIndex: function() {
+        return this.latlngs.length - 1;
+    },
+
+    getPrevious: function() {
+        if (this.latlngs.length < 2) return;
+        var index = this.getIndex(),
+            previousIndex = index - 1;
+        if (index === 0 && this.editor.CLOSED) previousIndex = this.getLastIndex();
+        var previous = this.latlngs[previousIndex];
+        if (previous) return previous.__vertex;
+    },
+
+    getNext: function() {
+        if (this.latlngs.length < 2) return;
+        var index = this.getIndex(),
+            nextIndex = index + 1;
+        if (index === this.getLastIndex() && this.editor.CLOSED) nextIndex = 0;
+        var next = this.latlngs[nextIndex];
+        if (next) return next.__vertex;
+    },
+
+    addMiddleMarker: function(previous) {
+        previous = previous ||  this.getPrevious();
+        if (previous && !this.middleMarker) this.middleMarker = this.editor.addMiddleMarker(previous, this, this.latlngs, this.editor);
+    },
+
+    addMiddleMarkers: function() {
+        if (this.editor.tools.options.skipMiddleMarkers) return;
+        var previous = this.getPrevious();
+        if (previous) {
+            this.addMiddleMarker(previous);
+        }
+        var next = this.getNext();
+        if (next) {
+            next.resetMiddleMarker();
+        }
+    },
+
+    resetMiddleMarker: function() {
+        if (this.middleMarker) this.middleMarker.delete();
+        this.addMiddleMarker();
+    },
+
+    _initInteraction: function() {
+        L.Marker.prototype._initInteraction.call(this);
+        L.DomEvent.on(this._icon, 'touchstart', function(e) { this._fireMouseEvent(e); }, this);
+    }
+
+});
+
+L.Editable.mergeOptions({
+    vertexMarkerClass: L.Editable.VertexMarker
+});
+
+L.Editable.MiddleMarker = L.Marker.extend({
+
+    _clazzName: 'L.Editable.MiddleMarker',
+    options: {
+        opacity: 0.5,
+        className: 'leaflet-div-icon leaflet-middle-icon'
+    },
+
+    initialize: function(left, right, latlngs, editor, options) {
+        this.left = left;
+        this.right = right;
+        this.editor = editor;
+        this.latlngs = latlngs;
+        L.Marker.prototype.initialize.call(this, this.computeLatLng(), options);
+        this._opacity = this.options.opacity;
+        this.options.icon = this.editor.tools.createVertexIcon({ className: this.options.className });
+        this.editor.editLayer.addLayer(this);
+        try {
+            this.setVisibility();
+        } catch (err) {
+            // FIXME - ver qué falla en setVisibility tras un arrastre.
+            console.error('err interno MiddleMarker', err);
+        }
+    },
+
+    setVisibility: function() {
+        var leftPoint = this._map.latLngToContainerPoint(this.left.latlng),
+            rightPoint = this._map.latLngToContainerPoint(this.right.latlng),
+            size = L.point(this.options.icon.options.iconSize);
+        if (leftPoint.distanceTo(rightPoint) < size.x * 3) {
+            this.hide();
+        } else {
+            this.show();
+        }
+    },
+
+    show: function() {
+        this.setOpacity(this._opacity);
+    },
+
+    hide: function() {
+        this.setOpacity(0);
+    },
+
+    updateLatLng: function() {
+        this.setLatLng(this.computeLatLng());
+        this.setVisibility();
+    },
+
+    computeLatLng: function() {
+        var leftPoint = this.editor.map.latLngToContainerPoint(this.left.latlng),
+            rightPoint = this.editor.map.latLngToContainerPoint(this.right.latlng),
+            y = (leftPoint.y + rightPoint.y) / 2,
+            x = (leftPoint.x + rightPoint.x) / 2;
+        return this.editor.map.containerPointToLatLng([x, y]);
+    },
+
+    onAdd: function(map) {
+        L.Marker.prototype.onAdd.call(this, map);
+        this.on('mousedown touchstart', this.onMouseDown);
+        map.on('zoomend', this.setVisibility, this);
+    },
+
+    onRemove: function(map) {
+        delete this.right.middleMarker;
+        this.off('mousedown touchstart', this.onMouseDown);
+        map.off('zoomend', this.setVisibility, this);
+        L.Marker.prototype.onRemove.call(this, map);
+    },
+
+    onMouseDown: function(e) {
+        this.editor.onMiddleMarkerMouseDown(e, this);
+        this.latlngs.splice(this.index(), 0, e.latlng);
+        this.editor.refresh();
+        var marker = this.editor.addVertexMarker(e.latlng, this.latlngs);
+        marker.dragging._draggable._onDown(e.originalEvent); // Transfer ongoing dragging to real marker
+        this.delete();
+    },
+
+    delete: function() {
+        this.editor.editLayer.removeLayer(this);
+    },
+
+    index: function() {
+        return this.latlngs.indexOf(this.right.latlng);
+    },
+
+    _initInteraction: function() {
+        L.Marker.prototype._initInteraction.call(this);
+        L.DomEvent.on(this._icon, 'touchstart', function(e) { this._fireMouseEvent(e); }, this);
+    }
+
+});
+
+L.Editable.mergeOptions({
+    middleMarkerClass: L.Editable.MiddleMarker
+});
+
+L.Editable.BaseEditor = L.Class.extend({
+
+    _clazzName: 'L.Editable.BaseEditor',
+    initialize: function(map, feature, options) {
+        L.setOptions(this, options);
+        this.map = map;
+        this.feature = feature;
+        this.feature.editor = this;
+        this.editLayer = new L.LayerGroup();
+        this.tools = this.options.editTools || map.editTools;
+    },
+
+    enable: function() {
+        if (this._enabled) return this;
+        this.tools.editLayer.addLayer(this.editLayer);
+        this.onEnable();
+        this._enabled = true;
+        this.feature.on('remove', this.disable, this);
+
+        console.warn('habilitando dragging en feature ???? ');
+        this.feature.dragging.enable();
+        if (this._getEvents) {
+            this.feature.on(this._getEvents(), this);
+        }
+
+        return this;
+    },
+
+    disable: function() {
+        this.feature.off('remove', this.disable, this);
+        this.editLayer.clearLayers();
+        this.tools.editLayer.removeLayer(this.editLayer);
+        this.onDisable();
+        delete this._enabled;
+        if (this.drawing) this.cancelDrawing();
+
+        console.info('deshabilitando dragging en feature ???? ');
+        this.feature.dragging.disable();
+
+        return this;
+    },
+
+    fireAndForward: function(type, e) {
+        e = e ||  {};
+        e.layer = this.feature;
+        this.feature.fire(type, e);
+        if (this.feature.multi) this.feature.multi.fire(type, e);
+        this.tools.fireAndForward(type, e);
+    },
+
+    onEnable: function() {
+        this.fireAndForward('editable:enable');
+    },
+
+    onDisable: function() {
+        this.fireAndForward('editable:disable');
+    },
+
+    onEditing: function() {
+        this.fireAndForward('editable:editing');
+    },
+
+    onStartDrawing: function() {
+        this.fireAndForward('editable:drawing:start');
+    },
+
+    onEndDrawing: function() {
+        this.fireAndForward('editable:drawing:end');
+    },
+
+    onCancelDrawing: function() {
+        this.fireAndForward('editable:drawing:cancel');
+    },
+
+    onCommitDrawing: function() {
+        this.fireAndForward('editable:drawing:commit');
+    },
+
+    startDrawing: function() {
+        if (!this.drawing) this.drawing = L.Editable.FORWARD;
+        this.tools.registerForDrawing(this);
+        this.onStartDrawing();
+    },
+
+    commitDrawing: function() {
+        this.onCommitDrawing();
+        this.endDrawing();
+    },
+
+    cancelDrawing: function() {
+        this.onCancelDrawing();
+        this.endDrawing();
+    },
+
+    endDrawing: function() {
+        this.drawing = false;
+        this.tools.unregisterForDrawing(this);
+        this.onEndDrawing();
+    },
+
+    onMouseMove: function(e) {
+        if (this.drawing) {
+            this.tools.newClickHandler.setLatLng(e.latlng);
+        }
+    },
+
+    onTouch: function(e) {
+        this.onMouseMove(e);
+        if (this.drawing) this.tools.newClickHandler._fireMouseEvent(e);
+    },
+
+    onNewClickHandlerClicked: function(e) {
+        this.fireAndForward('editable:drawing:click', e);
+    },
+
+    isNewClickValid: function(latlng) {
+        return true;
+    }
+
+});
+
+L.Editable.MarkerEditor = L.Editable.BaseEditor.extend({
+
+    _clazzName: 'L.Editable.MarkerEditor',
+    enable: function() {
+        if (this._enabled) return this;
+        L.Editable.BaseEditor.prototype.enable.call(this);
+        this.feature.dragging.enable();
+        this.feature.on('dragstart', this.onEditing, this);
+        return this;
+    },
+
+    disable: function() {
+        L.Editable.BaseEditor.prototype.disable.call(this);
+        this.feature.dragging.disable();
+        this.feature.off('dragstart', this.onEditing, this);
+        return this;
+    },
+
+    onMouseMove: function(e) {
+        if (this.drawing) {
+            L.Editable.BaseEditor.prototype.onMouseMove.call(this, e);
+            this.feature.setLatLng(e.latlng);
+            this.tools.newClickHandler._bringToFront();
+        }
+    },
+
+    onNewClickHandlerClicked: function(e) {
+        if (!this.isNewClickValid(e.latlng)) return;
+        // Send event before finishing drawing
+        L.Editable.BaseEditor.prototype.onNewClickHandlerClicked.call(this, e);
+        this.commitDrawing();
+    }
+
+});
+
+L.Editable.PathEditor = L.Editable.BaseEditor.extend({
+
+    _clazzName: 'L.Editable.PathEditor',
+    CLOSED: false,
+    MIN_VERTEX: 2,
+
+    enable: function() {
+        if (this._enabled) return this;
+        L.Editable.BaseEditor.prototype.enable.call(this);
+        if (this.feature) {
+            this.initVertexMarkers();
+        }
+        return this;
+    },
+
+    disable: function() {
+        return L.Editable.BaseEditor.prototype.disable.call(this);
+    },
+
+    initVertexMarkers: function() {
+        // groups can be only latlngs (for polyline or symple polygon,
+        // or latlngs plus many holes, in case of a complex polygon)
+        var latLngGroups = this.getLatLngsGroups();
+        for (var i = 0; i < latLngGroups.length; i++) {
+            this.addVertexMarkers(latLngGroups[i]);
+        }
+    },
+
+    getLatLngsGroups: function() {
+        return [this.getLatLngs()];
+    },
+
+    getLatLngs: function() {
+        return this.feature.getLatLngs();
+    },
+
+    reset: function() {
+        this.editLayer.clearLayers();
+        this.initVertexMarkers();
+    },
+
+    addVertexMarker: function(latlng, latlngs) {
+        return new this.tools.options.vertexMarkerClass(latlng, latlngs, this);
+    },
+
+    addVertexMarkers: function(latlngs) {
+        for (var i = 0; i < latlngs.length; i++) {
+            this.addVertexMarker(latlngs[i], latlngs);
+        }
+    },
+
+    addMiddleMarker: function(left, right, latlngs) {
+        return new this.tools.options.middleMarkerClass(left, right, latlngs, this);
+    },
+
+    onVertexMarkerClick: function(e) {
+        var index = e.vertex.getIndex();
+        if (e.originalEvent.ctrlKey) {
+            this.onVertexMarkerCtrlClick(e);
+        } else if (e.originalEvent.altKey) {
+            this.onVertexMarkerAltClick(e);
+        } else if (e.originalEvent.shiftKey) {
+            this.onVertexMarkerShiftClick(e);
+        } else if (index >= this.MIN_VERTEX - 1 && index === e.vertex.getLastIndex() && this.drawing === L.Editable.FORWARD) {
+            this.commitDrawing();
+        } else if (index === 0 && this.drawing === L.Editable.BACKWARD && this._drawnLatLngs.length >= this.MIN_VERTEX) {
+            this.commitDrawing();
+        } else if (index === 0 && this.drawing === L.Editable.FORWARD && this._drawnLatLngs.length >= this.MIN_VERTEX && this.CLOSED) {
+            this.commitDrawing(); // Allow to close on first point also for polygons
+        } else {
+            this.onVertexRawMarkerClick(e);
+        }
+    },
+
+    onVertexRawMarkerClick: function(e) {
+        if (!this.vertexCanBeDeleted(e.vertex)) return;
+        e.vertex.delete();
+        this.refresh();
+    },
+
+    vertexCanBeDeleted: function(vertex) {
+        return vertex.latlngs.length > this.MIN_VERTEX;
+    },
+
+    onVertexDeleted: function(e) {
+        this.fireAndForward('editable:vertex:deleted', e);
+    },
+
+    onVertexMarkerCtrlClick: function(e) {
+        this.fireAndForward('editable:vertex:ctrlclick', e);
+    },
+
+    onVertexMarkerShiftClick: function(e) {
+        this.fireAndForward('editable:vertex:shiftclick', e);
+    },
+
+    onVertexMarkerAltClick: function(e) {
+        this.fireAndForward('editable:vertex:altclick', e);
+    },
+
+    onVertexMarkerContextMenu: function(e) {
+        this.fireAndForward('editable:vertex:contextmenu', e);
+    },
+
+    onVertexMarkerMouseDown: function(e) {
+        this.fireAndForward('editable:vertex:mousedown', e);
+    },
+
+    onMiddleMarkerMouseDown: function(e) {
+        this.fireAndForward('editable:middlemarker:mousedown', e);
+    },
+
+    onVertexMarkerDrag: function(e) {
+        this.fireAndForward('editable:vertex:drag', e);
+    },
+
+    onVertexMarkerDragStart: function(e) {
+        this.fireAndForward('editable:vertex:dragstart', e);
+    },
+
+    onVertexMarkerDragEnd: function(e) {
+        this.fireAndForward('editable:vertex:dragend', e);
+    },
+
+    startDrawing: function() {
+        if (!this._drawnLatLngs) this._drawnLatLngs = this.getLatLngs();
+        L.Editable.BaseEditor.prototype.startDrawing.call(this);
+    },
+
+    startDrawingForward: function() {
+        this.startDrawing();
+        this.tools.attachForwardLineGuide();
+    },
+
+    endDrawing: function() {
+        L.Editable.BaseEditor.prototype.endDrawing.call(this);
+        this.tools.detachForwardLineGuide();
+        this.tools.detachBackwardLineGuide();
+        delete this._drawnLatLngs;
+    },
+
+    addLatLng: function(latlng) {
+        if (this.drawing === L.Editable.FORWARD) this._drawnLatLngs.push(latlng);
+        else this._drawnLatLngs.unshift(latlng);
+        this.refresh();
+        this.addVertexMarker(latlng, this._drawnLatLngs);
+    },
+
+    newPointForward: function(latlng) {
+        this.addLatLng(latlng);
+        this.tools.anchorForwardLineGuide(latlng);
+        if (!this.tools.backwardLineGuide._latlngs[0]) {
+            this.tools.anchorBackwardLineGuide(latlng);
+        }
+    },
+
+    newPointBackward: function(latlng) {
+        this.addLatLng(latlng);
+        this.tools.anchorBackwardLineGuide(latlng);
+    },
+
+    onNewClickHandlerClicked: function(e) {
+        if (!this.isNewClickValid(e.latlng)) return;
+        if (this.drawing === L.Editable.FORWARD) this.newPointForward(e.latlng);
+        else this.newPointBackward(e.latlng);
+        L.Editable.BaseEditor.prototype.onNewClickHandlerClicked.call(this, e);
+    },
+
+    onMouseMove: function(e) {
+        if (this.drawing) {
+            L.Editable.BaseEditor.prototype.onMouseMove.call(this, e);
+            this.tools.moveForwardLineGuide(e.latlng);
+            this.tools.moveBackwardLineGuide(e.latlng);
+        }
+    },
+
+    refresh: function() {
+        this.feature.redraw();
+        this.onEditing();
+    },
+
+    /* Dragable methods for path. Not implemented in editable-0-7 github 
+       onMove, _getEvents, onDragStart, onDrag, onDragEnd */
+
+    onMove: function(e) {
+        // 🍂namespace Editable
+        // 🍂section Drawing events
+        // 🍂event editable:drawing:move: Event
+        // Fired when `move` mouse while drawing, while dragging a marker, and while dragging a vertex.
+        this.fireAndForward('editable:drawing:move', e);
+    },
+
+    _getEvents: function() {
+        return {
+            dragstart: this.onDragStart,
+            drag: this.onDrag,
+            dragend: this.onDragEnd,
+            remove: this.disable
+        };
+    },
+
+    onDragStart: function(e) {
+        this.onEditing();
+
+        this.editLayer.clearLayers();
+
+        // 🍂namespace Editable
+        // 🍂event editable:dragstart: Event
+        // Fired before a path feature is dragged.
+        this.fireAndForward('editable:dragstart', e);
+    },
+
+    onDrag: function(e) {
+        this.onMove(e);
+        // 🍂namespace Editable
+        // 🍂event editable:drag: Event
+        // Fired when a path feature is being dragged.
+        this.fireAndForward('editable:drag', e);
+    },
+
+    onDragEnd: function(e) {
+        this.initVertexMarkers();
+        // 🍂namespace Editable
+        // 🍂event editable:dragend: Event
+        // Fired after a path feature has been dragged.
+        this.fireAndForward('editable:dragend', e);
+    }
+
+});
+
+L.Editable.PolylineEditor = L.Editable.PathEditor.extend({
+
+    _clazzName: 'L.Editable.PolylineEditor',
+    startDrawingBackward: function() {
+        this.drawing = L.Editable.BACKWARD;
+        this.startDrawing();
+        this.tools.attachBackwardLineGuide();
+    },
+
+    continueBackward: function() {
+        this.tools.anchorBackwardLineGuide(this.getFirstLatLng());
+        this.startDrawingBackward();
+    },
+
+    continueForward: function() {
+        this.tools.anchorForwardLineGuide(this.getLastLatLng());
+        this.startDrawingForward();
+    },
+
+    getLastLatLng: function() {
+        return this.getLatLngs()[this.getLatLngs().length - 1];
+    },
+
+    getFirstLatLng: function() {
+        return this.getLatLngs()[0];
+    }
+
+});
+
+L.Editable.PolygonEditor = L.Editable.PathEditor.extend({
+
+    _clazzName: 'L.Editable.PolygonEditor',
+    CLOSED: true,
+    MIN_VERTEX: 3,
+
+    getLatLngsGroups: function() {
+        var groups = L.Editable.PathEditor.prototype.getLatLngsGroups.call(this);
+        if (this.feature._holes) {
+            for (var i = 0; i < this.feature._holes.length; i++) {
+                groups.push(this.feature._holes[i]);
+            }
+        }
+        return groups;
+    },
+
+    startDrawingForward: function() {
+        L.Editable.PathEditor.prototype.startDrawingForward.call(this);
+        this.tools.attachBackwardLineGuide();
+    },
+
+    addNewEmptyHole: function() {
+        var holes = Array();
+        if (!this.feature._holes) {
+            this.feature._holes = [];
+        }
+        this.feature._holes.push(holes);
+        return holes;
+    },
+
+    newHole: function(latlng) {
+        this._drawnLatLngs = this.addNewEmptyHole();
+        this.startDrawingForward();
+        if (latlng) this.newPointForward(latlng);
+    },
+
+    checkContains: function(latlng) {
+        return this.feature._containsPoint(this.map.latLngToLayerPoint(latlng));
+    },
+
+    vertexCanBeDeleted: function(vertex) {
+        if (vertex.latlngs === this.getLatLngs()) return L.Editable.PathEditor.prototype.vertexCanBeDeleted.call(this, vertex);
+        else return true; // Holes can be totally deleted without removing the layer itself
+    },
+
+    isNewClickValid: function(latlng) {
+        if (this._drawnLatLngs !== this.getLatLngs()) return this.checkContains(latlng);
+        return true;
+    },
+
+    onVertexDeleted: function(e) {
+        L.Editable.PathEditor.prototype.onVertexDeleted.call(this, e);
+        if (!e.vertex.latlngs.length && e.vertex.latlngs !== this.getLatLngs()) {
+            this.feature._holes.splice(this.feature._holes.indexOf(e.vertex.latlngs), 1);
+        }
+    }
+
+});
+
+L.Map.mergeOptions({
+    polylineEditorClass: L.Editable.PolylineEditor
+});
+
+L.Map.mergeOptions({
+    polygonEditorClass: L.Editable.PolygonEditor
+});
+
+L.Map.mergeOptions({
+    markerEditorClass: L.Editable.MarkerEditor
+});
+
+var EditableMixin = {
+
+    createEditor: function(map) {
+        map = map ||  this._map;
+        var Klass = this.options.editorClass ||  this.getEditorClass(map);
+        return new Klass(map, this, this.options.editOptions);
+    },
+
+    enableEdit: function() {
+        console.warn('enabling edition ... ');
+        if (!this.editor) this.createEditor();
+        if (this.multi) this.multi.onEditEnabled();
+        return this.editor.enable();
+    },
+
+    editEnabled: function() {
+        return this.editor && this.editor._enabled;
+    },
+
+    disableEdit: function() {
+        if (this.editor) {
+            if (this.multi) this.multi.onEditDisabled();
+            this.editor.disable();
+            delete this.editor;
+        }
+    },
+
+    toggleEdit: function() {
+        if (this.editEnabled()) {
+            this.disableEdit();
+        } else {
+            this.enableEdit();
+        }
+    }
+
+};
+
+L.Polyline.include(EditableMixin);
+L.Polygon.include(EditableMixin);
+L.Marker.include(EditableMixin);
+
+L.Polyline.include({
+
+    _containsPoint: function(p, closed) { // Copy-pasted from Leaflet
+        var i, j, k, len, len2, dist, part,
+            w = this.options.weight / 2;
+
+        if (L.Browser.touch) {
+            w += 10; // polyline click tolerance on touch devices
+        }
+
+        for (i = 0, len = this._parts.length; i < len; i++) {
+            part = this._parts[i];
+            for (j = 0, len2 = part.length, k = len2 - 1; j < len2; k = j++) {
+                if (!closed && (j === 0)) {
+                    continue;
+                }
+
+                dist = L.LineUtil.pointToSegmentDistance(p, part[k], part[j]);
+
+                if (dist <= w) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    },
+
+    getEditorClass: function(map) {
+        return map.options.polylineEditorClass;
+    }
+
+});
+L.Polygon.include({
+
+    _containsPoint: function(p) { // Copy-pasted from Leaflet
+        var inside = false,
+            part, p1, p2,
+            i, j, k,
+            len, len2;
+
+        // TODO optimization: check if within bounds first
+
+        if (L.Polyline.prototype._containsPoint.call(this, p, true)) {
+            // click on polygon border
+            return true;
+        }
+
+        // ray casting algorithm for detecting if point is in polygon
+
+        for (i = 0, len = this._parts.length; i < len; i++) {
+            part = this._parts[i];
+
+            for (j = 0, len2 = part.length, k = len2 - 1; j < len2; k = j++) {
+                p1 = part[j];
+                p2 = part[k];
+
+                if (((p1.y > p.y) !== (p2.y > p.y)) &&
+                    (p.x < (p2.x - p1.x) * (p.y - p1.y) / (p2.y - p1.y) + p1.x)) {
+                    inside = !inside;
+                }
+            }
+        }
+
+        return inside;
+    },
+
+    getEditorClass: function(map) {
+        return map.options.polygonEditorClass;
+    }
+
+});
+
+L.Marker.include({
+
+    getEditorClass: function(map) {
+        return map.options.markerEditorClass;
+    }
+
+});
+
+var MultiEditableMixin = {
+
+    enableEdit: function() {
+        this.eachLayer(function(layer) {
+            layer.multi = this;
+            layer.enableEdit();
+        }, this);
+    },
+
+    disableEdit: function() {
+        this.eachLayer(function(layer) {
+            layer.disableEdit();
+        });
+    },
+
+    toggleEdit: function(e) {
+        if (!e.layer.editor) {
+            this.enableEdit(e);
+        } else {
+            this.disableEdit();
+        }
+    },
+
+    onEditEnabled: function() {
+        if (!this._editEnabled) {
+            this._editEnabled = true;
+            this.fire('editable:multi:edit:enabled');
+        }
+    },
+
+    onEditDisabled: function() {
+        if (this._editEnabled) {
+            this._editEnabled = false;
+            this.fire('editable:multi:edit:disabled');
+        }
+    },
+
+    editEnabled: function() {
+        return !!this._editEnabled;
+    }
+
+};
+
+// L.MultiPolygon.include(MultiEditableMixin);
+// L.MultiPolyline.include(MultiEditableMixin);
+
+
+/// end extensions and enhacement for leaflet 0.7
+/** 
+ * [uxleaflet/client]
+ * https://github.com/rowanwins/leaflet-easyPrint
+ */
+(function() {
+    
+    
+    if (!window.L) {
+        throw new Error('EasyPrint needs Leaflet');
+    }
+
+    /**
+     * EasyPrint control class for Leaflet
+     */
+    L.Control.EasyPrint = L.Control.extend({
+        options: {
+            title: 'Print map',
+            position: 'topleft'
+        },
+        printPage: function () {
+            var htmlElementsToHide;
+            if (this.options.elementsToHide) {
+                htmlElementsToHide = document.querySelectorAll(this.options.elementsToHide);
+
+                for (var i = 0; i < htmlElementsToHide.length; i++) {
+                    htmlElementsToHide[i].className = htmlElementsToHide[i].className + ' _epHidden';
+                }
+            }
+        this._map.fire('beforePrint');
+            window.print();
+            this._map.fire('afterPrint');
+            if (this.options.elementsToHide) {
+                htmlElementsToHide = document.querySelectorAll(this.options.elementsToHide);
+                for (var j = 0; j < htmlElementsToHide.length; j++) {
+                    htmlElementsToHide[j].className = htmlElementsToHide[j].className.replace(' _epHidden', '');
+                }
+            }
+        },
+        onAdd: function() {
+            var container = L.DomUtil.create('div', 'leaflet-control-easyPrint leaflet-bar leaflet-control');
+
+            this.link = L.DomUtil.create('a', 'leaflet-control-easyPrint-button leaflet-bar-part', container);
+            this.link.id = 'leafletEasyPrint';
+            this.link.title = this.options.title;
+
+            L.DomEvent.addListener(this.link, 'click', this.printPage, this);
+            L.DomEvent.disableClickPropagation(container);
+
+            return container;
+        }
+
+    });
+
+    /** Shortcut to new L.Control.EasyPrint.
+     *  Add custom css to header 
+     */
+    L.easyPrint = function(options) {
+        addCSS();
+        return new L.Control.EasyPrint(options);
+    };
+
+    // private functinos
+
+   
+
+    function addCSS() {
+        var css = document.createElement('style');
+        css.type = 'text/css';
+        css.innerHTML = '.leaflet-control-easyPrint a {' +
+            'background-image: url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE2cHgiIGhlaWdodD0iMTZweCIgdmlld0JveD0iMCAwIDUxMiA1MTIiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDUxMiA1MTI7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPGc+Cgk8cGF0aCBkPSJNMTI4LDMyaDI1NnY2NEgxMjhWMzJ6IE00ODAsMTI4SDMyYy0xNy42LDAtMzIsMTQuNC0zMiwzMnYxNjBjMCwxNy42LDE0LjM5OCwzMiwzMiwzMmg5NnYxMjhoMjU2VjM1Mmg5NiAgIGMxNy42LDAsMzItMTQuNCwzMi0zMlYxNjBDNTEyLDE0Mi40LDQ5Ny42LDEyOCw0ODAsMTI4eiBNMzUyLDQ0OEgxNjBWMjg4aDE5MlY0NDh6IE00ODcuMTk5LDE3NmMwLDEyLjgxMy0xMC4zODcsMjMuMi0yMy4xOTcsMjMuMiAgIGMtMTIuODEyLDAtMjMuMjAxLTEwLjM4Ny0yMy4yMDEtMjMuMnMxMC4zODktMjMuMiwyMy4xOTktMjMuMkM0NzYuODE0LDE1Mi44LDQ4Ny4xOTksMTYzLjE4Nyw0ODcuMTk5LDE3NnoiIGZpbGw9IiMwMDAwMDAiLz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K);' +
+            'background-size:16px 16px;' +
+            'cursor: pointer;' +
+        '}' +
+        '._epHidden{' +
+            'display:none!important;' +
+        '}' +
+        '@media print {' +
+            'html {padding: 0px!important;}' +
+            '.leaflet-control-easyPrint-button{display: none!important;}' +
+        '}';
+        document.body.appendChild(css);
+    }
+
+})();
+/* 
+ * [uxleaflet/client]
+ * Requerido por editor de geometrías. Pendiente de añadir como script externo en HEAD 
+   https://github.com/Leaflet/Path.Drag.js/blob/gh-pages/src/Path.Drag.js */
+
+
+
+/* A Draggable that does not update the element position
+and takes care of only bubbling to targetted path in Canvas mode. */
+L.PathDraggable = L.Draggable.extend({
+
+    initialize: function(path) {
+        this._path = path;
+        this._canvas = path._map.getRenderer && (path._map.getRenderer(path) instanceof L.Canvas);
+        var element = this._canvas ? this._path._map.getRenderer(this._path)._container : this._path._path;
+        L.Draggable.prototype.initialize.call(this, element, element, true);
+    },
+
+    _updatePosition: function() {
+        var e = { originalEvent: this._lastEvent };
+        this.fire('drag', e);
+    },
+
+    _onDown: function(e) {
+        var first = e.touches ? e.touches[0] : e;
+        this._startPoint = new L.Point(first.clientX, first.clientY);
+        if (this._canvas && !this._path._containsPoint(this._path._map.mouseEventToLayerPoint(first))) { return; }
+        L.Draggable.prototype._onDown.call(this, e);
+    }
+
+});
+
+
+L.Handler.PathDrag = L.Handler.extend({
+
+    initialize: function(path) {
+        this._path = path;
+    },
+
+    getEvents: function() {
+        return {
+            dragstart: this._onDragStart,
+            drag: this._onDrag,
+            dragend: this._onDragEnd
+        };
+    },
+
+    addHooks: function() {
+        if (!this._draggable) { this._draggable = new L.PathDraggable(this._path); }
+        this._draggable.on(this.getEvents(), this).enable();
+        L.DomUtil.addClass(this._draggable._element, 'leaflet-path-draggable');
+    },
+
+    removeHooks: function() {
+        this._draggable.off(this.getEvents(), this).disable();
+        L.DomUtil.removeClass(this._draggable._element, 'leaflet-path-draggable');
+    },
+
+    moved: function() {
+        return this._draggable && this._draggable._moved;
+    },
+
+    _onDragStart: function() {
+        this._startPoint = this._draggable._startPoint;
+        this._path
+            .closePopup()
+            .fire('movestart')
+            .fire('dragstart');
+    },
+
+    _onDrag: function(e) {
+        var path = this._path,
+            event = (e.originalEvent.touches && e.originalEvent.touches.length === 1 ? e.originalEvent.touches[0] : e.originalEvent),
+            newPoint = L.point(event.clientX, event.clientY),
+            latlng = path._map.layerPointToLatLng(newPoint);
+
+        this._offset = newPoint.subtract(this._startPoint);
+        this._startPoint = newPoint;
+
+        this._path.eachLatLng(this.updateLatLng, this);
+        path.redraw();
+
+        e.latlng = latlng;
+        e.offset = this._offset;
+        path.fire('move', e)
+            .fire('drag', e);
+    },
+
+    _onDragEnd: function(e) {
+        if (this._path._bounds) this.resetBounds();
+        this._path.fire('moveend')
+            .fire('dragend', e);
+    },
+
+    latLngToLayerPoint: function(latlng) {
+        // Same as map.latLngToLayerPoint, but without the round().
+        var projectedPoint = this._path._map.project(L.latLng(latlng));
+        return projectedPoint._subtract(this._path._map.getPixelOrigin());
+    },
+
+    updateLatLng: function(latlng) {
+        var oldPoint = this.latLngToLayerPoint(latlng);
+        oldPoint._add(this._offset);
+        var newLatLng = this._path._map.layerPointToLatLng(oldPoint);
+        latlng.lat = newLatLng.lat;
+        latlng.lng = newLatLng.lng;
+    },
+
+    resetBounds: function() {
+        this._path._bounds = new L.LatLngBounds();
+        this._path.eachLatLng(function(latlng) {
+            this._bounds.extend(latlng);
+        });
+    }
+
+});
+
+L.Path.include({
+
+    eachLatLng: function(callback, context) {
+        context = context || this;
+        var loop = function(latlngs) {
+            for (var i = 0; i < latlngs.length; i++) {
+                if (L.Util.isArray(latlngs[i])) loop(latlngs[i]);
+                else callback.call(context, latlngs[i]);
+            }
+        };
+        loop(this.getLatLngs ? this.getLatLngs() : [this.getLatLng()]);
+    }
+
+});
+
+L.Path.addInitHook(function() {
+
+    this.dragging = new L.Handler.PathDrag(this);
+    if (this.options.draggable) {
+        this.once('add', function() {
+            this.dragging.enable();
+        });
+    }
+
+});
+
+
+/**
+ * L.LocalTileLayer hace uso de Tiles en local.
+ * No se implementa como clase hija de L.TileLayer sino que se hackea L.TileLayer
+ * para que tenga en cuenta la funcionalidad de tiles en local.
+ * carga los tiles desde un url o desde localstorge.
+ */
+(function() {
+
+    if (!L.Map) return;
+
+    var ERR_TILE = '';
+    var NOT_FOUND_TILE = '';
+
+    L.TileLayer.DEFAULT_LS_KEY = 'currentlocaltiles'; // key for localStorage 
+    L.TileLayer.LOCAL_MAX_VIEW_ZOOM = 16; // Zoom for view when current layer in map 
+
+    var _tileLayerInitialize = L.TileLayer.prototype.initialize;
+    L.TileLayer.prototype.initialize = function() {
+        _tileLayerInitialize.apply(this, arguments);
+
+        var url = arguments[0] || '__';
+        var parts = url.split('_');
+        // check if '_$local_[TILE_FILE_NAME]_{z}/{x}/{y}';
+        // {z}/{x}/{y} must match with tile organization in file.
+        var localItem = parts[1]; // part of a local layer description
+        if (localItem === '$local') {
+            this.options.maxNativeZoom = L.TileLayer.LOCAL_MAX_VIEW_ZOOM;
+            this.options.minZoom = 4;
+            this._isLocalLayer = true;
+            if (!this._localTiles) {
+                var jsonName = parts[2] || L.TileLayer.DEFAULT_LS_KEY;
+                var sContent = localStorage.getItem(jsonName);
+                this._isUsingLocalTiles = true;
+                if (sContent) {
+                    console.info('Detected offline layer from localStorage: ' + jsonName);
+                    this.changeTileDataFromJson(sContent);
+                } else {
+                    console.info('Detected offline layer: ' + jsonName);
+                    var jsonPathFileName = './sampledata/tiles-' + jsonName + '.json';
+                    this.changeTileDataFromUrl(jsonPathFileName);
+                }
+            }
+        }
+
+        // eliminar cuando ya se puedan generar los json con todos los tiles de una zona
+        if (this._url && this._url.indexOf('172.') > 0) {
+            if (this._url.indexOf('smara/')) {
+                this._defaultView = { zoom: 16, center: { lat: 26.7420, lng: -11.7006 } };
+            }
+        }
+
+    };
+
+    /**
+     * It include methods for LayerControl. 
+     * It allow management of unique local layer.
+     */
+    L.Control.Layers.include({
+        /* */
+        setLocalTilesFromLocalstorage: function(key) {
+            var sData = localStorage.getItem(key);
+            if (sData && this._localLayer) {
+                this._localLayer.changeTileDataFromJson(sData);
+                this._map.update();
+            }
+        },
+        /* */
+        setLocalTilesFromUrl: function(jsonUrl) {
+            if (jsonUrl && this._localLayer) {
+                this._localLayer.changeTileDataFromUrl(jsonUrl);
+                this._map.update();
+            }
+        }
+    });
+
+    /**
+     * This method is implemented only for LocalTileLayers changeTileDataFromUrl
+     */
+    L.TileLayer.prototype.changeTileDataFromUrl = function(jsonPathFileName) {
+        if (!this._isLocalLayer) {
+            throw 'This layer is not a Local TileLayer';
+        }
+        var _thisLayer = this;
+        getJson(jsonPathFileName,
+            function(jsonData) {
+                try {
+                    var tiles = _thisLayer._localTiles = JSON.parse(jsonData);
+                    var n = 0;
+                    for (var key in tiles) {
+                        n += (key.indexOf('/') > 0) ? 1 : 0;
+                    }
+                    console.info('Loaded tiles offline: ' + jsonPathFileName + '\n Tile count:' + n +
+                        '\n Map View: ', tiles.mapview);
+                } catch (err) {
+                    console.info('Fail parsing json file container of tiles: ' + jsonPathFileName + '\n', err);
+                }
+            },
+            function(err) {
+                console.info('Fail response. ' + jsonPathFileName, err);
+            }
+        );
+    };
+
+    /**
+     * 
+     */
+    L.TileLayer.prototype.changeTileDataFromJson = function(tileSetJson) {
+        try {
+            var tiles = this._localTiles = JSON.parse(tileSetJson);
+            var n = 0;
+            for (var key in tiles) {
+                n += (key.indexOf('/') > 0) ? 1 : 0;
+            }
+            console.info('Loaded tiles offline from localstorage\n Tile count:' + n +
+                '\n Map View: ', tiles.mapview);
+        } catch (err) {
+            console.info('Fail parsing json content \n', err);
+        }
+    };
+
+    /**
+     * return map view for most top level and center on bounding box tiles
+     */
+    L.TileLayer.prototype.getHomeInfo = function() {
+        if (this._isUsingLocalTiles) {
+            return this._localTiles && this._localTiles.mapview || {};
+        } else {
+            return this._defaultView || {};
+        }
+    };
+
+    var _tileLayerGetTileUrl = L.TileLayer.prototype.getTileUrl;
+    L.TileLayer.prototype.getTileUrl = function(tilePoint) {
+        if (!this._isUsingLocalTiles) {
+            if (!this._url) {
+                this._url = '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+            }
+
+            return _tileLayerGetTileUrl.apply(this, arguments);
+        }
+
+        // check if '_$local_[TILE_FILE_NAME]_{z}/{x}/{y}';
+        var url = L.Util.template(this._url, L.extend({
+            s: this._getSubdomain(tilePoint),
+            z: tilePoint.z,
+            x: tilePoint.x,
+            y: tilePoint.y
+        }, this.options));
+
+        var entry = url.split('_')[3]; //  '...l_{z}/{x}/{y}';
+        if (entry) {
+            entry = entry.split('.')[0]; // remove posible extension
+            var srcData = this._localTiles && (this._localTiles[entry] || NOT_FOUND_TILE) || ERR_TILE;
+            return srcData;
+        }
+    };
+
+    /* Static function. Utility implemented in L.TileLayer
+     * Returns a file containg image tiles grouped in a TileSet.
+     * @param {*} url 
+     * @param {*} resolve 
+     * @param {*} reject 
+     */
+    L.TileLayer.getJson = getJson;
+
+    /**
+     * Pendiente de reemplazar por $http (que asegure devolver JSON)
+     * @param {*} url 
+     * @param {*} resolve 
+     * @param {*} reject 
+     */
+    function getJson(url, resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url);
+        xhr.onload = function() {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                var data = xhr.response;
+                if (data[0] === '{') {
+                    // valid JSON
+                    resolve(data);
+                } else {
+                    // not expected data
+                    reject('Invalid json. Expected start with \'{\'. Response start with: ' + data.substring(0, 20));
+                }
+            } else {
+                reject('Invalid request for ' + url, xhr.statusText);
+            }
+        };
+        xhr.onerror = function() {
+            // internal error
+            reject(xhr.statusText);
+        };
+        xhr.send(null);
+    }
+
+})(); // LocalTileLayer TESTING
+
+
+/**
+ * LocalTileLayerSet representa un conjunto de tiles para uso en navagación offline.
+ * Los tiles estarán guardados en memoria local
+ * - Podrán ser descargados en un único fichero en formato JSON.
+ * - Podrán ser descargados uno a uno desde el servidor para formar en memoria un objeto javascript
+ *    que será guardado en formato JSON en localstorage.
+ * 
+ * Depende de UxMap.js
+ */
+(function() {
+
+    if (!L.Map) return;
+
+    // Static values
+    var MIN_DOWNLOAD_ZOOM = 12;
+    var DEFAULT_LS_KEY = 'currentlocaltiles'; // key for localStorage
+
+    // Classes
+
+    /**
+     * 
+     * @param {*} key 
+     * @param {*} url 
+     */
+    function TileInfo(key, url) {
+        this.key = key;
+        this.url = url;
+        this.data = null;
+
+        /**
+         * 
+         */
+        this.load = function(sucessCallback, errorCallback) {
+            var _this = this;
+
+            var parts = this.url.split('.');
+            var ext = parts.length === 1 ? 'png' : parts[parts.length - 1];
+
+            var xhr = new XMLHttpRequest();
+            xhr.responseType = 'arraybuffer';
+            xhr.open('GET', url);
+            xhr.onload = function () {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    convertArrayToUrlData(xhr.response, ext, function (urlData) {
+                        _this.data = urlData;
+                        sucessCallback(_this);
+                    });
+                } else {
+                    errorCallback('not found ' + url, xhr.statusText);
+                }
+            };
+            xhr.onerror = function() {
+                // internal error
+                errorCallback(xhr.statusText);
+            };
+            xhr.send(null);
+        };
+
+        /**
+         * Store the arrayBuffer data in dataUrl format (using base64 encoding)
+         */
+        function convertArrayToUrlData(arrayBuffer, imageType, sucessCallback) {
+
+            var prefixImage = 'data:image/' + imageType + ';base64,';
+            var blob = new Blob([arrayBuffer], { type: 'application/octet-binary' });
+            var reader = new FileReader();
+            
+            reader.onload = function(evt) {
+                var b64Data = evt.target.result.split(',');
+                if (b64Data[0].startsWith('data')) {
+                    var dataUrl = prefixImage + b64Data[1];
+                    sucessCallback(dataUrl);
+                } else {
+                    console.error('interval error: invalid data as base64');
+                }
+            };
+            reader.readAsDataURL(blob);
+        }
+
+    }
+
+    /**
+     * LocalTileSet keep image data for a range or tiles bounding by a center and current-zoom parameters 
+     * and a zoom range from 5 to MAX_LEVEL.
+     * Current-zoom must be greater or equal than MIN_DOWNLOAD_ZOOM
+     */
+    L.LocalTileSet = L.Class.extend({
+
+        options: {
+
+        },
+
+        _refTileLayer: null,
+
+        _localTileLayer: null,
+
+        _zoom: null,
+        _center: null,
+        _tileInfos: [],
+
+        /**
+         * Convert to json:
+         * { 'mapview': ((center and zoom), '11/1/1': 'data:bas64...', '11/1/2': 'data:bas64...', )}
+         */
+        tileSetToJson: function() {
+            var lat = this._center.lat || this._center[1] || 0.00;
+            var lng = this._center.lng || this._center[0] | 0.00;
+            var obj = {};
+            obj.mapview = { 'zoom': this._zoom, 'center': { 'lat': lat, 'lng': lng } };
+            for (var i = 0; i < this._tileInfos.length; i += 1) {
+                var tileInfo = this._tileInfos[i];
+                obj[tileInfo.key] = tileInfo.data;
+            }
+            return JSON.stringify(obj, null, 2); // pretty print tab:2
+        },
+
+        initialize: function(localTileLayer, refTileLayer) {
+            this._localTileLayer = localTileLayer;
+            if (refTileLayer instanceof L.TileLayer) {
+                this._refTileLayer = refTileLayer;
+            } else {
+                throw 'argument exception: it is needed a TileLayer';
+            }
+        },
+
+        /**
+         * updateTileRange from a map (its current tileLayer), selecting all tiles
+         * included in the current view from a min zoom to a max zoom,
+         * and set home center and zoom.
+         */
+        updateTileRange: function(minLevel, maxLevel, map) {
+
+            // set home location
+            this._center = map.getCenter();
+            this._zoom = map.getZoom();
+
+            // reset tileInfos
+            this._tileInfos = [];
+            var latlngBounds = map.getBounds(); // in latlng
+
+            for (var z = minLevel; z <= maxLevel; z += 1) {
+                var pixelBounds = this.getPixelBounds(map, z, latlngBounds);
+                var tileSize = this._refTileLayer._getTileSize();
+
+                var tileBounds = L.bounds(
+                    pixelBounds.min.divideBy(tileSize)._floor(),
+                    pixelBounds.max.divideBy(tileSize)._floor());
+
+                var zoomTileInfos = this._getTileInfosFrom(tileBounds, z);
+                this._tileInfos = this._tileInfos.concat(zoomTileInfos);
+            }
+
+        },
+
+        /**
+         * Copiado de leaflet 0.7.7. 
+         * FIXME - Pendiente de optimizar. Sobra el uso de :container y fragment.
+         */
+        _getTileInfosFrom: function(bounds, zoom) {
+            var queue = [];
+            var center = bounds.getCenter();
+
+            var j, i, point;
+            for (j = bounds.min.y; j <= bounds.max.y; j++) {
+                for (i = bounds.min.x; i <= bounds.max.x; i++) {
+                    point = new L.Point(i, j);
+                    queue.push(point);
+                }
+            }
+
+            var tilesToLoad = queue.length;
+
+            // if its the first batch of tiles to load
+            console.info('Descarga desde zoom: ' + zoom + ', cantidad: ' + tilesToLoad);
+
+            if (tilesToLoad === 0) { return []; }
+
+            // load tiles in order of their distance to center
+            queue.sort(function(a, b) {
+                return a.distanceTo(center) - b.distanceTo(center);
+            });
+
+            var tileInfos = [];
+            for (i = 0; i < tilesToLoad; i++) {
+                var tilePoint = queue[i];
+                tilePoint.z = zoom;
+                var key = tilePoint.z + '/' + tilePoint.x + '/' + tilePoint.y;
+                var tileUrl = this._refTileLayer.getTileUrl(tilePoint);
+                this._tileInfos.push(new TileInfo(key, tileUrl));
+                console.info('* Tile desde: ' + tileUrl);
+            }
+            return tileInfos;
+        },
+
+        startLoading: function(options, successCallback, progressCallback) {
+            var tileInfos = this._tileInfos;
+            var total = tileInfos.length;
+            var remain = total;
+
+            function oneLess() {
+                remain -= 1;
+                if (remain <= 0) {
+                    successCallback();
+                }
+            }
+
+            var okis = 0;
+            var fails = 0;
+
+            function Promisse2() {
+                this.success = function () {
+                    progressCallback(okis + 1, fails, total);
+                    okis += 1;
+                    oneLess();
+                };
+                this.reject = function () {
+                    oneLess();
+                };
+            }
+            var promisse2 = new Promisse2();
+            for (var i = 0; i < total; i += 1) {
+                var tileInfo = tileInfos[i];
+                tileInfo.load(promisse2.success, promisse2.reject);
+            }
+            console.info('Downloading started for bb centered in ' + this.center);
+        },
+
+        getPixelBounds: function(map, zoom, latlngBounds) {
+            var sw0 = map.options.crs.latLngToPoint(latlngBounds.getSouthWest(), zoom);
+
+            var bottomLeft = this.project(map, zoom, latlngBounds.getSouthWest());
+            var topRight = this.project(map, zoom, latlngBounds.getNorthEast());
+            return new L.Bounds(bottomLeft, topRight);
+        },
+
+        project: function(map, zoom, latlng) { // (LatLng[, Number]) -> Point
+            return map.options.crs.latLngToPoint(L.latLng(latlng), zoom);
+        },
+
+        getTileCount: function() {
+            var child = this._tileInfos.length;
+        },
+
+        _0: ''
+    });
+
+    /**
+     * L.Control.LocalTileControl is a control that manage CotnrolLayers adding a special TileLayer whose source
+     * data is obtained from JSON (accessed by url) or localstorage content (accessed by fixed key name).
+     */
+    L.Control.LocalTileControl = L.Control.extend({
+        options: {
+            title: 'Reset Local base tile layer',
+            position: 'topright'
+        },
+
+        onAdd: function() {
+            var container = L.DomUtil.create('div', 'leaflet-control-localtiles leaflet-bar leaflet-control');
+            container.style.position = 'relative';
+            var _thisControl = this;
+
+            this.progressLabel = L.DomUtil.create('div', 'leaflet-control-localtiles-progress leaflet-bar-part', container);
+            /**  leaflet-control-localtiles-progress */
+            this.progressLabel.style.position = 'absolute';
+            this.progressLabel.style.display = 'none';
+            this.progressLabel.style.right = '36px';
+            this.progressLabel.style.left = 'auto';
+            this.progressLabel.style.width = '70px';
+            this.progressLabel.style.textAlign = 'center';
+            this.progressLabel.style.float = 'left';
+            this.progressLabel.style.backgroundColor = '#e0e0e0';
+            this.progressLabel.style.color = '#ff7040';
+
+            this.link = L.DomUtil.create('a', 'leaflet-control-localtiles-button leaflet-bar-part', container);
+            this.link.title = this.options.title;
+
+            L.DomEvent.addListener(this.link, 'click', function() { resetTiles(_thisControl); }, this);
+            L.DomEvent.disableClickPropagation(container);
+
+            return container;
+        },
+
+        disable: function() {
+            this.link.classList.add('leaflet-disabled');
+            this.progressLabel.style.display = 'block';
+            this.progressLabel.innerHTML = 'downloading...';
+        },
+
+        enable: function() {
+            this.link.classList.remove('leaflet-disabled');
+            this.progressLabel.style.display = 'none';
+        },
+
+        setProgressText: function(text) {
+            this.progressLabel.innerHTML = text;
+        },
+
+        resetTiles: function() {
+            resetTiles.apply(this, arguments);
+        },
+
+        _refresDefaultLocalLayer: function(sJson) {
+            var mainLayerControl = this._map._mainLayerControl;
+            if (!mainLayerControl) {
+                console.error('this map is not a UX map. Not found mainLayerControl');
+                return;
+            }
+            var localLayer = this._map._mainLayerControl._localLayer;
+            if (localLayer) {
+                localLayer.changeTileDataFromJson(sJson);
+                this._map.setZoom(this._map.getZoom()); // this._map._update();
+            }
+        }
+
+    });
+
+    L.LocalTileSet.MIN_DOWNLOAD_ZOOM = MIN_DOWNLOAD_ZOOM;
+    L.Control.LocalTileControl.recalculateTileset = recalculateTileset;
+
+    // nueva opción para L.Map
+    L.Map.mergeOptions({
+        localtiles: false, // trye || 'my-name' || urlName:'my-name' // access name in localstorage
+    });
+
+    L.Map.addInitHook(function() {
+        if (this.options.localtiles) {
+            var DEFAULT_NAME = 'localtiles';
+            // probar --- obtención de name
+            var name = (typeof this.options.localtiles === 'string') ? this.options.localtiles : (this.options.localtiles.urlName || DEFAULT_NAME);
+            this.positionControl = new L.Control.LocalTileControl({ keyname: name });
+            this.addControl(this.positionControl);
+        }
+    });
+
+    //
+    // internal functions
+    // 
+
+    /**
+     * It is called from clic event in a L.LocalTileControl.
+     * this ask confirmation to user to continue reseting tiles and home location
+     * @param {*} lControl 
+     */
+    function resetTiles(lControl) {
+        var map = lControl && lControl._map;
+        if (!map) {
+            console.error('Error interno. Falta referencia a mapa en Control LocalTileControl');
+            return;
+        }
+        var currentResolution = map.getZoom();
+        if (currentResolution < MIN_DOWNLOAD_ZOOM) {
+            alert('Zoom demasiado lejano: ' + currentResolution + '\nAl menos debe ser ' + MIN_DOWNLOAD_ZOOM);
+            return;
+        }
+
+        var minResolution = 6;
+        var maxResolution = 17;
+        // calcular tiles necesarios para el 'envelope' actual hasta un nivel de 18
+
+        var tileset = recalculateTileset(minResolution, maxResolution, map);
+
+        // msotrar un cuadro de diálogo para indicar lo que se va a hacer.
+        var result = window.confirm('WARN: Current stored tiles will be deleted. \n' +
+            'Then, it will be loaded ' + tileset._tileInfos.length + ' tiles replacing old tiles for offset navigation',
+            'Offline tile replacement');
+        if (result === false) {
+            // no continue
+            return;
+        }
+        var jsonName = prompt('Enter \'new\' word of a name for searching in public/sampledata/files-NAME.json \n (salonica25, smara, smara-topo)', 'new');
+        if (!jsonName) {
+            return;
+        }
+
+        if (jsonName === 'new') {
+            // desactivar botón llamador
+            lControl.disable();
+            // carga de nuevos tiles
+            var tileInfos = tileset._tileInfos;
+            var LS_KEY = L.TileLayer.DEFAULT_LS_KEY;
+            // inicio descarga de tiles en segundo plano.
+            tileset.startLoading({},
+                function() { // success/end
+                    lControl.setProgressText('OK: ' + tileset._tileInfos.length + ' tiles');
+                    var s = tileset.tileSetToJson();
+                    console.info('Json tileSet have a size in bytes of ' + s.length);
+                    var oldValue = localStorage.getItem(LS_KEY);
+                    try {
+                        // try store with a key in localStorage
+                        localStorage.removeItem(LS_KEY);
+                        localStorage.setItem(LS_KEY, s);
+                        alert('local tiles downloaded: ' + tileInfos.length);
+                        lControl._refresDefaultLocalLayer(s);
+                        console.info('local base layer refreshed');
+                    } catch (err) {
+                        if (oldValue) localStorage.setItem(LS_KEY, oldValue);
+                        alert('Error saving tileSet in localstorage\n\n' + err.message);
+                        try {
+                            var blob = new Blob([s], { type: 'text/JSON' });
+                            // try store in a local folder (default is system 'download' folder)
+                            L.Util.saveAs(blob, LS_KEY + '.json');
+                            alert('WARN. json has been downloaded in local folder');
+                        } catch (err2) {
+                            alert('Error saving tileSet in local folder\n\n' + err2.message);
+                        }
+                    }
+                    lControl.enable(); //.link.classList.remove('leaflet-disabled');
+                },
+                function(loaded, fails, total) {
+                    var left = total - loaded;
+                    lControl.setProgressText('Left ' + left);
+                });
+
+        } else {
+            var jsonPathFileName = './sampledata/tiles-' + jsonName + '.json';
+            console.info('Probando cargar tiles desde ' + jsonPathFileName);
+            var oLayer = map._mainLayerControl._localLayer;
+            if (oLayer) {
+                oLayer.changeTileDataFromUrl(jsonPathFileName);
+            }
+        }
+
+        console.error('AVISO. Sin implementar reseteado de tiles para navegación offline');
+    }
+
+    /**
+     * Recalculate all tiles needed for a range of zoom and current boundingBox showed in map.
+     * NOTE: Current zoom in map is limited to 16 (MIN_DOWNLOAD_ZOOM)
+     * @param {*} minRes 
+     * @param {*} maxRes 
+     * @param {*} map 
+     */
+    function recalculateTileset(minRes, maxRes, map) {
+
+        if (!map._mainLayerControl) { console.error('Invalid leaflet. No mainLayercontrol found'); return; }
+        if (!map._mainLayerControl._localLayer) { console.error('Invalid leaflet. No locallayer defined'); return; }
+
+        var localLayer = map._mainLayerControl._localLayer;
+        var currentLayer = getCurrentNoLocalBaseLayer(map);
+        var rnd = new Date().getMilliseconds();
+        var tileSet = new L.LocalTileSet(localLayer, currentLayer);
+        tileSet.updateTileRange(minRes, maxRes, map);
+        return tileSet;
+
+    }
+
+    function getCurrentNoLocalBaseLayer(map) {
+        // TODO - obtener la capa base actual que no se Local.
+        var first = null;
+        for (var key in map._layers) {
+            var oLayer = map._layers[key];
+            if (oLayer instanceof L.TileLayer) {
+                if (first === null) {
+                    first = oLayer;
+                }
+                // TODO - cómo saber si esta capa es la actual.
+                // si es la base actual then
+                //   return oLayer;
+            }
+        }
+        return first;
+    }
+
+    // TODO - añadir css a 
+    // .leaflet-control-container .leaflet-control-localtiles a {
+    //    background-size: 16px 16px;
+    //    cursor: pointer;
+    // }
+    // .leaflet-control-container .leaflet-control-localtiles a:before {
+    //    content: '\f02c';
+    //    font-size: 20px;
+    // }
+
+})(); // LocalTileLayer TESTING
+// Limit leaflet map zoom to a list of variants
+// Written by Ilya Zverev, licensed WTFPL
+
+// DESACTIVADO por defecto. No es compatible con el plugin de zoom 'continuo' usado por adf-widget-hmi.
+//  Se puede activar según capa base. Probar en UxMap.js, linea 236
+
+
+L.Map.mergeOptions({
+    zooms: undefined // Ejemplo: [1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 15, 18] 
+});
+
+L.Map.include({
+    _limitZoom: function(zoom) {
+        var zooms = this.options.zooms;
+        var snap;
+        if (!zooms || !('length' in zooms) || !zooms.length) {
+            var min = this.getMinZoom();
+            var max = this.getMaxZoom();
+            snap = L.Browser.any3d ? this.options.zoomSnap : 1;
+            if (snap) {
+                zoom = Math.round(zoom / snap) * snap;
+            }
+            return Math.max(min, Math.min(max, zoom));
+        } else {
+            var z, d = 100,
+                i, dist;
+            var dz = -1,
+                dd = 100,
+                dir = zoom - this._zoom;
+            snap = L.Browser.any3d ? this.options.zoomSnap : 1;
+            if (snap) {
+                zoom = Math.round(zoom / snap) * snap;
+            }
+            for (i = 0; i < zooms.length; i++) {
+                dist = Math.abs(zooms[i] - zoom);
+                if (dist < d) {
+                    z = zooms[i];
+                    d = dist;
+                }
+                if (dir * (zooms[i] - this._zoom) > 0 && dist < dd) {
+                    dz = zooms[i];
+                    dd = dist;
+                }
+            }
+            return dz < 0 ? z : dz;
+        }
+    }
+});
+/* 
+ * [uxleaflet/client]
+ * No aparece en github. Viene 'minificado' en algunos proyectos de prueba 
+ * Requerido por l-editable-b.js */
+
+/*
+ * @class Evented
+ * @aka L.Evented
+ * @inherits Class
+ *
+ * A set of methods shared between event-powered classes (like `Map` and `Marker`). Generally, events allow you to execute some function when something happens with an object (e.g. the user clicks on the map, causing the map to fire `'click'` event).
+ *
+ * @example
+ *
+ * ```js
+ * map.on('click', function(e) {
+ * 	alert(e.latlng);
+ * } );
+ * ```
+ *
+ * Leaflet deals with event listeners by reference, so if you want to add a listener and then remove it, define it as a function:
+ *
+ * ```js
+ * function onClick(e) { ... }
+ *
+ * map.on('click', onClick);
+ * map.off('click', onClick);
+ * ```
+ */
+
+
+L.Evented = L.Class.extend({
+
+    
+    /* @method on(type: String, fn: Function, context?: Object): this
+     * Adds a listener function (`fn`) to a particular event type of the object. You can optionally specify the context of the listener (object the this keyword will point to). You can also pass several space-separated types (e.g. `'click dblclick'`).
+     *
+     * @alternative
+     * @method on(eventMap: Object): this
+     * Adds a set of type/listener pairs, e.g. `{click: onClick, mousemove: onMouseMove}`
+     */
+    on: function(types, fn, context) {
+
+        // types can be a map of types/handlers
+        if (typeof types === 'object') {
+            for (var type in types) {
+                // we don't process space-separated events here for performance;
+                // it's a hot path since Layer uses the on(obj) syntax
+                this._on(type, types[type], fn);
+            }
+
+        } else {
+            // types can be a string of space-separated words
+            types = L.Util.splitWords(types);
+
+            for (var i = 0, len = types.length; i < len; i++) {
+                this._on(types[i], fn, context);
+            }
+        }
+
+        return this;
+    },
+
+    /* @method off(type: String, fn?: Function, context?: Object): this
+     * Removes a previously added listener function. If no function is specified, it will remove all the listeners of that particular event from the object. Note that if you passed a custom context to `on`, you must pass the same context to `off` in order to remove the listener.
+     *
+     * @alternative
+     * @method off(eventMap: Object): this
+     * Removes a set of type/listener pairs.
+     *
+     * @alternative
+     * @method off: this
+     * Removes all listeners to all events on the object.
+     */
+    off: function(types, fn, context) {
+
+        if (!types) {
+            // clear all listeners if called without arguments
+            delete this._events;
+
+        } else if (typeof types === 'object') {
+            for (var type in types) {
+                this._off(type, types[type], fn);
+            }
+
+        } else {
+            types = L.Util.splitWords(types);
+
+            for (var i = 0, len = types.length; i < len; i++) {
+                this._off(types[i], fn, context);
+            }
+        }
+
+        return this;
+    },
+
+    // attach listener (without syntactic sugar now)
+    _on: function(type, fn, context) {
+        this._events = this._events || {};
+
+        /* get/init listeners for type */
+        var typeListeners = this._events[type];
+        if (!typeListeners) {
+            typeListeners = [];
+            this._events[type] = typeListeners;
+        }
+
+        if (context === this) {
+            // Less memory footprint.
+            context = undefined;
+        }
+        var newListener = { fn: fn, ctx: context },
+            listeners = typeListeners;
+
+        // check if fn already there
+        for (var i = 0, len = listeners.length; i < len; i++) {
+            if (listeners[i].fn === fn && listeners[i].ctx === context) {
+                return;
+            }
+        }
+
+        listeners.push(newListener);
+    },
+
+    _off: function(type, fn, context) {
+        var listeners,
+            i,
+            len;
+
+        if (!this._events) { return; }
+
+        listeners = this._events[type];
+
+        if (!listeners) {
+            return;
+        }
+
+        if (!fn) {
+            // Set all removed listeners to noop so they are not called if remove happens in fire
+            for (i = 0, len = listeners.length; i < len; i++) {
+                listeners[i].fn = L.Util.falseFn;
+            }
+            // clear all listeners for a type if function isn't specified
+            delete this._events[type];
+            return;
+        }
+
+        if (context === this) {
+            context = undefined;
+        }
+
+        if (listeners) {
+
+            // find fn and remove it
+            for (i = 0, len = listeners.length; i < len; i++) {
+                var l = listeners[i];
+                if (l.ctx !== context) { continue; }
+                if (l.fn === fn) {
+
+                    // set the removed listener to noop so that's not called if remove happens in fire
+                    l.fn = L.Util.falseFn;
+
+                    if (this._firingCount) {
+                        /* copy array in case events are being fired */
+                        this._events[type] = listeners = listeners.slice();
+                    }
+                    listeners.splice(i, 1);
+
+                    return;
+                }
+            }
+        }
+    },
+
+    // @method fire(type: String, data?: Object, propagate?: Boolean): this
+    // Fires an event of the specified type. You can optionally provide an data
+    // object — the first argument of the listener function will contain its
+    // properties. The event can optionally be propagated to event parents.
+    fire: function(type, data, propagate) {
+        if (!this.listens(type, propagate)) { return this; }
+
+        var event = L.Util.extend({}, data, { type: type, target: this });
+
+        if (this._events) {
+            var listeners = this._events[type];
+
+            if (listeners) {
+                this._firingCount = (this._firingCount + 1) || 1;
+                for (var i = 0, len = listeners.length; i < len; i++) {
+                    var l = listeners[i];
+                    l.fn.call(l.ctx || this, event);
+                }
+
+                this._firingCount--;
+            }
+        }
+
+        if (propagate) {
+            // propagate the event to parents (set with addEventParent)
+            this._propagateEvent(event);
+        }
+
+        return this;
+    },
+
+    // @method listens(type: String): Boolean
+    // Returns `true` if a particular event type has any listeners attached to it.
+    listens: function(type, propagate) {
+        var listeners = this._events && this._events[type];
+        if (listeners && listeners.length) { return true; }
+
+        if (propagate) {
+            // also check parents for listeners if event propagates
+            for (var id in this._eventParents) {
+                if (this._eventParents[id].listens(type, propagate)) { return true; }
+            }
+        }
+        return false;
+    },
+
+    // @method once(…): this
+    // Behaves as [`on(…)`](#evented-on), except the listener will only get fired once and then removed.
+    once: function(types, fn, context) {
+
+        if (typeof types === 'object') {
+            for (var type in types) {
+                this.once(type, types[type], fn);
+            }
+            return this;
+        }
+
+        var handler = L.bind(function() {
+            this
+                .off(types, fn, context)
+                .off(types, handler, context);
+        }, this);
+
+        // add a listener that's executed once and removed after that
+        return this
+            .on(types, fn, context)
+            .on(types, handler, context);
+    },
+
+    // @method addEventParent(obj: Evented): this
+    // Adds an event parent - an `Evented` that will receive propagated events
+    addEventParent: function(obj) {
+        this._eventParents = this._eventParents || {};
+        this._eventParents[L.stamp(obj)] = obj;
+        return this;
+    },
+
+    // @method removeEventParent(obj: Evented): this
+    // Removes an event parent, so it will stop receiving propagated events
+    removeEventParent: function(obj) {
+        if (this._eventParents) {
+            delete this._eventParents[L.stamp(obj)];
+        }
+        return this;
+    },
+
+    _propagateEvent: function(e) {
+        for (var id in this._eventParents) {
+            this._eventParents[id].fire(e.type, L.extend({ layer: e.target }, e), true);
+        }
+    }
+});
+
+var proto = L.Evented.prototype;
+
+// aliases; we should ditch those eventually
+
+// @method addEventListener(…): this
+// Alias to [`on(…)`](#evented-on)
+proto.addEventListener = proto.on;
+
+// @method removeEventListener(…): this
+// Alias to [`off(…)`](#evented-off)
+
+// @method clearAllEventListeners(…): this
+// Alias to [`off()`](#evented-off)
+proto.removeEventListener = proto.clearAllEventListeners = proto.off;
+
+// @method addOneTimeEventListener(…): this
+// Alias to [`once(…)`](#evented-once)
+proto.addOneTimeEventListener = proto.once;
+
+// @method fireEvent(…): this
+// Alias to [`fire(…)`](#evented-fire)
+proto.fireEvent = proto.fire;
+
+// @method hasEventListeners(…): Boolean
+// Alias to [`listens(…)`](#evented-listens)
+proto.hasEventListeners = proto.listens;
+
+L.Mixin = { Events: proto };
+/**
+ * [uxleaflet/client]
+ * L.Control.UxEdition.
+ * Basado en el ejemplo incluido en index.html de Leaflet.Editable
+ * 
+ * No es usado. Se está suando l-draw.js
+ * 
+ */
+(function() {
+
+    
+
+    if (!L.Control) {
+        console.error('L.Control.Edition requires Leaflet');
+        return;
+    }
+
+    /* Custom styling */
+    L.Editable.VertexIcon.prototype.options.iconSize = new L.Point(14, 14);
+
+    /**
+     * Main Control as container for edition buttons: 
+     * AddPolyline, AddPolygon, AddMarker, and DeleteGeom.
+     */
+    L.Control.UxEdition = L.Control.extend({
+        options: {
+            position: 'topleft',
+            addPolygonText: '',
+            addPolylineText: '',
+            addMarkerText: '',
+            deleteGeomText: '',
+            onFeatureCommited: null, // en pruebas
+            cssClass: ''
+        },
+        onAdd: function(map) {
+            var container = L.DomUtil.create('div', 'leaflet-control leaflet-bar');
+
+            // usar options para establecer qué botones son visibles
+            //var buttonClazzes = [L.NewMarkerControl, L.NewLineControl, L.NewPolygonControl, L.DeleteGeomControl];
+            var buttonClazzes = [L.NewPolygonControl, L.DeleteGeomControl];
+
+            this._buttons = [];
+            for (var i = 0; i < buttonClazzes.length; i++) {
+                var Clazz = buttonClazzes[i];
+                var bto = new Clazz();
+                bto.onFeatureCommitedListener = this.options.onFeatureCommited;
+                this._buttons.push(bto);
+                container.appendChild(bto._createLink(map));
+            }
+            return container;
+        },
+        setLayer: function(layer) {
+            for (var i = 0; i < this._buttons.length; i++) {
+                this._buttons[i].layerGroup = layer;
+            }
+            for (var key in layer) {
+                var lyr = layer[key];
+                if (lyr.enableEdit) {
+                    lyr.enableEdit();
+                    lyr.on('dblclick', L.DomEvent.stop).on('dblclick', this.toggleEdit);
+                }
+            }
+        }
+    });
+
+    L.BaseEditControl = L.Control.extend({
+        options: {
+            position: 'topleft',
+            title: 'Edit control',
+            innerText: 'o'
+        },
+        _commitedAction: 'added',
+        layerGroup: undefined,
+        onAdd: function(map) {
+            this._map = map;
+            var container = L.DomUtil.create('div', 'leaflet-control leaflet-bar');
+            var link = this._createLink(map);
+            container.appendChild(link);
+            return container;
+        },
+        isActive: function() {
+            return this._link && this._link.classList.contains('active');
+        },
+        setActive: function(opt) {
+            if (!opt) {
+                this._link.setAttribute('title', this.options.title);
+                this._link.classList.remove('active');
+                this._link.style.backgroundColor = '';
+                this._link.style.color = '';
+            } else {
+                this._link.setAttribute('title', this.options.cancelTitle);
+                this._link.classList.add('active');
+                var color = window.getComputedStyle(this._link).color;
+                this._link.style.backgroundColor = color;
+                this._link.style.color = '#ffffff'; /* blanco o negro, según tema */
+            }
+        },
+        _createLink: function(map) {
+            var link = L.DomUtil.create('a', this.options.cssClass || '');
+            link.href = '#';
+            link.title = this.options.title;
+            link.innerHTML = this.options.innerText;
+            this._link = link;
+            var _this = this;
+            L.DomEvent.on(link, 'click', L.DomEvent.stop)
+                .on(link, 'click', function() {
+                    var lastGeom = _this._onClick(map);
+                    var id = lastGeom && lastGeom._leaflet_id;
+                    if (id) {
+                        // add to layer group
+                        _this.layerGroup[id] = lastGeom;
+                    }
+                });
+            this._link = link;
+            return link;
+        },
+        _onClick: null, // must return a edittool
+        _toggle: function() {
+            var next = !this.isActive();
+            this.setActive(next);
+            console.debug('starting tool from: ' + this.options.title);
+            return next;
+        },
+        _featureCommitted: function(evt) {
+            evt.action = this._commitedAction;
+            console.info('feature commited ', evt);
+            if (this.onFeatureCommitedListener) {
+                this.onFeatureCommitedListener(evt);
+            }
+        },
+        onFeatureCommitedListener: null,
+        _featureCanceled: function(lyr) {
+            var id = lyr._leaflet_id;
+            if (!lyr._deleting) {
+                lyr._deleting = true;
+                var map = lyr._map;
+                // standard remove
+                map.removeLayer(lyr);
+                map._onResize();
+                delete this.layerGroup[id];
+            }
+        }
+    });
+
+    L.DeleteGeomControl = L.BaseEditControl.extend({
+        options: {
+            title: 'Delete geometries',
+            cancelTitle: 'Stop deletiing',
+            innerText: '\uf1f8',
+            /* awesome fa-trash */
+            //innerText: '\uf12d', /* awesome fa-eraser */
+            cssClass: 'delete-edit-control'
+        },
+
+        _commitedAction: 'deleted',
+
+        _onClick: function(map) {
+            var isActive = this._toggle();
+            for (var key in this.layerGroup) {
+                var lyr = this.layerGroup[key];
+                if (isActive) {
+                    this._addOnclick(lyr);
+                } else {
+                    this._removeOnclick(lyr);
+                }
+            }
+        },
+
+        _addOnclick: function(lyr) {
+            if (lyr.editor) {
+                var _this = this;
+                lyr.on('click', L.DomEvent.stop).on('click', function() {
+                    // map layer clicked (included in _this.map)
+                    var id = this._leaflet_id;
+                    if (id !== undefined) {
+                        var map = this._map;
+                        // standard remove
+                        map.removeLayer(this);
+                        map._onResize();
+                        // internal ref deletion
+                        delete _this.layerGroup[id];
+                        // notification
+                        _this._featureCommitted({ layer: this });
+                        console.debug('deleted feature ' + id);
+                    } else {
+                        console.warn('clicked object is not a leaflet layer: ' + this);
+                    }
+                }, lyr);
+            }
+        },
+
+        _removeOnclick: function(lyr) {
+            if (lyr.editor) {
+                lyr.off('click', L.DomEvent.stop).off('click');
+            }
+        }
+
+    });
+
+    L.NewLineControl = L.BaseEditControl.extend({
+        options: {
+            title: 'Create a new line',
+            cancelTitle: 'Cancel line',
+            innerText: '\\/\\',
+            cssClass: 'newline-edit-control'
+        },
+        _onClick: function(map) {
+            var isActive = this._toggle();
+            return map.editTools.startPolyline();
+        }
+    });
+
+    L.NewPolygonControl = L.BaseEditControl.extend({
+        options: {
+            title: 'Create a new polygon',
+            cancelTitle: 'Cancel polygon',
+            innerText: '▰',
+            cssClass: 'newpolygon-edit-control'
+        },
+        _onClick: function(map) {
+            var isActive = this._toggle();
+            if (isActive) {
+                var poly = map.editTools.startPolygon();
+                poly.on('editable:drawing:commit', this._featureCommitted, this);
+                poly.on('editable:drawing:commit', function(evt) { this.setActive(false); }, this);
+                poly.on('editable:drawing:cancel', function(evt) {
+                    this.setActive(false);
+                    this._featureCanceled(poly);
+                }, this);
+                return poly;
+            } else {
+                map.editTools.stopDrawing();
+            }
+        }
+    });
+
+    L.NewMarkerControl = L.BaseEditControl.extend({
+        options: {
+            title: 'Add a new marker',
+            cancelTitle: 'Cancel marker',
+            innerText: '🖈',
+            cssClass: 'newmarker-edit-control'
+        },
+        _onClick: function(map) {
+            var isActive = this._toggle();
+            return map.editTools.startMarker();
+        }
+    });
+
+})(); /* L.Control.Edition */
+
+
+// naming of leaflet classes
+L.Class.prototype.toString = function () {  return 'Class: ' + this._clazzName; };
+
+L.Map.prototype._clazzName = 'Map';
+L.Polygon.prototype._clazzName = 'Polygon';
+L.Polygon.prototype.toString = function () {
+    
+    return L.Polyline.prototype.toString.call(this) + ' ' + JSON.stringify(this._latlng);
+};
+
+L.Circle.prototype._clazzName = 'Circle';
+L.Point.prototype._clazzName = 'Point';
+L.Path.prototype._clazzName = 'Path';
+L.Marker.prototype._clazzName = 'Marker';
+L.Polyline.prototype._clazzName = 'Polyline';
+/**
+ * [uxleaflet/client]
+ * Matrix transform path for SVG/VML
+ * TODO: adapt to Leaflet 0.8 upon release
+ * 
+ * (this code allow drag editable geometries in leaflet)
+ */
+
+
+
+if (L.Browser.svg) { // SVG transformation
+
+    L.Path.include({
+
+        /**
+         * Reset transform matrix
+         */
+        _resetTransform: function() {
+            this._container.setAttributeNS(null, 'transform', '');
+        },
+
+        /**
+         * Applies matrix transformation to SVG
+         * @param {Array.<Number>} matrix
+         */
+        _applyTransform: function(matrix) {
+            this._container.setAttributeNS(null, 'transform',
+                'matrix(' + matrix.join(' ') + ')');
+        }
+
+    });
+
+} else { // VML transform routines
+
+    L.Path.include({
+
+        /**
+         * Reset transform matrix
+         */
+        _resetTransform: function() {
+            if (this._skew) {
+                // super important! workaround for a 'jumping' glitch:
+                // disable transform before removing it
+                this._skew.on = false;
+                this._container.removeChild(this._skew);
+                this._skew = null;
+            }
+        },
+
+        /**
+         * Applies matrix transformation to VML
+         * @param {Array.<Number>} matrix
+         */
+        _applyTransform: function(matrix) {
+            var skew = this._skew;
+
+            if (!skew) {
+                skew = this._createElement('skew');
+                this._container.appendChild(skew);
+                skew.style.behavior = 'url(#default#VML)';
+                this._skew = skew;
+            }
+
+            // handle skew/translate separately, cause it's broken
+            var mt = matrix[0].toFixed(8) + ' ' + matrix[1].toFixed(8) + ' ' +
+                matrix[2].toFixed(8) + ' ' + matrix[3].toFixed(8) + ' 0 0';
+            var offset = Math.floor(matrix[4]).toFixed() + ', ' +
+                Math.floor(matrix[5]).toFixed() + '';
+
+            var s = this._container.style;
+            var l = parseFloat(s.left);
+            var t = parseFloat(s.top);
+            var w = parseFloat(s.width);
+            var h = parseFloat(s.height);
+
+            if (isNaN(l)) l = 0;
+            if (isNaN(t)) t = 0;
+            if (isNaN(w) || !w) w = 1;
+            if (isNaN(h) || !h) h = 1;
+
+            var origin = (-l / w - 0.5).toFixed(8) + ' ' + (-t / h - 0.5).toFixed(8);
+
+            skew.on = 'f';
+            skew.matrix = mt;
+            skew.origin = origin;
+            skew.offset = offset;
+            skew.on = true;
+        }
+
+    });
+}
+
+// Renderer-independent
+L.Path.include({
+
+    /**
+     * Check if the feature was dragged, that'll supress the click event
+     * on mouseup. That fixes popups for example
+     *
+     * @param  {MouseEvent} e
+     */
+    _onMouseClick: function(e) {
+        if ((this.dragging && this.dragging.moved()) ||
+            (this._map.dragging && this._map.dragging.moved())) {
+            return;
+        }
+
+        this._fireMouseEvent(e);
+    }
+});
+/**
+ * Leaflet vector features drag functionality
+ * @preserve
+ */
+
+
+/**
+ * Drag handler
+ * @class L.Path.Drag
+ * @extends {L.Handler}
+ */
+L.Handler.PathDrag = L.Handler.extend( 
+    /** @lends  L.Path.Drag.prototype */
+    {
+
+    /**
+     * @param  {L.Path} path
+     * @constructor
+     */
+    initialize: function(path) {
+
+        /**
+         * @type {L.Path}
+         */
+        this._path = path;
+
+        /**
+         * @type {Array.<Number>}
+         */
+        this._matrix = null;
+
+        /**
+         * @type {L.Point}
+         */
+        this._startPoint = null;
+
+        /**
+         * @type {L.Point}
+         */
+        this._dragStartPoint = null;
+
+    },
+
+    /**
+     * Enable dragging
+     */
+    addHooks: function() {
+        this._path.on('mousedown', this._onDragStart, this);
+        L.DomUtil.addClass(this._path._container, 'leaflet-path-draggable');
+    },
+
+    /**
+     * Disable dragging
+     */
+    removeHooks: function() {
+        this._path.off('mousedown', this._onDragStart, this);
+        L.DomUtil.removeClass(this._path._container, 'leaflet-path-draggable');
+    },
+
+    /**
+     * @return {Boolean}
+     */
+    moved: function() {
+        return this._path._dragMoved;
+    },
+
+    /**
+     * Start drag
+     * @param  {L.MouseEvent} evt
+     */
+    _onDragStart: function(evt) {
+        this._startPoint = evt.containerPoint.clone();
+        this._dragStartPoint = evt.containerPoint.clone();
+        this._matrix = [1, 0, 0, 1, 0, 0];
+
+        this._path._map
+            .on('mousemove', this._onDrag, this)
+            .on('mouseup', this._onDragEnd, this);
+        this._path._dragMoved = false;
+    },
+
+    /**
+     * Dragging
+     * @param  {L.MouseEvent} evt
+     */
+    _onDrag: function(evt) {
+        var x = evt.containerPoint.x;
+        var y = evt.containerPoint.y;
+
+        var dx = x - this._startPoint.x;
+        var dy = y - this._startPoint.y;
+
+        if (!this._path._dragMoved && (dx || dy)) {
+            this._path._dragMoved = true;
+            this._path.fire('dragstart');
+        }
+
+        this._matrix[4] += dx;
+        this._matrix[5] += dy;
+
+        this._startPoint.x = x;
+        this._startPoint.y = y;
+
+        this._path._applyTransform(this._matrix);
+        this._path.fire('drag');
+        L.DomEvent.stop(evt.originalEvent);
+    },
+
+    /**
+     * Dragging stopped, apply
+     * @param  {L.MouseEvent} evt
+     */
+    _onDragEnd: function(evt) {
+        L.DomEvent.stop(evt);
+        // undo container transform
+        this._path._resetTransform();
+        // apply matrix
+        this._transformPoints(this._matrix);
+
+        this._path._map
+            .off('mousemove', this._onDrag, this)
+            .off('mouseup', this._onDragEnd, this);
+
+        // consistency
+        this._path.fire('dragend', {
+            distance: Math.sqrt(
+                L.LineUtil._sqDist(this._dragStartPoint, evt.containerPoint)
+            )
+        });
+
+        this._matrix = null;
+        this._startPoint = null;
+        this._dragStartPoint = null;
+    },
+
+    /**
+     * Applies transformation, does it in one sweep for performance,
+     * so don't be surprised about the code repetition.
+     *
+     * [ x ]   [ a  b  tx ] [ x ]   [ a * x + b * y + tx ]
+     * [ y ] = [ c  d  ty ] [ y ] = [ c * x + d * y + ty ]
+     *
+     * @param {Array.<Number>} matrix
+     */
+    _transformPoints: function(matrix) {
+        var path = this._path;
+        var i, len, latlng;
+
+        var px = L.point(matrix[4], matrix[5]);
+
+        var crs = path._map.options.crs;
+        var transformation = crs.transformation;
+        var scale = crs.scale(path._map.getZoom());
+        var projection = crs.projection;
+
+        var diff = transformation.untransform(px, scale)
+            .subtract(transformation.untransform(L.point(0, 0), scale));
+
+        // console.time('transform');
+
+        // all shifts are in-place
+        if (path._point) { // L.Circle
+            path._latlng = projection.unproject(
+                projection.project(path._latlng)._add(diff));
+            path._point._add(px);
+        } else if (path._originalPoints) { // everything else
+            for (i = 0, len = path._originalPoints.length; i < len; i++) {
+                latlng = path._latlngs[i];
+                path._latlngs[i] = projection
+                    .unproject(projection.project(latlng)._add(diff));
+                path._originalPoints[i]._add(px);
+            }
+        }
+
+        // holes operations
+        if (path._holes) {
+            for (i = 0, len = path._holes.length; i < len; i++) {
+                for (var j = 0, len2 = path._holes[i].length; j < len2; j++) {
+                    latlng = path._holes[i][j];
+                    path._holes[i][j] = projection
+                        .unproject(projection.project(latlng)._add(diff));
+                    path._holePoints[i][j]._add(px);
+                }
+            }
+        }
+
+        // console.timeEnd('transform');
+
+        path._updatePath();
+    }
+
+});
+
+L.Path.prototype.__initEvents = L.Path.prototype._initEvents;
+L.Path.prototype._initEvents = function() {
+    this.__initEvents();
+
+    if (this.options.draggable) {
+        if (this.dragging) {
+            this.dragging.enable();
+        } else {
+            this.dragging = new L.Handler.PathDrag(this);
+            this.dragging.enable();
+        }
+    } else if (this.dragging) {
+        this.dragging.disable();
+    }
+};
+(function() {
+
+    // listen and propagate dragstart on sub-layers
+    L.FeatureGroup.EVENTS += ' dragstart';
+
+    function wrapMethod(klasses, methodName, method) {
+        for (var i = 0, len = klasses.length; i < len; i++) {
+            var klass = klasses[i];
+            klass.prototype['_' + methodName] = klass.prototype[methodName];
+            klass.prototype[methodName] = method;
+        }
+    }
+
+    /**
+     * @param {L.Polygon|L.Polyline} layer
+     * @return {L.MultiPolygon|L.MultiPolyline}
+     */
+    var ext2 = {
+        addLayer: function (layer) {
+            if (this.hasLayer(layer)) {
+                return this;
+            }
+            layer
+                .on('drag', this._onDrag, this)
+                .on('dragend', this._onDragEnd, this);
+            return this._addLayer.call(this, layer);
+        },
+
+        /**
+         * @param  {L.Polygon|L.Polyline} layer
+         * @return {L.MultiPolygon|L.MultiPolyline}
+         */
+        removeLayer: function (layer) {
+            if (!this.hasLayer(layer)) {
+                return this;
+            }
+            layer
+                .off('drag', this._onDrag, this)
+                .off('dragend', this._onDragEnd, this);
+            return this._removeLayer.call(this, this);
+        }
+    };
+
+    // duck-type methods to listen to the drag events
+    wrapMethod([L.MultiPolygon, L.MultiPolyline], 'addLayer', ext2.addLayer);
+    wrapMethod([L.MultiPolygon, L.MultiPolyline], 'removeLayer', ext2.removeLayer);
+
+    var dragMethods = {
+        _onDrag: function(evt) {
+            var layer = evt.target;
+            this.eachLayer(function(otherLayer) {
+                if (otherLayer !== layer) {
+                    otherLayer._applyTransform(layer.dragging._matrix);
+                }
+            });
+
+            this._propagateEvent(evt);
+        },
+
+        _onDragEnd: function(evt) {
+            var layer = evt.target;
+
+            this.eachLayer(function(otherLayer) {
+                if (otherLayer !== layer) {
+                    otherLayer._resetTransform();
+                    otherLayer.dragging._transformPoints(layer.dragging._matrix);
+                }
+            });
+
+            this._propagateEvent(evt);
+        }
+    };
+
+    L.MultiPolygon.include(dragMethods);
+    L.MultiPolyline.include(dragMethods);
+
+})();
+// TODO: dismiss that on Leaflet 0.8.x release
+
+L.Polygon.include(
+    /** @lends L.Polygon.prototype */
+    {
+
+    /**
+     * @return {L.LatLng}
+     */
+    getCenter: function() {
+        var i, j, len, p1, p2, f, area, x, y,
+            points = this._parts[0];
+
+        // polygon centroid algorithm; only uses the first ring if there are multiple
+
+        area = x = y = 0;
+
+        for (i = 0, len = points.length, j = len - 1; i < len; j = i++) {
+            p1 = points[i];
+            p2 = points[j];
+
+            f = p1.y * p2.x - p2.y * p1.x;
+            x += (p1.x + p2.x) * f;
+            y += (p1.y + p2.y) * f;
+            area += f * 3;
+        }
+
+        return this._map.layerPointToLatLng([x / area, y / area]);
+    }
+
+});
+
+
+// It allows diasbling from options if L.EditToolbar.Edit exists.
+
+/**
+ * Static flag for move markers
+ * @type {Boolean}
+ */
+L.EditToolbar.Edit.MOVE_MARKERS = false;
+
+L.EditToolbar.Edit.include(
+    /** @lends L.EditToolbar.Edit.prototype */
+    {
+
+    /**
+     * @override
+     */
+    initialize: function(map, options) {
+        L.EditToolbar.Edit.MOVE_MARKERS = !!options.selectedPathOptions.moveMarkers;
+        this._initialize(map, options);
+    },
+
+    /**
+     * @param  {L.Map}  map
+     * @param  {Object} options
+     */
+    _initialize: L.EditToolbar.Edit.prototype.initialize
+
+});
+
+
+/**
+ * Mainly central marker routines
+ */
+
+L.Edit.SimpleShape.include(
+    /** @lends L.Edit.SimpleShape.prototype */
+    {
+
+    /**
+     * Put move marker into center
+     */
+    _updateMoveMarker: function() {
+        if (this._moveMarker) {
+            this._moveMarker.setLatLng(this._getShapeCenter());
+        }
+    },
+
+    /**
+     * Shape centroid
+     * @return {L.LatLng}
+     */
+    _getShapeCenter: function() {
+        return this._shape.getBounds().getCenter();
+    },
+
+    /**
+     * @override
+     */
+    _createMoveMarker: function() {
+        if (L.EditToolbar.Edit.MOVE_MARKERS) {
+            this._moveMarker = this._createMarker(this._getShapeCenter(),
+                this.options.moveIcon);
+        }
+    }
+
+});
+
+/**
+ * Override this if you don't want the central marker
+ * @type {Boolean}
+ */
+L.Edit.SimpleShape.mergeOptions({
+    moveMarker: false
+});
+/**
+ * Dragging routines for circle
+ */
+
+L.Edit.Circle.include(
+    /** @lends L.Edit.Circle.prototype */
+    {
+
+    /**
+     * @override
+     */
+    addHooks: function() {
+        if (this._shape._map) {
+            this._map = this._shape._map;
+            if (!this._markerGroup) {
+                this._enableDragging();
+                this._initMarkers();
+            }
+            this._shape._map.addLayer(this._markerGroup);
+        }
+    },
+
+    /**
+     * @override
+     */
+    removeHooks: function() {
+        if (this._shape._map) {
+            for (var i = 0, l = this._resizeMarkers.length; i < l; i++) {
+                this._unbindMarker(this._resizeMarkers[i]);
+            }
+
+            this._disableDragging();
+            this._resizeMarkers = null;
+            this._map.removeLayer(this._markerGroup);
+            delete this._markerGroup;
+        }
+
+        this._map = null;
+    },
+
+    /**
+     * @override
+     */
+    _createMoveMarker: L.Edit.SimpleShape.prototype._createMoveMarker,
+
+    /**
+     * Change
+     * @param  {L.LatLng} latlng
+     */
+    _resize: function(latlng) {
+        var center = this._shape.getLatLng();
+        var radius = center.distanceTo(latlng);
+
+        this._shape.setRadius(radius);
+
+        this._updateMoveMarker();
+    },
+
+    /**
+     * Adds drag start listeners
+     */
+    _enableDragging: function() {
+        if (!this._shape.dragging) {
+            this._shape.dragging = new L.Handler.PathDrag(this._shape);
+        }
+        this._shape.dragging.enable();
+        this._shape
+            .on('dragstart', this._onStartDragFeature, this)
+            .on('dragend', this._onStopDragFeature, this);
+    },
+
+    /**
+     * Removes drag start listeners
+     */
+    _disableDragging: function() {
+        this._shape.dragging.disable();
+        this._shape
+            .off('dragstart', this._onStartDragFeature, this)
+            .off('dragend', this._onStopDragFeature, this);
+    },
+
+    /**
+     * Start drag
+     * @param  {L.MouseEvent} evt
+     */
+    _onStartDragFeature: function() {
+        this._shape._map.removeLayer(this._markerGroup);
+        this._shape.fire('editstart');
+    },
+
+    /**
+     * Dragging stopped, apply
+     * @param  {L.MouseEvent} evt
+     */
+    _onStopDragFeature: function() {
+        var center = this._shape.getLatLng();
+
+        //this._moveMarker.setLatLng(center);
+        this._resizeMarkers[0].setLatLng(this._getResizeMarkerPoint(center));
+
+        // show resize marker
+        this._shape._map.addLayer(this._markerGroup);
+        this._updateMoveMarker();
+        this._fireEdit();
+    }
+});
+/**
+ * Dragging routines for poly handler
+ */
+
+L.Edit.Rectangle.include(
+    /** @lends L.Edit.Rectangle.prototype */
+    {
+
+    /**
+     * @override
+     */
+    addHooks: function() {
+        if (this._shape._map) {
+            if (!this._markerGroup) {
+                this._enableDragging();
+                this._initMarkers();
+            }
+            this._shape._map.addLayer(this._markerGroup);
+        }
+    },
+
+    /**
+     * @override
+     */
+    removeHooks: function() {
+        if (this._shape._map) {
+            this._shape._map.removeLayer(this._markerGroup);
+            this._disableDragging();
+            delete this._markerGroup;
+            delete this._markers;
+        }
+    },
+
+    /**
+     * @override
+     */
+    _resize: function(latlng) {
+        // Update the shape based on the current position of
+        // this corner and the opposite point
+        this._shape.setBounds(L.latLngBounds(latlng, this._oppositeCorner));
+        this._updateMoveMarker();
+    },
+
+    /**
+     * @override
+     */
+    _onMarkerDragEnd: function(e) {
+        this._toggleCornerMarkers(1);
+        this._repositionCornerMarkers();
+
+        L.Edit.SimpleShape.prototype._onMarkerDragEnd.call(this, e);
+    },
+
+    /**
+     * Adds drag start listeners
+     */
+    _enableDragging: function() {
+        if (!this._shape.dragging) {
+            this._shape.dragging = new L.Handler.PathDrag(this._shape);
+        }
+        this._shape.dragging.enable();
+        this._shape
+            .on('dragstart', this._onStartDragFeature, this)
+            .on('dragend', this._onStopDragFeature, this);
+    },
+
+    /**
+     * Removes drag start listeners
+     */
+    _disableDragging: function() {
+        this._shape.dragging.disable();
+        this._shape
+            .off('dragstart', this._onStartDragFeature, this)
+            .off('dragend', this._onStopDragFeature, this);
+    },
+
+    /**
+     * Start drag
+     * @param  {L.MouseEvent} evt
+     */
+    _onStartDragFeature: function() {
+        this._shape._map.removeLayer(this._markerGroup);
+        this._shape.fire('editstart');
+    },
+
+    /**
+     * Dragging stopped, apply
+     * @param  {L.MouseEvent} evt
+     */
+    _onStopDragFeature: function() {
+        var polygon = this._shape;
+        for (var i = 0, len = polygon._latlngs.length; i < len; i++) {
+            // update marker
+            var marker = this._resizeMarkers[i];
+            marker.setLatLng(polygon._latlngs[i]);
+
+            // this one's needed to update the path
+            marker._origLatLng = polygon._latlngs[i];
+            if (marker._middleLeft) {
+                marker._middleLeft.setLatLng(this._getMiddleLatLng(marker._prev, marker));
+            }
+            if (marker._middleRight) {
+                marker._middleRight.setLatLng(this._getMiddleLatLng(marker, marker._next));
+            }
+        }
+        // this._moveMarker.setLatLng(polygon.getBounds().getCenter());
+
+        // show vertices
+        this._shape._map.addLayer(this._markerGroup);
+        this._updateMoveMarker();
+
+        this._repositionCornerMarkers();
+        this._fireEdit();
+    }
+});
+/**
+ * Dragging routines for poly handler
+ */
+
+L.Edit.PolyVerticesEdit.include(
+    /** @lends L.Edit.PolyVerticesEdit.prototype */
+    {
+
+    // store methods to call them in overrides
+    __createMarker: L.Edit.PolyVerticesEdit.prototype._createMarker,
+    __removeMarker: L.Edit.PolyVerticesEdit.prototype._removeMarker,
+
+    /**
+     * @override
+     */
+    addHooks: function() {
+        var poly = this._poly;
+        poly.setStyle(poly.options.editing);
+        if (this._poly._map) {
+            if (!this._markerGroup) {
+                this._enableDragging();
+                this._initMarkers();
+                // Create center marker
+                this._createMoveMarker();
+            }
+            this._poly._map.addLayer(this._markerGroup);
+        }
+    },
+
+    /**
+     * @override
+     */
+    _createMoveMarker: function() {
+        if (L.EditToolbar.Edit.MOVE_MARKERS && (this._poly instanceof L.Polygon)) {
+            this._moveMarker = new L.Marker(this._getShapeCenter(), {
+                icon: this.options.moveIcon
+            });
+            this._moveMarker.on('mousedown', this._delegateToShape, this);
+            this._markerGroup.addLayer(this._moveMarker);
+        }
+    },
+
+    /**
+     * Start dragging through the marker
+     * @param  {L.MouseEvent} evt
+     */
+    _delegateToShape: function(evt) {
+        var poly = this._shape || this._poly;
+        var marker = evt.target;
+        poly.fire('mousedown', L.Util.extend(evt, {
+            containerPoint: L.DomUtil.getPosition(marker._icon)
+                .add(poly._map._getMapPanePos())
+        }));
+    },
+
+    /**
+     * Polygon centroid
+     * @return {L.LatLng}
+     */
+    _getShapeCenter: function() {
+        return this._poly.getCenter();
+    },
+
+    /**
+     * @override
+     */
+    removeHooks: function() {
+        var poly = this._poly;
+        poly.setStyle(poly.options.original);
+        if (this._poly._map) {
+            this._poly._map.removeLayer(this._markerGroup);
+            this._disableDragging();
+            delete this._markerGroup;
+            delete this._markers;
+        }
+    },
+
+    /**
+     * Adds drag start listeners
+     */
+    _enableDragging: function() {
+        if (!this._poly.dragging) {
+            this._poly.dragging = new L.Handler.PathDrag(this._poly);
+        }
+        this._poly.dragging.enable();
+        this._poly
+            .on('dragstart', this._onStartDragFeature, this)
+            .on('dragend', this._onStopDragFeature, this);
+    },
+
+    /**
+     * Removes drag start listeners
+     */
+    _disableDragging: function() {
+        this._poly.dragging.disable();
+        this._poly
+            .off('dragstart', this._onStartDragFeature, this)
+            .off('dragend', this._onStopDragFeature, this);
+    },
+
+    /**
+     * Start drag
+     * @param  {L.MouseEvent} evt
+     */
+    _onStartDragFeature: function(evt) {
+        this._poly._map.removeLayer(this._markerGroup);
+        this._poly.fire('editstart');
+    },
+
+    /**
+     * Dragging stopped, apply
+     * @param  {L.MouseEvent} evt
+     */
+    _onStopDragFeature: function(evt) {
+        // var polygon = this._poly;
+        for (var i = 0, len = this._latlngs.length; i < len; i++) {
+            // update marker
+            var marker = this._markers[i];
+            marker.setLatLng(this._latlngs[i]);
+
+            // this one's needed to update the path
+            marker._origLatLng = this._latlngs[i];
+            if (marker._middleLeft) {
+                marker._middleLeft.setLatLng(this._getMiddleLatLng(marker._prev, marker));
+            }
+            if (marker._middleRight) {
+                marker._middleRight.setLatLng(this._getMiddleLatLng(marker, marker._next));
+            }
+        }
+
+        // show vertices
+        this._poly._map.addLayer(this._markerGroup);
+        L.Edit.SimpleShape.prototype._updateMoveMarker.call(this);
+        this._fireEdit();
+    },
+
+    /**
+     * Copy from simple shape
+     */
+    _updateMoveMarker: L.Edit.SimpleShape.prototype._updateMoveMarker,
+
+    /**
+     * @override
+     */
+    _createMarker: function(latlng, index) {
+        var marker = this.__createMarker(latlng, index);
+        marker
+            .on('dragstart', this._hideMoveMarker, this)
+            .on('dragend', this._showUpdateMoveMarker, this);
+        return marker;
+    },
+
+    /**
+     * @override
+     */
+    _removeMarker: function(marker) {
+        this.__removeMarker(marker);
+        marker
+            .off('dragstart', this._hideMoveMarker, this)
+            .off('dragend', this._showUpdateMoveMarker, this);
+    },
+
+    /**
+     * Hide move marker while dragging a vertex
+     */
+    _hideMoveMarker: function() {
+        if (this._moveMarker) {
+            this._markerGroup.removeLayer(this._moveMarker);
+        }
+    },
+
+    /**
+     * Show and update move marker
+     */
+    _showUpdateMoveMarker: function() {
+        if (this._moveMarker) {
+            this._markerGroup.addLayer(this._moveMarker);
+            this._updateMoveMarker();
+        }
+    }
+
+});
+
+/**
+ * @type {L.DivIcon}
+ */
+L.Edit.PolyVerticesEdit.prototype.options.moveIcon = new L.DivIcon({
+    iconSize: new L.Point(8, 8),
+    className: 'leaflet-div-icon leaflet-editing-icon leaflet-edit-move'
+});
+
+/**
+ * Override this if you don't want the central marker
+ * @type {Boolean}
+ */
+L.Edit.PolyVerticesEdit.mergeOptions({
+    moveMarker: false
+});
+/* FileSaver.js
+ * A saveAs() FileSaver implementation.
+ * 1.3.2
+ * 2016-06-16 18:25:19
+ *
+ * By Eli Grey, http://eligrey.com
+ * License: MIT
+ *   See https://github.com/eligrey/FileSaver.js/blob/master/LICENSE.md
+ */
+
+/*global self */
+/*jslint bitwise: true, indent: 4, laxbreak: true, laxcomma: true, smarttabs: true, plusplus: true */
+
+/*! @source http://purl.eligrey.com/github/FileSaver.js/blob/master/FileSaver.js */
+
+
+L.Util.saveAs = (function(view) {
+    
+    // IE <10 is explicitly unsupported
+    if (typeof view === 'undefined' || typeof navigator !== 'undefined' && /MSIE [1-9]\./.test(navigator.userAgent)) {
+        return;
+    }
+    
+    var is_safari = /constructor/i.test(view.HTMLElement) || view.safari;
+    var is_chrome_ios = /CriOS\/[\d]+/.test(navigator.userAgent);
+    var force_saveable_type = 'application/octet-stream';
+    var arbitrary_revoke_timeout = 1000 * 40; // in ms
+
+    // only get URL when necessary in case Blob.js hasn't overridden it yet
+    function get_URL () {
+        return view.URL || view.webkitURL || view;
+    }
+    
+    function throw_outside(ex) {
+        (view.setImmediate || view.setTimeout)(function() {
+            throw ex;
+        }, 0);
+    }
+        
+    function revoke(file) {
+        var revoker = function() {
+            if (typeof file === 'string') { // file is an object URL
+                get_URL().revokeObjectURL(file);
+            } else { // file is a File
+                file.remove();
+            }
+        };
+        setTimeout(revoker, arbitrary_revoke_timeout);
+    }
+
+    function dispatch(filesaver, event_types, event) {
+        event_types = [].concat(event_types);
+        var i = event_types.length;
+        while (i--) {
+            var listener = filesaver['on' + event_types[i]];
+            if (typeof listener === 'function') {
+                try {
+                    listener.call(filesaver, event || filesaver);
+                } catch (ex) {
+                    throw_outside(ex);
+                }
+            }
+        }
+    }
+
+    function auto_bom(blob) {
+        // prepend BOM for UTF-8 XML and text/* types (including HTML)
+        // note: your browser will automatically convert UTF-16 U+FEFF to EF BB BF
+        if (/^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(blob.type)) {
+            return new Blob([String.fromCharCode(0xFEFF), blob], { type: blob.type });
+        }
+        return blob;
+    }
+
+    function FileSaver(blob, name, no_auto_bom) {
+        if (!no_auto_bom) {
+            blob = auto_bom(blob);
+        }
+        // First try a.download, then web filesystem, then object URLs
+        var filesaver = this;
+        var type = blob.type;
+        var force = type === force_saveable_type;
+        var object_url;
+        
+        function dispatch_all() {
+            dispatch(filesaver, 'writestart progress write writeend'.split(' '));
+        }
+        // on any filesys errors revert to saving with object URLs
+            
+        filesaver.readyState = filesaver.INIT;
+
+        // Test a.download
+        // the Blob API is fundamentally broken as there is no 'downloadfinished' event to subscribe to
+        var doc = view.document;
+        var save_link = doc.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+        var can_use_save_link = 'download' in save_link;
+        if (can_use_save_link) {
+            object_url = get_URL().createObjectURL(blob);
+            setTimeout(function() {
+                save_link.href = object_url;
+                save_link.download = name;
+                var event = new MouseEvent('click');
+                save_link.dispatchEvent(event);
+                dispatch_all();
+                revoke(object_url);
+                filesaver.readyState = filesaver.DONE;
+            });
+            return;
+        }
+
+        // Test FileReader
+        if ((is_chrome_ios || (force && is_safari)) && view.FileReader) {
+            // Safari doesn't allow downloading of blob urls
+            var reader = new FileReader();
+            reader.onloadend = function() {
+                var url = is_chrome_ios ? reader.result : reader.result.replace(/^data:[^;]*;/, 'data:attachment/file;');
+                var popup = view.open(url, '_blank');
+                if (!popup) view.location.href = url;
+                url = undefined; // release reference before dispatching
+                filesaver.readyState = filesaver.DONE;
+                dispatch_all();
+            };
+            reader.readAsDataURL(blob);
+            filesaver.readyState = filesaver.INIT;
+            return;
+        }
+        
+        // don't create more object URLs than needed
+        if (!object_url) {
+            object_url = get_URL().createObjectURL(blob);
+        }
+        if (force) {
+            view.location.href = object_url;
+        } else {
+            var opened = view.open(object_url, '_blank');
+            if (!opened) {
+                // Apple does not allow window.open, see https://developer.apple.com/library/safari/documentation/Tools/Conceptual/SafariExtensionGuide/WorkingwithWindowsandTabs/WorkingwithWindowsandTabs.html
+                view.location.href = object_url;
+            }
+        }
+        filesaver.readyState = filesaver.DONE;
+        dispatch_all();
+        revoke(object_url);
+       
+    }
+
+    // exported function
+    function saveAs(blob, name, no_auto_bom) {
+        return new FileSaver(blob, name || blob.name || 'download', no_auto_bom);
+    }
+
+    // IE 10+ (native saveAs)
+    if (typeof navigator !== 'undefined' && navigator.msSaveOrOpenBlob) {
+        return function(blob, name, no_auto_bom) {
+            name = name || blob.name || 'download';
+
+            if (!no_auto_bom) {
+                blob = auto_bom(blob);
+            }
+            return navigator.msSaveOrOpenBlob(blob, name);
+        };
+    }
+
+    var FS_proto = FileSaver.prototype;
+    FS_proto.abort = function() {};
+    FS_proto.readyState = FS_proto.INIT = 0;
+    FS_proto.WRITING = 1;
+    FS_proto.DONE = 2;
+
+    FS_proto.error =
+        FS_proto.onwritestart =
+        FS_proto.onprogress =
+        FS_proto.onwrite =
+        FS_proto.onabort =
+        FS_proto.onerror =
+        FS_proto.onwriteend =
+        null;
+
+    return saveAs;
+}(
+    typeof self !== 'undefined' && self ||
+    typeof window !== 'undefined' && window 
+));
+
 angular.module('opengate-angular-js')
     .service('$provisionDatastreamsUtils', [function() {
         

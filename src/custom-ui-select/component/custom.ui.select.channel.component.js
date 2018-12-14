@@ -2,14 +2,14 @@
 
 
 angular.module('opengate-angular-js').controller('customUiSelectChannelController', ['$scope', '$element', '$attrs', '$api', '$q',
-    function ($scope, $element, $attrs, $api, $q) {
+    function($scope, $element, $attrs, $api, $q) {
         var ctrl = this;
         var firstLoad = ctrl.ngRequired || ctrl.required;
         var defaultQuickSearchFields = 'provision.channel.identifier,provision.channel.description';
         ctrl.organization = ctrl.organization === 'LOG.LOADING' && undefined;
         ctrl.channel = ctrl.channel || (ctrl.ngModel && ([_getChannel(ctrl.ngModel)]));
 
-        function _getQuickSerachFields(search) {
+        function _getQuickSearchFields(search) {
             var _quickSerachFields = ctrl.quickSearchFields || defaultQuickSearchFields;
             var fields = _quickSerachFields.split(/[,|, ]+/);
             if (!ctrl.organization) {
@@ -18,7 +18,7 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
             var filter = {
                 or: []
             };
-            fields.forEach(function (field) {
+            fields.forEach(function(field) {
                 var _like = {
                     like: {}
                 };
@@ -30,8 +30,8 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
 
         ctrl.ownConfig = {
             builder: $api().channelsSearchBuilder(),
-            filter: function (search) {
-                var filter = _getQuickSerachFields(search);
+            filter: function(search) {
+                var filter = _getQuickSearchFields(search);
 
                 if (!!ctrl.organization) {
                     filter = {
@@ -51,11 +51,11 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
             rootKey: 'channels',
             collection: [],
             customSelectors: $api().channelsSearchBuilder(),
-            processingData: function (result, channels) {
+            processingData: function(result, channels) {
                 if (firstLoad) {
                     var _selectedChannel = ctrl.channel && ctrl.channel.selected && ctrl.channel.selected.length === 1;
                     if (!_selectedChannel && ctrl.organization) {
-                        ctrl.channel = channels.filter(function (channel) {
+                        ctrl.channel = channels.filter(function(channel) {
                             return channel.provision.administration.organization._current.value === ctrl.organization;
                         });
                     }
@@ -75,11 +75,11 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
             }
         };
 
-        ctrl.channelSelected = function ($item, $model) {
+        ctrl.channelSelected = function($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = [];
 
-                angular.forEach(ctrl.channel, function (channelTmp) {
+                angular.forEach(ctrl.channel, function(channelTmp) {
                     identifierTmp.push(channelTmp.provision.administration.identifier._current.value);
                 });
 
@@ -96,7 +96,7 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
             }
         };
 
-        ctrl.channelRemove = function ($item, $model) {
+        ctrl.channelRemove = function($item, $model) {
             if (ctrl.onRemove) {
                 var returnObj = {};
                 returnObj.$item = $item;
@@ -114,9 +114,9 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
         };
 
 
-        ctrl.$onChanges = function (changesObj) {
+        ctrl.$onChanges = function(changesObj) {
             if (changesObj) {
-                Object.keys(changesObj).forEach(function (key) {
+                Object.keys(changesObj).forEach(function(key) {
                     switch (key) {
                         case 'identifier':
                             mapIdentifier(changesObj.identifier.currentValue);
@@ -180,7 +180,7 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
                 }
                 if (ctrl.multiple) {
                     if (angular.isArray(identifier)) {
-                        angular.forEach(identifier, function (idTmp) {
+                        angular.forEach(identifier, function(idTmp) {
                             ctrl.channel.push(_getChannel(idTmp));
                         });
                     }
