@@ -4,7 +4,7 @@
 angular.module('opengate-angular-js').controller('customUiSelectTicketController', ['$scope', '$element', '$attrs', '$api', function($scope, $element, $attrs, $api) {
     var ctrl = this;
     ctrl.ownConfig = {
-        builder: $api().ticketsSearchBuilder(),
+        builder: $api().ticketsSearchBuilder().disableDefaultSorted(),
         filter: function(search) {
             if (search) {
                 return {

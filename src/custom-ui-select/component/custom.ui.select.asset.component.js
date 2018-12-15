@@ -57,7 +57,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
 
 
         ctrl.ownConfig = {
-            builder: $api().assetsSearchBuilder().select(selectBuilder),
+            builder: $api().assetsSearchBuilder().disableDefaultSorted().select(selectBuilder),
             filter: function(search) {
                 var filter;
 
@@ -201,7 +201,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
                                 }
                             });
 
-                            var assetFinder = $api().assetsSearchBuilder().filter({
+                            var assetFinder = $api().assetsSearchBuilder().disableDefaultSorted().filter({
                                 "and": [{
                                     "eq": {
                                         "provision.asset.identifier": result[0].identifier

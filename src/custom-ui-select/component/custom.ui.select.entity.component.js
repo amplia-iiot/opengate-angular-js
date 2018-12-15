@@ -47,7 +47,7 @@ angular.module('opengate-angular-js').controller('customUiSelectEntityController
         }]));
 
         ctrl.ownConfig = {
-            builder: $api().entitiesSearchBuilder().select(selectBuilder),
+            builder: $api().entitiesSearchBuilder().select(selectBuilder).disableDefaultSorted(),
             filter: function(search) {
                 if (search) {
                     return {

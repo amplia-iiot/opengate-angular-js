@@ -40,7 +40,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
         };
 
         ctrl.ownConfig = {
-            builder: $api().subscriptionsSearchBuilder().provisioned(),
+            builder: $api().subscriptionsSearchBuilder().provisioned().disableDefaultSorted(),
             filter: function(search) {
                 var filter;
 

@@ -5,7 +5,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
     function($scope, $element, $attrs, $api, $translate, $doActions, $jsonFinderHelper, jsonPath, _, toastr, Filter) {
         var ctrl = this;
 
-        var deviceBuilder = $api().devicesSearchBuilder();
+        var deviceBuilder = $api().devicesSearchBuilder().disableDefaultSorted();
 
         if (!ctrl.fullInfo) {
             var selectBuilder = $api().newSelectBuilder();
