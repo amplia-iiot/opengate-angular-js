@@ -2,8 +2,14 @@
 
 
 angular.module('opengate-angular-js').controller('customUiSelectEntityController', ['$scope', '$element', '$attrs', '$api',
-    function($scope, $element, $attrs, $api) {
+    function ($scope, $element, $attrs, $api) {
         var ctrl = this;
+
+        var entitiesBuilder = $api().entitiesSearchBuilder();
+
+        if (ctrl.disableDefaultSorted) {
+            entitiesBuilder = entitiesBuilder.disableDefaultSorted();
+        }
 
         var selectBuilder = $api().newSelectBuilder();
         var SE = $api().SE;
@@ -47,16 +53,35 @@ angular.module('opengate-angular-js').controller('customUiSelectEntityController
         }]));
 
         ctrl.ownConfig = {
-            builder: $api().entitiesSearchBuilder().select(selectBuilder).disableDefaultSorted(),
-            filter: function(search) {
+            builder: entitiesBuilder.select(selectBuilder),
+            filter: function (search) {
                 if (search) {
                     return {
-                        'or': [
-                            { 'like': { 'provision.administration.identifier': search } },
-                            { 'like': { 'provision.device.specificType': search } },
-                            { 'like': { 'device.specificType': search } },
-                            { 'like': { 'provision.entity.specificType': search } },
-                            { 'like': { 'provision.device.communicationModules[].specificType': search } }
+                        'or': [{
+                                'like': {
+                                    'provision.administration.identifier': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'provision.device.specificType': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'device.specificType': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'provision.entity.specificType': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'provision.device.communicationModules[].specificType': search
+                                }
+                            }
                         ]
                     };
                 } else {
@@ -68,11 +93,11 @@ angular.module('opengate-angular-js').controller('customUiSelectEntityController
             customSelectors: $api().entitiesSearchBuilder()
         };
 
-        ctrl.entitySelected = function($item, $model) {
+        ctrl.entitySelected = function ($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = ctrl.ngModel || [];
 
-                angular.forEach(ctrl.entity, function(entityTmp) {
+                angular.forEach(ctrl.entity, function (entityTmp) {
                     identifierTmp.push(entityTmp.provision.administration.identifier._current.value);
                 });
 
@@ -89,7 +114,7 @@ angular.module('opengate-angular-js').controller('customUiSelectEntityController
             }
         };
 
-        ctrl.entityRemove = function($item, $model) {
+        ctrl.entityRemove = function ($item, $model) {
             if (ctrl.onRemove) {
                 var returnObj = {};
                 returnObj.$item = $item;
@@ -106,7 +131,7 @@ angular.module('opengate-angular-js').controller('customUiSelectEntityController
             }
         };
 
-        ctrl.$onChanges = function(changesObj) {
+        ctrl.$onChanges = function (changesObj) {
             if (changesObj && changesObj.identifier) {
                 mapIdentifier(changesObj.identifier.currentValue);
             }
@@ -132,12 +157,14 @@ angular.module('opengate-angular-js').controller('customUiSelectEntityController
                     if (angular.isArray(identifier)) {
                         ctrl.entity = [];
 
-                        angular.forEach(identifier, function(idTmp) {
+                        angular.forEach(identifier, function (idTmp) {
                             ctrl.entity.push({
                                 provision: {
                                     administration: {
                                         identifier: {
-                                            _current: { value: idTmp }
+                                            _current: {
+                                                value: idTmp
+                                            }
                                         }
                                     }
                                 }
@@ -149,7 +176,9 @@ angular.module('opengate-angular-js').controller('customUiSelectEntityController
                         provision: {
                             administration: {
                                 identifier: {
-                                    _current: { value: ctrl.identifier }
+                                    _current: {
+                                        value: ctrl.identifier
+                                    }
                                 }
                             }
                         }
@@ -177,7 +206,8 @@ angular.module('opengate-angular-js').component('customUiSelectEntity', {
         label: '<',
         disabled: '<?',
         ngModel: '=?',
-        uiSelectMatchClass: '@?'
+        uiSelectMatchClass: '@?',
+        disableDefaultSorted: '=?'
     }
 
 });

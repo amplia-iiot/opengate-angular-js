@@ -25,13 +25,13 @@ $templateCache.put("custom-ui-select/views/ui.select.icon.html","<div class=\"fo
 $templateCache.put("custom-ui-select/views/ui.select.resourceType.html","<div class=\"form-group no-margin\" ng-if=$ctrl.multiple><label class=custom-ui-select-label>{{\'FORM.LABEL.RESOURCE_TYPE\' | translate }}<field-options required=$ctrl.required multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=resourceType ng-model=$ctrl.resourceType theme=bootstrap title=\"{{ \'FORM.PLACEHOLDER.RESOURCE_TYPE_MULTI\' | translate }}\" custom-ui-select multiple=true on-select=\"$ctrl.resourceTypeSelected($item, $model)\" on-remove=\"$ctrl.resourceTypeRemove($item, $model)\" ng-required=$ctrl.required><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.RESOURCE_TYPE\' | translate }}\" allow-clear=true>{{$item.identifier | translate}}</ui-select-match><ui-select-choices repeat=\"resourceType in $ctrl.ownConfig.collection | filter:$select.search track by $index\"><div><span ng-bind-html=\"resourceType.identifier | translate | highlight: $select.search\"></span></div></ui-select-choices></ui-select></div><div class=\"form-group no-margin\" ng-if=!$ctrl.multiple><label class=custom-ui-select-label>{{\'FORM.LABEL.RESOURCE_TYPE\' | translate }}<field-options required=$ctrl.required multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=resourceType ng-model=$ctrl.resourceType theme=bootstrap title=\"Choose an resourceType\" custom-ui-select multiple=false on-select=\"$ctrl.resourceTypeSelected($item, $model)\" on-remove=\"$ctrl.resourceTypeRemove($item, $model)\" ng-required=$ctrl.required><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.RESOURCE_TYPE\' | translate }}\" allow-clear=true>{{$item.identifier | translate}}</ui-select-match><ui-select-choices repeat=\"resourceType in $ctrl.ownConfig.collection | filter:$select.search track by $index\"><div><span ng-bind-html=\"resourceType.identifier | translate | highlight: $select.search\"></span></div></ui-select-choices></ui-select></div>");
 $templateCache.put("helper/views/custom.ui.select.helper.html","<div class=form-group ng-hide=$ctrl.have_helper_keys ng-transclude=input><label for={{$ctrl.id}}>{{$ctrl.labelText | translate }}<field-options required=$ctrl.required></field-options></label> <input class=form-control name={{$ctrl.name}} type=text id={{$ctrl.id}} ng-model=$ctrl.helperModel ng-required=$ctrl.required> <span class=help-inline ng-show=\"!$ctrl.helperModel && $ctrl.required\">{{$ctrl.labelError}}</span></div><div class=form-group ng-hide=!$ctrl.have_helper_keys><label for={{$ctrl.id}}>{{$ctrl.labelText | translate }}<field-options required=$ctrl.required></field-options></label><ui-select id={{$ctrl.id}} name={{$ctrl.name}} ng-model=$ctrl.helperModel theme=bootstrap title=\"Choose an option\" ng-required=$ctrl.required tagging=$ctrl.helperTagTransform tagging-label=false><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"Choose an option\"><span ng-if=\"$select.selected && $select.selected.key !== \'image\'\">{{$select.selected.value}}</span> <img ng-if=\"$select.selected && $select.selected.key === \'image\'\" src=\"{{ $select.selected.value }}\" style=max-height:30px;></ui-select-match><ui-select-choices repeat=\"parameter.value as (key, parameter) in $ctrl.$helper_keys | filter: $select.search\"><span ng-bind-html=\"parameter.key | highlight: $select.search\"></span>: <small ng-if=\"parameter.key !== \'image\'\" ng-bind-html=\"parameter.value | highlight: $select.search\"></small> <img ng-if=\"parameter.key === \'image\'\" src=\"{{ parameter.value }}\" style=max-height:30px;></ui-select-choices></ui-select></div>");
 $templateCache.put("helper/views/helper.view.html","<div class=\"container col-md-12 col-xs-12\" style=padding-left:0;padding-right:0 ng-transclude></div><div class=\"col-xs-12 col-md-12 text-right no-margin no-padding\"><a class=\"btn btn-default btn-xs ux-txt-info pointer oux-button-margin\" ng-href ng-click=$helper.open() ng-switch=$helper.mode><span ng-switch-when=button><i ng-class=$helper.helperButton aria-hidden=true></i></span> <span ng-switch-when=title>{{$helper.helperTitle}}</span> <span ng-switch-when=title_button><i ng-class=$helper.helperButton aria-hidden=true></i>{{$helper.helperTitle}}</span> <span ng-switch-default><i ng-if=\"!$helper.helperTitle && !$helper.helperButton\" class=\"fa fa-lg fa-search-plus\" title=\"{{ \'FORM.HELPER.TITLE\' | translate }}\" aria-hidden=true></i></span></a></div><script type=text/ng-template id=helper.view.modal.html><div class=\"modal-header\"> <h4 class=\"modal-title\">{{ \'FORM.HELPER.TITLE\' | translate }}</h4> </div> <div class=\"modal-body without-padding-top\"> <uib-accordion close-others=\"true\"> <div uib-accordion-group is-open=\"$ctrl.areaIsOpen\" class=\"area-option\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.areaIsExclusive: false\"> <div uib-accordion-heading>{{ \'FORM.AREAS\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-area on-select-item=\"$ctrl.onSelectAreaKey($item, $model)\" on-remove=\"$ctrl.onDeleteAreaKey()\" area=\"$ctrl.area.selected\" organization=\"$ctrl.area.organization\" multiple=\"false\"> </custom-ui-select-area> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.area}\" ng-click=\"$ctrl.ok(\'area\')\" ng-disabled=\"!$ctrl.helper_keys.area\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.assetIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? (!$ctrl.entityIsExclusive && !$ctrl.assetIsExclusive): false\" class=\"asset-option\"> <div uib-accordion-heading>{{ \'FORM.ASSETS\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-asset on-select-item=\"$ctrl.onSelectAssetKey($item, $model)\" on-remove=\"$ctrl.onDeleteAssetKey()\" asset=\"$ctrl.asset.selected\" multiple=\"false\" specific-type=\"{{$ctrl.specific_type}}\"></custom-ui-select-asset> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.asset}\" ng-click=\"$ctrl.ok(\'asset\')\" ng-disabled=\"!$ctrl.helper_keys.asset\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.mapIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.mapIsExclusive : false\" class=\"map-option\"> <div uib-accordion-heading>Map</div> <div class=\"row\" ng-if=\"$ctrl.mapIsOpen\"> <div class=\"col-xs-12\"> <div class=\"form-group leaflet-container\"> <leaflet id=\"map-marker\" lf-center=\"$ctrl.map.center\" layers=\"$ctrl.map.layers\" controls=\"$ctrl.map.controls\" event-broadcast=\"$ctrl.map.events\" markers=\"$ctrl.map.markers\" width=\"100% \" height=\"300px\"></leaflet> </div> </div> <div class=\"col-xs-12 text-right\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.map}\" ng-click=\"$ctrl.ok(\'map\')\" ng-disabled=\"!$ctrl.helper_keys.map\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.entityIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.entityIsExclusive: false\" class=\"entity-option\"> <div uib-accordion-heading>{{ \'FORM.ENTITY\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-entity on-select-item=\"$ctrl.onSelectEntityKey($item, $model)\" on-remove=\"$ctrl.onDeleteEntityKey()\" entity=\"$ctrl.entity.selected\" multiple=\"false\"> </custom-ui-select-entity> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.entity}\" ng-click=\"$ctrl.ok(\'entity\')\" ng-disabled=\"!$ctrl.helper_keys.entity\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.deviceIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? (!$ctrl.entityIsExclusive && !$ctrl.deviceIsExclusive): false\" class=\"device-option\"> <div uib-accordion-heading>{{ \'FORM.DEVICES\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-device on-select-item=\"$ctrl.onSelectDeviceKey($item, $model)\" on-remove=\"$ctrl.onDeleteDeviceKey()\" device=\"$ctrl.device.selected\" multiple=\"false\" specific-type=\"{{$ctrl.specific_type}}\"> </custom-ui-select-device> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.device}\" ng-click=\"$ctrl.ok(\'device\')\" ng-disabled=\"!$ctrl.helper_keys.device\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.subscriberIsOpen\" class=\"subscriber-option\" ng-hide=\"$ctrl.helper_exclusive ? (!$ctrl.entityIsExclusive && !$ctrl.subscriberIsExclusive): false\"> <div uib-accordion-heading>{{ \'FORM.SUBSCRIBERS\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-subscriber on-select-item=\"$ctrl.onSelectSubscriberKey($item, $model)\" specific-type=\"{{$ctrl.specific_type}}\" organization=\"{{$ctrl.organization}}\" channel=\"{{$ctrl.channel}}\" exclude-devices=\"$ctrl.exclude_devices\" on-remove=\"$ctrl.onDeleteSubscriberKey()\" entity=\"$ctrl.subscriber.selected\" multiple=\"false\"> </custom-ui-select-subscriber> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.subscriber}\" ng-click=\"$ctrl.ok(\'subscriber\')\" ng-disabled=\"!$ctrl.helper_keys.subscriber\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.subscriptionIsOpen\" class=\"subscription-option\" ng-hide=\"$ctrl.helper_exclusive ? (!$ctrl.entityIsExclusive && !$ctrl.subscriptionIsExclusive): false\"> <div uib-accordion-heading>{{ \'FORM.SUBSCRIPTIONS\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-subscription on-select-item=\"$ctrl.onSelectSubscriptionKey($item, $model)\" specific-type=\"{{$ctrl.specific_type}}\" organization=\"{{$ctrl.organization}}\" channel=\"{{$ctrl.channel}}\" exclude-devices=\"$ctrl.exclude_devices\" on-remove=\"$ctrl.onDeleteSubscriptionKey()\" entity=\"$ctrl.subscription.selected\" multiple=\"false\"> </custom-ui-select-subscription> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.subscription}\" ng-click=\"$ctrl.ok(\'subscription\')\" ng-disabled=\"!$ctrl.helper_keys.subscription\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.datastreamIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.datastreamIsExclusive: false\" class=\"datastream-option\"> <div uib-accordion-heading>{{ \'FORM.DATASTREAM\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-datastream on-select-item=\"$ctrl.onSelectDatastreamKey($item, $model)\" on-remove=\"$ctrl.onDeleteDatastreamKey()\" datastream=\"$ctrl.datastream.selected\" multiple=\"false\"> </custom-ui-select-datastream> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.datastream}\" ng-click=\"$ctrl.ok(\'datastream\')\" ng-disabled=\"!$ctrl.helper_keys.datastream\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.domainIsOpen\" class=\"domain-option\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.domainIsExclusive: false\"> <div uib-accordion-heading>{{ \'FORM.DOMAINS\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-domain on-select-item=\"$ctrl.onSelectDomainKey($item, $model)\" on-remove=\"$ctrl.onDeleteDomainKey()\" domain=\"$ctrl.domain.selected\" multiple=\"false\"> </custom-ui-select-domain> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.domain}\" ng-click=\"$ctrl.ok(\'domain\')\" ng-disabled=\"!$ctrl.helper_keys.domain\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.bundleIsOpen\" class=\"bundle-option\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.bundleIsExclusive: false\"> <div uib-accordion-heading>{{ \'FORM.BUNDLES\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-bundle on-select-item=\"$ctrl.onSelectBundleKey($item, $model)\" on-remove=\"$ctrl.onDeleteBundleKey()\" bundle=\"$ctrl.bundle.selected\" multiple=\"false\"> </custom-ui-select-bundle> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.bundle}\" ng-click=\"$ctrl.ok(\'bundle\')\" ng-disabled=\"!$ctrl.helper_keys.bundle\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.imageIsOpen\" class=\"image-option\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.imageIsExclusive: false\"> <div uib-accordion-heading>{{ \'FORM.IMAGE\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-12 col-md-8\"> <div name=\"image\" ng-if=\"!$ctrl.helper_keys.image && !$ctrl.helper_keys.image.image\" ngf-drop=\"$ctrl.imageSelected($file)\" ng-model=\"$ctrl.image\" ngf-max-size=\"1MB\" ngf-select=\"$ctrl.imageSelected($file)\" class=\"drop-box pointer\" ngf-drag-over-class=\"\'dragover\'\" ngf-multiple=\"false\" ng-required=\"$ctrl.helper_keys.image\" ngf-accept=\"\'image/*\'\" ngf-pattern=\"\'image/*\'\">{{ \'FORM.DRAG_DROP\' | translate }} <br>{{ \'FORM.MAX_SIZE\' | translate }}</div> <img ng-if=\"$ctrl.helper_keys.image && $ctrl.helper_keys.image.image\" src=\"{{ $ctrl.helper_keys.image.image }}\" style=\"max-height:200px;\" name=\"image\" /> </div> <div class=\"col-xs-12 col-md-4\"> <button id=\"idRemoveFileLink\" ng-if=\"$ctrl.helper_keys.image && $ctrl.helper_keys.image.image\" ng-click=\"$ctrl.removeDataFile()\" class=\"btn btn-warning ux-txt-warning pointer\"> <i class=\"fa fa-trash\" aria-hidden=\"true\"></i> {{ \'BUTTON.TITLE.REMOVE\' | translate }}</button> <a ng-if=\"$ctrl.helper_exclusive\" class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.bundle}\" ng-click=\"$ctrl.ok(\'bundle\')\" ng-disabled=\"!$ctrl.helper_keys.bundle\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.organizationIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.organizationIsExclusive: false\" class=\"organization-option\"> <div uib-accordion-heading>{{ \'FORM.ORGANIZATION\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-organization on-select-item=\"$ctrl.onSelectOrganization($item, $model)\" on-remove=\"$ctrl.onDeleteOrganization()\" organization=\"$ctrl.organizationC.selected\" multiple=\"false\"></custom-ui-select-organization> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.organization}\" ng-click=\"$ctrl.ok(\'organization\')\" ng-disabled=\"!$ctrl.helper_keys.organization\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.channelIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.channelIsExclusive: false\" class=\"channel-option\"> <div uib-accordion-heading>{{ \'FORM.CHANNEL\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-channel on-select-item=\"$ctrl.onSelectChannel($item, $model)\" on-remove=\"$ctrl.onDeleteChannel()\" channel=\"$ctrl.channelC.selected\" multiple=\"false\" organization=\"$ctrl.organization\"></custom-ui-select-channel> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.channel}\" ng-click=\"$ctrl.ok(\'channel\')\" ng-disabled=\"!$ctrl.helper_keys.channel\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.serviceGroupIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.serviceGroupIsExclusive: false\" class=\"serviceGroup-option\"> <div uib-accordion-heading>{{ \'FORM.SERVICE_GROUP\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-service-group on-select-item=\"$ctrl.onSelectServiceGroup($item, $model)\" on-remove=\"$ctrl.onDeleteServiceGroup()\" service-group=\"$ctrl.serviceGroupC.selected\" multiple=\"false\"></custom-ui-select-service-group> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.serviceGroup}\" ng-click=\"$ctrl.ok(\'channel\')\" ng-disabled=\"!$ctrl.helper_keys.serviceGroup\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> </uib-accordion> </div> <div class=\"modal-footer\"> <a ng-if=\"!$ctrl.helper_exclusive\" class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.canApply()}\" ng-click=\"$ctrl.ok()\" ng-disabled=\"!$ctrl.canApply()\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> {{\'BUTTON.TITLE.ALL\' | translate }} </a> <button class=\"btn btn-warning\" type=\"button\" ng-click=\"$ctrl.cancel()\">{{\'BUTTON.TITLE.CANCEL\' | translate}}</button> </div></script>");
-$templateCache.put("schema-form/views/schema.form.asset.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-asset label=form.title specific-type={{form.specificType}} on-select-item=\"evalExpr(form.onselectitem, {$item: $item, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $item, $model: $model})\" ng-model=$$value$$ placeholder=\"{{form.placeholder || \'FORM.PLACEHOLDER.ELEMENT\' | translate }}\" identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll ui-select-match-class=form.uiSelectMatchClass asset=form.dummy ng-required=form.required actions=form.actions oql={{form.oql}} quick-search-fields={{form.quickSearchFields}} disabled=\"form.readonly || form.disabled\"></custom-ui-select-asset></div>");
+$templateCache.put("schema-form/views/schema.form.asset.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-asset label=form.title specific-type={{form.specificType}} on-select-item=\"evalExpr(form.onselectitem, {$item: $item, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $item, $model: $model})\" ng-model=$$value$$ placeholder=\"{{form.placeholder || \'FORM.PLACEHOLDER.ELEMENT\' | translate }}\" identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll ui-select-match-class=form.uiSelectMatchClass asset=form.dummy ng-required=form.required actions=form.actions oql={{form.oql}} quick-search-fields={{form.quickSearchFields}} disabled=\"form.readonly || form.disabled\" disable-default-sorted=form.disableDefaultSorted></custom-ui-select-asset></div>");
 $templateCache.put("schema-form/views/schema.form.certificate.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-certificate label=form.title on-select-item=\"evalExpr(form.onselectitem, {$item: $item, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $item, $model: $model})\" certificate=form.dummy identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll ng-model=$$value$$ ng-required=form.required ui-select-match-class=form.uiSelectMatchClass disabled=\"form.readonly || form.disabled\"></custom-ui-select-certificate></div>");
 $templateCache.put("schema-form/views/schema.form.channel.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-channel label=form.title on-select-item=\"evalExpr(form.onselectitem, {$item: $item, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $item, $model: $model})\" channel=form.dummy identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll ng-model=$$value$$ organization=evalInScope(form.organization) ng-required=form.required ui-select-match-class=form.uiSelectMatchClass disabled=\"form.readonly || form.disabled\"></custom-ui-select-channel></div>");
 $templateCache.put("schema-form/views/schema.form.datastream.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-datastream label=form.title on-select-item=\"evalExpr(form.onselectitem, {$item: $$value$$, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $$value$$, $model: $model})\" ng-model=$$value$$ datastream=form.dummy identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll ng-required=form.required ui-select-match-class=form.uiSelectMatchClass disabled=\"form.readonly || form.disabled\"></custom-ui-select-datastream></div>");
-$templateCache.put("schema-form/views/schema.form.device.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-device label=form.title specific-type={{form.specificType}} on-select-item=\"evalExpr(form.onselectitem, {$item: $item, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $item, $model: $model})\" identifier=$$value$$ multiple=form.multiple oql={{form.oql}} quick-search-fields={{form.quickSearchFields}} sf-field-model=replaceAll device=form.dummy ng-model=$$value$$ full-info=form.fullInfo ng-required=form.required ui-select-match-class=form.uiSelectMatchClass actions=form.actions disabled=\"form.readonly || form.disabled\"></custom-ui-select-device></div>");
+$templateCache.put("schema-form/views/schema.form.device.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-device label=form.title specific-type={{form.specificType}} on-select-item=\"evalExpr(form.onselectitem, {$item: $item, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $item, $model: $model})\" identifier=$$value$$ multiple=form.multiple oql={{form.oql}} quick-search-fields={{form.quickSearchFields}} sf-field-model=replaceAll device=form.dummy ng-model=$$value$$ full-info=form.fullInfo ng-required=form.required ui-select-match-class=form.uiSelectMatchClass actions=form.actions disabled=\"form.readonly || form.disabled\" disable-default-sorted=form.disableDefaultSorted></custom-ui-select-device></div>");
 $templateCache.put("schema-form/views/schema.form.domain.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-domain label=form.title on-select-item=\"evalExpr(form.onselectitem, {$item: $$value$$, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $$value$$, $model: $model})\" domain=form.dummy identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll ng-model=$$value$$ ng-required=form.required ui-select-match-class=form.uiSelectMatchClass disabled=\"form.readonly || form.disabled\"></custom-ui-select-domain></div>");
-$templateCache.put("schema-form/views/schema.form.entity.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-entity label=form.title on-select-item=\"evalExpr(form.onselectitem, {$item: $$value$$, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $$value$$, $model: $model})\" entity=form.dummy identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll ng-model=$$value$$ ng-required=form.required ui-select-match-class=form.uiSelectMatchClass disabled=\"form.readonly || form.disabled\"></custom-ui-select-entity></div>");
+$templateCache.put("schema-form/views/schema.form.entity.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-entity label=form.title on-select-item=\"evalExpr(form.onselectitem, {$item: $$value$$, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $$value$$, $model: $model})\" entity=form.dummy identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll ng-model=$$value$$ ng-required=form.required ui-select-match-class=form.uiSelectMatchClass disabled=\"form.readonly || form.disabled\" disable-default-sorted=form.disableDefaultSorted></custom-ui-select-entity></div>");
 $templateCache.put("schema-form/views/schema.form.hardware.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-hardware label=form.title on-select-item=\"evalExpr(form.onselectitem, {$item: $item, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $item, $model: $model})\" hardware=form.dummy identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll ng-model=$$value$$ title=\"{{form.title | translate }}\" ng-required=form.required ui-select-match-class=form.uiSelectMatchClass full-result=form.fullResult disabled=\"form.readonly || form.disabled\"></custom-ui-select-hardware></div>");
 $templateCache.put("schema-form/views/schema.form.helper.boolean.template.html","<div class=form-group><div class=checkbox ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\"><label><input type=checkbox id=$$value$$ name=$$value$$ ng-model=$$value$$ sf-field-model=replaceAll sf-changed=form ng-model-options=form.ngModelOptions schema-validate=form ng-disabled=\"form.readonly || form.disabled\"> <span class=checkbox-material><span class=check></span></span> <span ng-bind-html=form.title class=text-left></span></label></div><div class=help-inline sf-message=form.description ng-bind-html=form.description></div></div>");
 $templateCache.put("schema-form/views/schema.form.helper.checkboxes.template.html","<div class=\"{{form.schema?form.schema.htmlClass:\'\'}}\"><div class=form-group sf-array=form ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\"><label>{{ form.title }}</label><br><div class=checkbox ng-if=form.titleMap ng-repeat=\"val in titleMapValues track by $index\"><label><input type=checkbox id=$$value$$ ng-disabled=\"form.readonly || form.disabled\" sf-changed=form name=$$value$$ ng-model=titleMapValues[$index]> <span class=checkbox-material><span class=check></span></span> <span ng-bind-html=form.titleMap[$index].name class=text-left></span></label></div><div ng-if=form.description class=help-inline ng-bind-html=form.description></div></div></div>");
@@ -44,7 +44,7 @@ $templateCache.put("schema-form/views/schema.form.map.template.html","<div ng-cl
 $templateCache.put("schema-form/views/schema.form.ogtypelist.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-ogtype-list label=form.title path={{form.path}} placeholder=\"{{form.placeholder || \'FORM.PLACEHOLDER.ELEMENT\' | translate }}\" on-select-item=\"evalExpr(form.onselectitem, {$item: $item, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $item, $model: $model})\" ng-model=$$value$$ identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll ui-select-match-class=form.uiSelectMatchClass element=form.dummy ng-required=form.required disabled=\"form.readonly || form.disabled\"></custom-ui-select-ogtype-list></div>");
 $templateCache.put("schema-form/views/schema.form.organization.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-organization label=form.title on-select-item=\"evalExpr(form.onselectitem, {$item: $$value$$, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $$value$$, $model: $model})\" organization=form.dummy identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll ng-model=$$value$$ ng-required=form.required ui-select-match-class=form.uiSelectMatchClass disabled=\"form.readonly || form.disabled\"></custom-ui-select-organization></div>");
 $templateCache.put("schema-form/views/schema.form.serviceGroup.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-service-group label=form.title on-select-item=\"evalExpr(form.onselectitem, {$item: $$value$$, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $$value$$, $model: $model})\" service-group=form.dummy identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll ng-model=$$value$$ ng-required=form.required ui-select-match-class=form.uiSelectMatchClass entity-type=form.entityType disabled=\"form.readonly || form.disabled\"></custom-ui-select-service-group></div>");
-$templateCache.put("schema-form/views/schema.form.subscription.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-subscription label=form.title specific-type={{form.specificType}} on-select-item=\"evalExpr(form.onselectitem, {$item: $item, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $item, $model: $model})\" identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll entity=form.dummy ng-model=$$value$$ placeholder=\"{{form.placeholder || \'FORM.PLACEHOLDER.ELEMENT\' | translate }}\" title=\"{{form.title || \'ENTITY.SUBSCRIPTION\' | translate }}\" ng-required=form.required exclude-devices=form.excludeDevices organization={{form.organization}} channel={{form.channel}} oql={{form.oql}} quick-search-fields={{form.quickSearchFields}} ui-select-match-path={{form.uiSelectMatchPath}} ui-select-match-class={{form.uiSelectMatchClass}} actions=form.actions disabled=\"form.readonly || form.disabled\"></custom-ui-select-subscription></div>");
+$templateCache.put("schema-form/views/schema.form.subscription.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-subscription label=form.title specific-type={{form.specificType}} on-select-item=\"evalExpr(form.onselectitem, {$item: $item, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $item, $model: $model})\" identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll entity=form.dummy ng-model=$$value$$ placeholder=\"{{form.placeholder || \'FORM.PLACEHOLDER.ELEMENT\' | translate }}\" title=\"{{form.title || \'ENTITY.SUBSCRIPTION\' | translate }}\" ng-required=form.required exclude-devices=form.excludeDevices organization={{form.organization}} channel={{form.channel}} oql={{form.oql}} quick-search-fields={{form.quickSearchFields}} ui-select-match-path={{form.uiSelectMatchPath}} ui-select-match-class={{form.uiSelectMatchClass}} actions=form.actions disabled=\"form.readonly || form.disabled\" disable-default-sorted=form.disableDefaultSorted></custom-ui-select-subscription></div>");
 $templateCache.put("window-time-select/views/datetime.select.view.html","<p class=\"datetime-container input-group form-group no-margin\"><input readonly type=text class=\"form-control text-left no-margin\" ng-model=rawdata ng-required=required ng-disabled=ngDisabled button-bar=customButtonBar ng-click=openCalendar() datetime-picker={{visibleFormat}} is-open=calendarOpen datepicker-options=pickerOptions.datePicker timepicker-options=pickerOptions.timePicker popup-placement=\"auto top-right\" enable-date=enableDate enable-time=enableTime datepicker-append-to-body=true placeholder={{placeholder}} ng-change=changedRawdata()> <span class=input-group-btn><button class=\"btn btn-default no-padding fa\" ng-class=\"{\'fa-calendar\' : enableDate, \'fa-clock-o\' : !enableDate && enableTime}\" ng-click=openCalendar() aria-hidden=true></button></span></p>");
 $templateCache.put("window-time-select/views/window-time.select.view.html","<div permission permission-only=\"\'dateFilter\'\" class=window-time-container><button type=button class=\"btn btn-xs no-margin\" ng-class=oneDayClass ng-click=oneDay() translate>BUTTON.TITLE.LAST_DAY</button> <button type=button class=\"btn btn-xs no-margin\" ng-class=oneWeekClass ng-click=oneWeek() translate=BUTTON.TITLE.LAST_NUMBER_DAY translate-values=\"{ number: \'7\' }\"></button> <button type=button class=\"btn btn-xs no-margin\" ng-class=oneMonthClass ng-click=oneMonth() translate=BUTTON.TITLE.LAST_NUMBER_DAY translate-values=\"{ number: \'30\' }\"></button> <button type=button class=\"btn btn-xs no-margin\" ng-class=customClass ng-click=custom() translate>BUTTON.TITLE.CUSTOM</button> <button type=button class=\"btn btn-xs no-margin btn-info\" ng-if=filterApplied ng-click=clear() translate>BUTTON.TITLE.CLEAR</button><div ng-if=customEnabled class=\"window-time-body panel panel-body\"><div class=col-xs-12><div class=row><div class=\"col-xs-6 text-left\"><label translate>BUTTON.TITLE.CUSTOM</label></div><div class=\"col-xs-6 text-right\"><button type=button class=\"btn btn-xs oux-button-margin btn-success\" ng-disabled=\"!!errorCustomWindow || fromCalendarOpen || toCalendarOpen\" ng-click=applyCustom() translate>BUTTON.TITLE.APPLY</button></div></div><div class=row><div class=\"col-xs-12 col-md-2 text-left\"><label class=control-label><i class=\"fa fa-calendar\" aria-hidden=true></i> {{ \'FORM.LABEL.FROM\' | translate }}: {{fromDate | date:\'fullDate\'}}</label></div><div class=\"col-xs-12 col-md-4\"><input readonly type=text class=\"form-control text-left no-margin\" ng-model=date.from button-bar=customButtonBar ng-click=openCalendarFrom() ng-required=true datetime-picker={{format}} is-open=fromCalendarOpen datepicker-options=fromOptions.datePicker timepicker-options=fromOptions.timePicker when-closed=fromChange(args) popup-placement=\"auto top-right\" datepicker-append-to-body=true></div><div class=\"col-xs-12 col-md-2 text-left\"><label class=control-label><i class=\"fa fa-calendar\" aria-hidden=true></i> {{ \'FORM.LABEL.TO\' | translate }}: {{fromDate | date:\'fullDate\'}}</label></div><div class=\"col-xs-12 col-md-4\"><input readonly type=text class=\"form-control text-left no-margin\" ng-model=date.to button-bar=customButtonBar ng-click=openCalendarTo() ng-required=true datetime-picker={{format}} is-open=toCalendarOpen datepicker-options=toOptions.datePicker timepicker-options=toOptions.timePicker when-closed=toChange(args) popup-placement=\"auto top-right\" datepicker-append-to-body=true></div></div></div><alert type=danger ng-show=errorCustomWindow class=text-danger style=\"display: block;text-align: center;\"><span ng-bind=errorCustomWindow></span></alert></div></div>");}]);
 
@@ -10943,19 +10943,45 @@ angular.module('opengate-angular-js').component('uiSelectFaStyles', {
 
 
 
-angular.module('opengate-angular-js').controller('customUiSelectTicketController', ['$scope', '$element', '$attrs', '$api', function($scope, $element, $attrs, $api) {
+angular.module('opengate-angular-js').controller('customUiSelectTicketController', ['$scope', '$element', '$attrs', '$api', function ($scope, $element, $attrs, $api) {
     var ctrl = this;
+
+    var ticketsBuilder = $api().ticketsBuilder();
+
+    if (ctrl.disableDefaultSorted) {
+        ticketsBuilder = ticketsBuilder.disableDefaultSorted();
+    }
+
     ctrl.ownConfig = {
-        builder: $api().ticketsSearchBuilder().disableDefaultSorted(),
-        filter: function(search) {
+        builder: ticketsBuilder,
+        filter: function (search) {
             if (search) {
                 return {
-                    'or': [
-                        { 'like': { 'provision.administration.identifier': search } },
-                        { 'like': { 'provision.ticket.specificType': search } },
-                        { 'like': { 'provision.ticket.name': search } },
-                        { 'like': { 'provision.ticket.type': search } },
-                        { 'like': { 'provision.ticket.entity': search } }
+                    'or': [{
+                            'like': {
+                                'provision.administration.identifier': search
+                            }
+                        },
+                        {
+                            'like': {
+                                'provision.ticket.specificType': search
+                            }
+                        },
+                        {
+                            'like': {
+                                'provision.ticket.name': search
+                            }
+                        },
+                        {
+                            'like': {
+                                'provision.ticket.type': search
+                            }
+                        },
+                        {
+                            'like': {
+                                'provision.ticket.entity': search
+                            }
+                        }
                     ]
                 };
             } else {
@@ -10967,14 +10993,14 @@ angular.module('opengate-angular-js').controller('customUiSelectTicketController
         customSelectors: $api().ticketsSearchBuilder()
     };
 
-    ctrl.ticketSelected = function($item, $model) {
+    ctrl.ticketSelected = function ($item, $model) {
         var returnObj = {};
         returnObj.$item = $item;
         returnObj.$model = $model;
         ctrl.onSelectItem(returnObj);
     };
 
-    ctrl.ticketRemove = function($item, $model) {
+    ctrl.ticketRemove = function ($item, $model) {
         var returnObj = {};
         returnObj.$item = $item;
         returnObj.$model = $model;
@@ -10992,7 +11018,8 @@ angular.module('opengate-angular-js').component('customUiSelectTicket', {
         ticket: '=',
         multiple: '<',
         required: '=',
-        uiSelectMatchClass: '@?'
+        uiSelectMatchClass: '@?',
+        disableDefaultSorted: '=?'
     }
 
 });
@@ -11000,24 +11027,13 @@ angular.module('opengate-angular-js').component('customUiSelectTicket', {
 
 
 angular.module('opengate-angular-js').controller('customUiSelectSubscriptionController', ['$scope', '$element', '$attrs', '$api', '$entityExtractor', '$translate', '$doActions', '$jsonFinderHelper', 'jsonPath', 'Filter',
-    function($scope, $element, $attrs, $api, $entityExtractor, $translate, $doActions, $jsonFinderHelper, jsonPath, Filter) {
+    function ($scope, $element, $attrs, $api, $entityExtractor, $translate, $doActions, $jsonFinderHelper, jsonPath, Filter) {
         var ctrl = this;
-        var defaultQuickSearchFields = "provision.device.communicationModules[].subscription.identifier, device.communicationModules[].subscription.identifier";
 
-        function _getQuickSearchFields(search) {
-            var _quickSerachFields = ctrl.quickSearchFields || defaultQuickSearchFields;
-            var fields = _quickSerachFields.split(/[,|, ]+/);
-            var filter = {
-                or: []
-            };
-            fields.forEach(function(field) {
-                var _like = {
-                    like: {}
-                };
-                _like.like[field] = search;
-                filter.or.push(_like);
-            });
-            return filter;
+        var subscriptionsBuilder = $api().subscriptionsSearchBuilder();
+
+        if (ctrl.disableDefaultSorted) {
+            subscriptionsBuilder = subscriptionsBuilder.disableDefaultSorted();
         }
 
         function _getFilter(oql) {
@@ -11026,7 +11042,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             return _filter.and || ([_filter] || []);
         }
 
-        ctrl.getSelectMatch = function(item) {
+        ctrl.getSelectMatch = function (item) {
             if (!item) return item;
             var defaultPath = 'provision.subscription.identifier';
             var path = ctrl.uiSelectMatchPath || defaultPath;
@@ -11038,16 +11054,27 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
         };
 
         ctrl.ownConfig = {
-            builder: $api().subscriptionsSearchBuilder().provisioned().disableDefaultSorted(),
-            filter: function(search) {
+            builder: subscriptionsBuilder.provisioned(),
+            filter: function (search) {
                 var filter;
 
                 if (search) {
                     filter = {
-                        'or': [
-                            { 'like': { 'provision.device.communicationModules[].subscriber.identifier': search } },
-                            { 'like': { 'device.communicationModules[].subscriber.identifier': search } },
-                            { 'like': { 'provision.device.communicationModules[].subscriber.mobile.icc': search } }
+                        'or': [{
+                                'like': {
+                                    'provision.device.communicationModules[].subscriber.identifier': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'device.communicationModules[].subscriber.identifier': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'provision.device.communicationModules[].subscriber.mobile.icc': search
+                                }
+                            }
                         ]
                     };
                 }
@@ -11160,11 +11187,11 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             quickSearchFields: ctrl.quickSearchFields
         };
 
-        ctrl.entitySelected = function($item, $model) {
+        ctrl.entitySelected = function ($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = [];
 
-                angular.forEach(ctrl.entity, function(entityTmp) {
+                angular.forEach(ctrl.entity, function (entityTmp) {
                     identifierTmp.push(ctrl.getSelectMatch(entityTmp));
                 });
 
@@ -11181,7 +11208,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             }
         };
 
-        ctrl.entityRemove = function($item, $model) {
+        ctrl.entityRemove = function ($item, $model) {
             if (ctrl.onRemove) {
                 var returnObj = {};
                 returnObj.$item = $item;
@@ -11202,14 +11229,14 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             return {
                 title: $translate.instant('BUTTON.TITLE.EXECUTE_OPERATION'),
                 icon: 'glyphicon glyphicon-flash',
-                action: function() {
+                action: function () {
                     $doActions.executeModal('executeOperation', {
                         keys: jsonPath(ctrl.entity, '$..' + $jsonFinderHelper.subscription.provisioned.getPath('identifier') + '._current.value') || [],
                         entityType: 'SUBSCRIPTION',
                         operation: operationSelected ? operationSelected.trim().toUpperCase() : undefined
                     });
                 },
-                disable: function() {
+                disable: function () {
                     return !ctrl.entity || ctrl.entity.length === 0;
                 },
                 permissions: 'executeOperation'
@@ -11221,8 +11248,8 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             create: {
                 title: $translate.instant('FORM.LABEL.NEW'),
                 icon: 'glyphicon glyphicon-plus-sign',
-                action: function() {
-                    $doActions.executeModal('createSubscription', {}, function(result) {
+                action: function () {
+                    $doActions.executeModal('createSubscription', {}, function (result) {
                         if (result && result.length > 0) {
                             ctrl.entity = !ctrl.entity ? [] : ctrl.entity;
                             ctrl.entity.push({
@@ -11254,11 +11281,11 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
         ctrl.uiSelectActions = [];
 
         if (!ctrl.actions) {
-            angular.forEach(uiSelectActionsDefinition, function(action) {
+            angular.forEach(uiSelectActionsDefinition, function (action) {
                 ctrl.uiSelectActions.push(action);
             });
         } else {
-            angular.forEach(ctrl.actions, function(action) {
+            angular.forEach(ctrl.actions, function (action) {
                 var finalAction;
                 switch (action.type) {
                     case 'operation':
@@ -11279,7 +11306,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             ctrl.ngRequired = ctrl.required;
         }
 
-        ctrl.$onChanges = function(changesObj) {
+        ctrl.$onChanges = function (changesObj) {
             if (changesObj && changesObj.identifier) {
                 mapIdentifier(changesObj.identifier.currentValue);
             }
@@ -11300,7 +11327,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
                     if (angular.isArray(identifier)) {
                         ctrl.entity = [];
 
-                        angular.forEach(identifier, function(idTmp) {
+                        angular.forEach(identifier, function (idTmp) {
                             ctrl.entity.push({
                                 provision: {
                                     administration: {
@@ -11371,7 +11398,8 @@ angular.module('opengate-angular-js').component('customUiSelectSubscription', {
         uiSelectMatchClass: '@?',
         identifier: '<?',
         ngModel: '=?',
-        uiSelectMatchPath: '@?'
+        uiSelectMatchPath: '@?',
+        disableDefaultSorted: '=?'
     }
 
 });
@@ -12244,8 +12272,14 @@ angular.module('opengate-angular-js').component('customUiSelectHardware', {
 
 
 angular.module('opengate-angular-js').controller('customUiSelectEntityController', ['$scope', '$element', '$attrs', '$api',
-    function($scope, $element, $attrs, $api) {
+    function ($scope, $element, $attrs, $api) {
         var ctrl = this;
+
+        var entitiesBuilder = $api().entitiesSearchBuilder();
+
+        if (ctrl.disableDefaultSorted) {
+            entitiesBuilder = entitiesBuilder.disableDefaultSorted();
+        }
 
         var selectBuilder = $api().newSelectBuilder();
         var SE = $api().SE;
@@ -12289,16 +12323,35 @@ angular.module('opengate-angular-js').controller('customUiSelectEntityController
         }]));
 
         ctrl.ownConfig = {
-            builder: $api().entitiesSearchBuilder().select(selectBuilder).disableDefaultSorted(),
-            filter: function(search) {
+            builder: entitiesBuilder.select(selectBuilder),
+            filter: function (search) {
                 if (search) {
                     return {
-                        'or': [
-                            { 'like': { 'provision.administration.identifier': search } },
-                            { 'like': { 'provision.device.specificType': search } },
-                            { 'like': { 'device.specificType': search } },
-                            { 'like': { 'provision.entity.specificType': search } },
-                            { 'like': { 'provision.device.communicationModules[].specificType': search } }
+                        'or': [{
+                                'like': {
+                                    'provision.administration.identifier': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'provision.device.specificType': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'device.specificType': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'provision.entity.specificType': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'provision.device.communicationModules[].specificType': search
+                                }
+                            }
                         ]
                     };
                 } else {
@@ -12310,11 +12363,11 @@ angular.module('opengate-angular-js').controller('customUiSelectEntityController
             customSelectors: $api().entitiesSearchBuilder()
         };
 
-        ctrl.entitySelected = function($item, $model) {
+        ctrl.entitySelected = function ($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = ctrl.ngModel || [];
 
-                angular.forEach(ctrl.entity, function(entityTmp) {
+                angular.forEach(ctrl.entity, function (entityTmp) {
                     identifierTmp.push(entityTmp.provision.administration.identifier._current.value);
                 });
 
@@ -12331,7 +12384,7 @@ angular.module('opengate-angular-js').controller('customUiSelectEntityController
             }
         };
 
-        ctrl.entityRemove = function($item, $model) {
+        ctrl.entityRemove = function ($item, $model) {
             if (ctrl.onRemove) {
                 var returnObj = {};
                 returnObj.$item = $item;
@@ -12348,7 +12401,7 @@ angular.module('opengate-angular-js').controller('customUiSelectEntityController
             }
         };
 
-        ctrl.$onChanges = function(changesObj) {
+        ctrl.$onChanges = function (changesObj) {
             if (changesObj && changesObj.identifier) {
                 mapIdentifier(changesObj.identifier.currentValue);
             }
@@ -12374,12 +12427,14 @@ angular.module('opengate-angular-js').controller('customUiSelectEntityController
                     if (angular.isArray(identifier)) {
                         ctrl.entity = [];
 
-                        angular.forEach(identifier, function(idTmp) {
+                        angular.forEach(identifier, function (idTmp) {
                             ctrl.entity.push({
                                 provision: {
                                     administration: {
                                         identifier: {
-                                            _current: { value: idTmp }
+                                            _current: {
+                                                value: idTmp
+                                            }
                                         }
                                     }
                                 }
@@ -12391,7 +12446,9 @@ angular.module('opengate-angular-js').controller('customUiSelectEntityController
                         provision: {
                             administration: {
                                 identifier: {
-                                    _current: { value: ctrl.identifier }
+                                    _current: {
+                                        value: ctrl.identifier
+                                    }
                                 }
                             }
                         }
@@ -12419,7 +12476,8 @@ angular.module('opengate-angular-js').component('customUiSelectEntity', {
         label: '<',
         disabled: '<?',
         ngModel: '=?',
-        uiSelectMatchClass: '@?'
+        uiSelectMatchClass: '@?',
+        disableDefaultSorted: '=?'
     }
 
 });
@@ -12502,10 +12560,14 @@ angular.module('opengate-angular-js').component('customUiSelectDomain', {
 
 
 angular.module('opengate-angular-js').controller('customUiSelectDeviceController', ['$scope', '$element', '$attrs', '$api', '$translate', '$doActions', '$jsonFinderHelper', 'jsonPath', '_', 'toastr', 'Filter',
-    function($scope, $element, $attrs, $api, $translate, $doActions, $jsonFinderHelper, jsonPath, _, toastr, Filter) {
+    function ($scope, $element, $attrs, $api, $translate, $doActions, $jsonFinderHelper, jsonPath, _, toastr, Filter) {
         var ctrl = this;
 
-        var deviceBuilder = $api().devicesSearchBuilder().disableDefaultSorted();
+        var deviceBuilder = $api().devicesSearchBuilder();
+
+        if (ctrl.disableDefaultSorted) {
+            deviceBuilder = deviceBuilder.disableDefaultSorted();
+        }
 
         if (!ctrl.fullInfo) {
             var selectBuilder = $api().newSelectBuilder();
@@ -12554,7 +12616,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
             var filter = {
                 or: []
             };
-            fields.forEach(function(field) {
+            fields.forEach(function (field) {
                 var _like = {
                     like: {}
                 };
@@ -12572,7 +12634,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
 
         ctrl.ownConfig = {
             builder: deviceBuilder,
-            filter: function(search) {
+            filter: function (search) {
                 var filter;
 
                 if (search) {
@@ -12632,11 +12694,11 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
             quickSearchFields: ctrl.quickSearchFields
         };
 
-        ctrl.deviceSelected = function($item, $model) {
+        ctrl.deviceSelected = function ($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = [];
 
-                angular.forEach(ctrl.device, function(deviceTmp) {
+                angular.forEach(ctrl.device, function (deviceTmp) {
                     identifierTmp.push(deviceTmp.provision.administration.identifier._current.value);
                 });
 
@@ -12653,7 +12715,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
             }
         };
 
-        ctrl.deviceRemove = function($item, $model) {
+        ctrl.deviceRemove = function ($item, $model) {
             if (ctrl.onRemove) {
                 var returnObj = {};
                 returnObj.$item = $item;
@@ -12671,7 +12733,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
 
         };
 
-        ctrl.editDevice = function(deviceData) {
+        ctrl.editDevice = function (deviceData) {
             var entityId = deviceData.provision.administration.identifier._current.value || deviceData.identifier;
             var deviceFinder = $api().devicesSearchBuilder().filter({
                 "and": [{
@@ -12682,21 +12744,21 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
             });
 
             deviceFinder.build().execute()
-                .then(function(result) {
+                .then(function (result) {
                     if (result.statusCode === 204) {
                         $translate('TOASTR.ENTITY_NOT_FOUND', {
                             identifier: entityId
                         }).
-                        then(function(translatedMessage) {
+                        then(function (translatedMessage) {
                             toastr.error(translatedMessage);
                         });
                     } else {
                         $doActions.executeModal('editDevice', angular.copy(result.data.devices[0]));
                     }
                 })
-                .catch(function(err) {
+                .catch(function (err) {
                     $translate('TOASTR.CANNOT_GET_ENTITY_INFO').
-                    then(function(translatedMessage) {
+                    then(function (translatedMessage) {
                         toastr.error(translatedMessage);
                     });
                 });
@@ -12706,14 +12768,14 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
             return {
                 title: $translate.instant('BUTTON.TITLE.EXECUTE_OPERATION'),
                 icon: 'glyphicon glyphicon-flash',
-                action: function() {
+                action: function () {
                     $doActions.executeModal('executeOperation', {
                         keys: jsonPath(ctrl.device, '$..' + $jsonFinderHelper.provisioned.getPath('identifier') + '._current.value') || [],
                         entityType: 'GATEWAY',
                         operation: operationSelected ? operationSelected.trim().toUpperCase() : undefined
                     });
                 },
-                disable: function() {
+                disable: function () {
                     return !ctrl.device || ctrl.device.length === 0;
                 },
                 permissions: 'executeOperation'
@@ -12725,7 +12787,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
             create: {
                 title: $translate.instant('FORM.LABEL.NEW'),
                 icon: 'glyphicon glyphicon-plus-sign',
-                action: function() {
+                action: function () {
                     var actionData = {};
                     if (!!ctrl.specificType) {
                         actionData = {
@@ -12745,7 +12807,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
                             }
                         };
                     }
-                    $doActions.executeModal('createDevice', actionData, function(result) {
+                    $doActions.executeModal('createDevice', actionData, function (result) {
                         if (result && result.length > 0) {
                             ctrl.device = !ctrl.device ? [] : ctrl.device;
                             ctrl.device.push({
@@ -12776,21 +12838,21 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
                             });
 
                             deviceFinder.build().execute()
-                                .then(function(result) {
+                                .then(function (result) {
                                     if (result.statusCode === 204) {
                                         $translate('TOASTR.ENTITY_NOT_FOUND', {
                                             identifier: result[0].identifier
                                         }).
-                                        then(function(translatedMessage) {
+                                        then(function (translatedMessage) {
                                             toastr.error(translatedMessage);
                                         });
                                     } else {
                                         ctrl.deviceSelected(result.data.devices[0]);
                                     }
                                 })
-                                .catch(function(err) {
+                                .catch(function (err) {
                                     $translate('TOASTR.CANNOT_GET_ENTITY_INFO').
-                                    then(function(translatedMessage) {
+                                    then(function (translatedMessage) {
                                         toastr.error(translatedMessage);
                                     });
                                 });
@@ -12804,11 +12866,11 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
         ctrl.uiSelectActions = [];
 
         if (!ctrl.actions) {
-            angular.forEach(uiSelectActionsDefinition, function(action) {
+            angular.forEach(uiSelectActionsDefinition, function (action) {
                 ctrl.uiSelectActions.push(action);
             });
         } else {
-            angular.forEach(ctrl.actions, function(action) {
+            angular.forEach(ctrl.actions, function (action) {
                 var finalAction;
                 switch (action.type) {
                     case 'operation':
@@ -12825,7 +12887,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
 
         }
 
-        ctrl.$onChanges = function(changesObj) {
+        ctrl.$onChanges = function (changesObj) {
             if (changesObj && changesObj.identifier) {
                 mapIdentifier(changesObj.identifier.currentValue);
             }
@@ -12850,7 +12912,7 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
                     if (angular.isArray(identifier)) {
                         ctrl.device = [];
 
-                        angular.forEach(identifier, function(idTmp) {
+                        angular.forEach(identifier, function (idTmp) {
                             ctrl.device.push({
                                 provision: {
                                     administration: {
@@ -12918,7 +12980,8 @@ angular.module('opengate-angular-js').component('customUiSelectDevice', {
         uiSelectMatchClass: '@?',
         oql: '@',
         quickSearchFields: '@',
-        fullInfo: '=?'
+        fullInfo: '=?',
+        disableDefaultSorted: '=?'
     }
 
 });
@@ -13595,9 +13658,15 @@ angular.module('opengate-angular-js').component('customUiSelectBundle', {
 
 
 angular.module('opengate-angular-js').controller('customUiSelectAssetController', ['$scope', '$element', '$attrs', '$api', '$doActions', '$translate', 'jsonPath', 'Filter',
-    function($scope, $element, $attrs, $api, $doActions, $translate, jsonPath, Filter) {
+    function ($scope, $element, $attrs, $api, $doActions, $translate, jsonPath, Filter) {
 
         var ctrl = this;
+
+        var assetsBuilder = $api().assetsSearchBuilder();
+
+        if (ctrl.disableDefaultSorted) {
+            assetsBuilder = assetsBuilder.disableDefaultSorted();
+        }
 
         var defaultQuickSearchFields = "provision.administration.identifier, provision.asset.specificType, asset.specificType";
 
@@ -13607,7 +13676,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
             var filter = {
                 or: []
             };
-            fields.forEach(function(field) {
+            fields.forEach(function (field) {
                 var _like = {
                     like: {}
                 };
@@ -13650,8 +13719,8 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
 
 
         ctrl.ownConfig = {
-            builder: $api().assetsSearchBuilder().disableDefaultSorted().select(selectBuilder),
-            filter: function(search) {
+            builder: assetsBuilder.select(selectBuilder),
+            filter: function (search) {
                 var filter;
 
                 if (search) {
@@ -13710,11 +13779,11 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
             specificType: ctrl.specificType
         };
 
-        ctrl.assetSelected = function($item, $model) {
+        ctrl.assetSelected = function ($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = [];
 
-                angular.forEach(ctrl.asset, function(assetTmp) {
+                angular.forEach(ctrl.asset, function (assetTmp) {
                     identifierTmp.push(assetTmp.provision.administration.identifier._current.value);
                 });
 
@@ -13731,7 +13800,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
             }
         };
 
-        ctrl.assetRemove = function($item, $model) {
+        ctrl.assetRemove = function ($item, $model) {
             if (ctrl.onRemove) {
                 var returnObj = {};
                 returnObj.$item = $item;
@@ -13752,7 +13821,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
             create: {
                 title: $translate.instant('FORM.LABEL.NEW'),
                 icon: 'glyphicon glyphicon-plus-sign',
-                action: function() {
+                action: function () {
                     var actionData = {};
                     if (!!ctrl.specificType) {
                         actionData = {
@@ -13772,7 +13841,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
                             }
                         };
                     }
-                    $doActions.executeModal('createAsset', actionData, function(result) {
+                    $doActions.executeModal('createAsset', actionData, function (result) {
                         if (result && result.length > 0) {
                             ctrl.asset = !ctrl.asset ? [] : ctrl.asset;
                             ctrl.asset.push({
@@ -13803,21 +13872,21 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
                             });
 
                             assetFinder.build().execute()
-                                .then(function(result) {
+                                .then(function (result) {
                                     if (result.statusCode === 204) {
                                         $translate('TOASTR.ENTITY_NOT_FOUND', {
                                             identifier: result[0].identifier
                                         }).
-                                        then(function(translatedMessage) {
+                                        then(function (translatedMessage) {
                                             toastr.error(translatedMessage);
                                         });
                                     } else {
                                         ctrl.assetSelected(result.data.assets[0], result.data.assets[0]);
                                     }
                                 })
-                                .catch(function(err) {
+                                .catch(function (err) {
                                     $translate('TOASTR.CANNOT_GET_ENTITY_INFO').
-                                    then(function(translatedMessage) {
+                                    then(function (translatedMessage) {
                                         toastr.error(translatedMessage);
                                     });
                                 });
@@ -13831,11 +13900,11 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
         ctrl.uiSelectActions = [];
 
         if (!ctrl.actions) {
-            angular.forEach(uiSelectActionsDefinition, function(action) {
+            angular.forEach(uiSelectActionsDefinition, function (action) {
                 ctrl.uiSelectActions.push(action);
             });
         } else {
-            angular.forEach(ctrl.actions, function(action) {
+            angular.forEach(ctrl.actions, function (action) {
                 var finalAction;
                 switch (action.type) {
                     case 'create':
@@ -13849,7 +13918,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
 
         }
 
-        ctrl.$onChanges = function(changesObj) {
+        ctrl.$onChanges = function (changesObj) {
             if (changesObj && changesObj.identifier) {
                 mapIdentifier(changesObj.identifier.currentValue);
             }
@@ -13874,7 +13943,7 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
                     if (angular.isArray(identifier)) {
                         ctrl.asset = [];
 
-                        angular.forEach(identifier, function(idTmp) {
+                        angular.forEach(identifier, function (idTmp) {
                             ctrl.asset.push({
                                 provision: {
                                     administration: {
@@ -13943,7 +14012,8 @@ angular.module('opengate-angular-js').component('customUiSelectAsset', {
         ngModel: '=?',
         uiSelectMatchClass: '@?',
         oql: '@',
-        quickSearchFields: '@'
+        quickSearchFields: '@',
+        disableDefaultSorted: '=?'
     }
 
 });
