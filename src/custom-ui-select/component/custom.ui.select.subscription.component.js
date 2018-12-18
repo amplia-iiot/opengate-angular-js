@@ -2,7 +2,7 @@
 
 
 angular.module('opengate-angular-js').controller('customUiSelectSubscriptionController', ['$scope', '$element', '$attrs', '$api', '$entityExtractor', '$translate', '$doActions', '$jsonFinderHelper', 'jsonPath', 'Filter',
-    function ($scope, $element, $attrs, $api, $entityExtractor, $translate, $doActions, $jsonFinderHelper, jsonPath, Filter) {
+    function($scope, $element, $attrs, $api, $entityExtractor, $translate, $doActions, $jsonFinderHelper, jsonPath, Filter) {
         var ctrl = this;
 
         var subscriptionsBuilder = $api().subscriptionsSearchBuilder();
@@ -17,7 +17,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             return _filter.and || ([_filter] || []);
         }
 
-        ctrl.getSelectMatch = function (item) {
+        ctrl.getSelectMatch = function(item) {
             if (!item) return item;
             var defaultPath = 'provision.subscription.identifier';
             var path = ctrl.uiSelectMatchPath || defaultPath;
@@ -28,30 +28,31 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             return match[0];
         };
 
+        var defaultQuickSearchFields = "provision.device.communicationModules[].subscription.identifier,device.communicationModules[].subscription.identifier,provision.device.communicationModules[].subscription.mobile.icc";
+
+        function _getQuickSearchFields(search) {
+            var _quickSearchFields = ctrl.quickSearchFields || defaultQuickSearchFields;
+            var fields = _quickSearchFields.split(/[,|, ]+/);
+            var filter = {
+                or: []
+            };
+            fields.forEach(function(field) {
+                var _like = {
+                    like: {}
+                };
+                _like.like[field] = search;
+                filter.or.push(_like);
+            });
+            return filter;
+        }
+
         ctrl.ownConfig = {
             builder: subscriptionsBuilder.provisioned(),
-            filter: function (search) {
+            filter: function(search) {
                 var filter;
 
                 if (search) {
-                    filter = {
-                        'or': [{
-                                'like': {
-                                    'provision.device.communicationModules[].subscriber.identifier': search
-                                }
-                            },
-                            {
-                                'like': {
-                                    'device.communicationModules[].subscriber.identifier': search
-                                }
-                            },
-                            {
-                                'like': {
-                                    'provision.device.communicationModules[].subscriber.mobile.icc': search
-                                }
-                            }
-                        ]
-                    };
+                    filter = _getQuickSearchFields(search);
                 }
 
                 if (!!ctrl.specificType) {
@@ -162,11 +163,11 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             quickSearchFields: ctrl.quickSearchFields
         };
 
-        ctrl.entitySelected = function ($item, $model) {
+        ctrl.entitySelected = function($item, $model) {
             if (ctrl.multiple) {
                 var identifierTmp = [];
 
-                angular.forEach(ctrl.entity, function (entityTmp) {
+                angular.forEach(ctrl.entity, function(entityTmp) {
                     identifierTmp.push(ctrl.getSelectMatch(entityTmp));
                 });
 
@@ -183,7 +184,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             }
         };
 
-        ctrl.entityRemove = function ($item, $model) {
+        ctrl.entityRemove = function($item, $model) {
             if (ctrl.onRemove) {
                 var returnObj = {};
                 returnObj.$item = $item;
@@ -204,14 +205,14 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             return {
                 title: $translate.instant('BUTTON.TITLE.EXECUTE_OPERATION'),
                 icon: 'glyphicon glyphicon-flash',
-                action: function () {
+                action: function() {
                     $doActions.executeModal('executeOperation', {
                         keys: jsonPath(ctrl.entity, '$..' + $jsonFinderHelper.subscription.provisioned.getPath('identifier') + '._current.value') || [],
                         entityType: 'SUBSCRIPTION',
                         operation: operationSelected ? operationSelected.trim().toUpperCase() : undefined
                     });
                 },
-                disable: function () {
+                disable: function() {
                     return !ctrl.entity || ctrl.entity.length === 0;
                 },
                 permissions: 'executeOperation'
@@ -223,8 +224,8 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             create: {
                 title: $translate.instant('FORM.LABEL.NEW'),
                 icon: 'glyphicon glyphicon-plus-sign',
-                action: function () {
-                    $doActions.executeModal('createSubscription', {}, function (result) {
+                action: function() {
+                    $doActions.executeModal('createSubscription', {}, function(result) {
                         if (result && result.length > 0) {
                             ctrl.entity = !ctrl.entity ? [] : ctrl.entity;
                             ctrl.entity.push({
@@ -256,11 +257,11 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
         ctrl.uiSelectActions = [];
 
         if (!ctrl.actions) {
-            angular.forEach(uiSelectActionsDefinition, function (action) {
+            angular.forEach(uiSelectActionsDefinition, function(action) {
                 ctrl.uiSelectActions.push(action);
             });
         } else {
-            angular.forEach(ctrl.actions, function (action) {
+            angular.forEach(ctrl.actions, function(action) {
                 var finalAction;
                 switch (action.type) {
                     case 'operation':
@@ -281,7 +282,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             ctrl.ngRequired = ctrl.required;
         }
 
-        ctrl.$onChanges = function (changesObj) {
+        ctrl.$onChanges = function(changesObj) {
             if (changesObj && changesObj.identifier) {
                 mapIdentifier(changesObj.identifier.currentValue);
             }
@@ -302,7 +303,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
                     if (angular.isArray(identifier)) {
                         ctrl.entity = [];
 
-                        angular.forEach(identifier, function (idTmp) {
+                        angular.forEach(identifier, function(idTmp) {
                             ctrl.entity.push({
                                 provision: {
                                     administration: {
