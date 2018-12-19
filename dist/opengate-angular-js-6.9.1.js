@@ -11053,7 +11053,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             return match[0];
         };
 
-        var defaultQuickSearchFields = "provision.device.communicationModules[].subscription.identifier,device.communicationModules[].subscription.identifier,provision.device.communicationModules[].subscription.mobile.icc";
+        var defaultQuickSearchFields = "provision.device.communicationModules[].subscription.identifier,device.communicationModules[].subscription.identifier";
 
         function _getQuickSearchFields(search) {
             var _quickSearchFields = ctrl.quickSearchFields || defaultQuickSearchFields;
