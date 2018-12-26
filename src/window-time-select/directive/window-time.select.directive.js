@@ -263,7 +263,34 @@ angular.module('opengate-angular-js')
             }
         },
         link: function(scope) {
+            var widgetWindowTimeChangedEvt = scope.$on('widgetWindowTimeChanged', function(event, windowFilter) {
+                var configWindowFilter = windowFilter;
+
+                switch (configWindowFilter.type) {
+                    case 'days':
+                        scope.oneDay(true);
+                        break;
+                    case 'weeks':
+                        scope.oneWeek(true);
+                        break;
+                    case 'months':
+                        scope.oneMonth(true);
+                        break;
+                    case 'custom':
+                        if (configWindowFilter.to && configWindowFilter.from) {
+                            scope.date.to = new Date(configWindowFilter.to);
+                            scope.date.from = new Date(configWindowFilter.from);
+                        }
+                        scope.applyCustom(true);
+                        break;
+                    default:
+                        break;
+                }
+            });
+
             scope.$on('$destroy', function() {
+                widgetWindowTimeChangedEvt();
+
                 scope.fromCalendarOpen = false;
                 scope.toCalendarOpen = false;
 
