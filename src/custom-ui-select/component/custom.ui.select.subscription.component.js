@@ -29,6 +29,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
         };
 
         var defaultQuickSearchFields = "provision.device.communicationModules[].subscription.identifier,device.communicationModules[].subscription.identifier";
+        var defaultSpecificTypeSearchFields = "provision.device.communicationModules[].subscription.specificType, device.communicationModules[].subscription.specificType";
 
         function _getQuickSearchFields(search) {
             var _quickSearchFields = ctrl.quickSearchFields || defaultQuickSearchFields;
@@ -43,6 +44,30 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
                 _like.like[field] = search;
                 filter.or.push(_like);
             });
+            return filter;
+        }
+
+
+        function _getSpecificTypeSearchFields(specificType) {
+            var _specificTypeSearchFields = ctrl.specificTypeSearchFields || defaultSpecificTypeSearchFields;
+            var fields = _specificTypeSearchFields.split(/[,|, ]+/);
+            var filter = {
+                or: [],
+                eq: {}
+            };
+            if (fields.length === 1) {
+                delete filter.or;
+                filter.eq[fields[0]] = specificType;
+            } else {
+                delete filter.eq;
+                fields.forEach(function(field) {
+                    var _eq = {
+                        eq: {}
+                    };
+                    _eq.eq[field] = specificType;
+                    filter.or.push(_eq);
+                });
+            }
             return filter;
         }
 
@@ -66,19 +91,8 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
                         };
                     }
 
-                    filter.and.push({
-                        'or': [{
-                                'eq': {
-                                    'device.communicationModules[].subscription.specificType': ctrl.specificType
-                                }
-                            },
-                            {
-                                'eq': {
-                                    'provision.device.communicationModules[].subscription.specificType': ctrl.specificType
-                                }
-                            }
-                        ]
-                    });
+                    filter.and.push(_getSpecificTypeSearchFields(ctrl.specificType));
+
                 }
 
                 if (ctrl.excludeDevices) {
@@ -363,6 +377,7 @@ angular.module('opengate-angular-js').component('customUiSelectSubscription', {
         organization: '@',
         channel: '@',
         oql: '@',
+        specificTypeSearchFields: '@',
         quickSearchFields: '@',
         multiple: '<',
         ngRequired: '<',
@@ -378,4 +393,4 @@ angular.module('opengate-angular-js').component('customUiSelectSubscription', {
         disableDefaultSorted: '=?'
     }
 
-});
+})
