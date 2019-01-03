@@ -1,10 +1,10 @@
 'use strict';
 
 
-angular.module('opengate-angular-js').controller('customUiSelectTicketController', ['$scope', '$element', '$attrs', '$api', function ($scope, $element, $attrs, $api) {
+angular.module('opengate-angular-js').controller('customUiSelectTicketController', ['$scope', '$element', '$attrs', '$api', function($scope, $element, $attrs, $api) {
     var ctrl = this;
 
-    var ticketsBuilder = $api().ticketsBuilder();
+    var ticketsBuilder = $api().ticketsSearchBuilder();
 
     if (ctrl.disableDefaultSorted) {
         ticketsBuilder = ticketsBuilder.disableDefaultSorted();
@@ -12,7 +12,7 @@ angular.module('opengate-angular-js').controller('customUiSelectTicketController
 
     ctrl.ownConfig = {
         builder: ticketsBuilder,
-        filter: function (search) {
+        filter: function(search) {
             if (search) {
                 return {
                     'or': [{
@@ -51,14 +51,14 @@ angular.module('opengate-angular-js').controller('customUiSelectTicketController
         customSelectors: $api().ticketsSearchBuilder()
     };
 
-    ctrl.ticketSelected = function ($item, $model) {
+    ctrl.ticketSelected = function($item, $model) {
         var returnObj = {};
         returnObj.$item = $item;
         returnObj.$model = $model;
         ctrl.onSelectItem(returnObj);
     };
 
-    ctrl.ticketRemove = function ($item, $model) {
+    ctrl.ticketRemove = function($item, $model) {
         var returnObj = {};
         returnObj.$item = $item;
         returnObj.$model = $model;
