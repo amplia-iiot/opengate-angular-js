@@ -169,12 +169,12 @@ angular.module('uxleaflet')
  * This method updates configuration to improve maps experience in offline config
  */
 .run(["$http", "allNgBaseLayers", "defaultMapOptions", function($http, allNgBaseLayers, defaultMapOptions) {
-    $http.get('//a.tile.openstreetmap.org/0/0/0.png').error(function(data) {
+    $http.get('//a.tile.openstreetmap.org/0/0/0.png').catch(function(data) {
         delete allNgBaseLayers.osm;
         defaultMapOptions.baseLayers.splice(defaultMapOptions.baseLayers.indexOf('osm'), 1);
     });
 
-    // $http.get('//maps.google.com/maps').error(function(data) {
+    // $http.get('//maps.google.com/maps').catch(function(data) {
     //     delete allNgBaseLayers.googleTerrain;
     //     delete allNgBaseLayers.googleHybrid;
     //     delete allNgBaseLayers.googleRoadmap;
@@ -184,12 +184,12 @@ angular.module('uxleaflet')
     // });
     // http://mt0.google.com/vt/lyrs=m&x=0&y=0&z=0
 
-    $http.get('//a.basemaps.cartocdn.com/dark_all/0/0/0.png').error(function(data) {
+    $http.get('//a.basemaps.cartocdn.com/dark_all/0/0/0.png').catch(function(data) {
         delete allNgBaseLayers.dark2;
         defaultMapOptions.baseLayers.splice(defaultMapOptions.baseLayers.indexOf('dark2'), 1);
     });
 
-    $http.get('//maps.opengate.es/osm_tiles/0/0/0.png').error(function(data) {
+    $http.get('//maps.opengate.es/osm_tiles/0/0/0.png').catch(function(data) {
         delete allNgBaseLayers.ogWorld;
         defaultMapOptions.baseLayers.splice(defaultMapOptions.baseLayers.indexOf('ogWorld'), 1);
     });
