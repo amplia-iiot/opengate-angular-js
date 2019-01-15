@@ -10495,7 +10495,7 @@ _wizard.controller('helperDialogModalController', ['$scope', '$uibModalInstance'
         };
 
         //clear evetns
-        $scope.$on('destroy', function() {
+        $scope.$on('$destroy', function() {
             for (var eventToDestroy in events) {
                 eventToDestroy();
             }
@@ -10532,8 +10532,8 @@ _wizard.component('helperDialog', {
 angular.module('opengate-angular-js').controller('helperUiSelectController', ['$scope', '$element', '$attrs', function($scope, $element, $attrs) {
     var $ctrl = this;
     $ctrl.$helper_keys = {};
-    $ctrl.labelError = $ctrl.labelError ? $ctrl.labelError : 'Parameter is required';
-    $ctrl.labelText = $ctrl.labelText ? $ctrl.labelText : 'Parameter';
+    // $ctrl.labelError = $ctrl.labelError ? $ctrl.labelError : 'Parameter is required';
+    // $ctrl.labelText = $ctrl.labelText ? $ctrl.labelText : 'Parameter';
 
     $ctrl.helperTagTransform = function(newTag) {
         return {
@@ -10564,6 +10564,9 @@ angular.module('opengate-angular-js').controller('helperUiSelectController', ['$
     };
 
     $ctrl.$onInit = function() {
+        $ctrl.labelError = $ctrl.labelError ? $ctrl.labelError : 'Parameter is required';
+        $ctrl.labelText = $ctrl.labelText ? $ctrl.labelText : 'Parameter';
+
         if (!$ctrl.helperCtrl.onMulti) {
             $ctrl.helperCtrl.onMulti = [];
         }
@@ -10872,28 +10875,30 @@ angular.module('opengate-angular-js')
 
 
 
-angular.module('opengate-angular-js').controller('uiSelectResourceTypeController', ['$scope', '$element', '$attrs', '$api', function ($scope, $element, $attrs, $api) {
-    var ctrl = this;
-    ctrl.ownConfig = {
-        builder: $api().resourceTypeSearchBuilder(),
-        filter: function (search) {},
-        rootKey: 'resourceType',
-        collection: [],
-        customSelectors: $api().resourceTypeSearchBuilder()
-    };
+angular.module('opengate-angular-js').controller('uiSelectResourceTypeController', ['$scope', '$element', '$attrs', '$api', function($scope, $element, $attrs, $api) {
+    this.$onInit = function() {
+        var ctrl = this;
+        ctrl.ownConfig = {
+            builder: $api().resourceTypeSearchBuilder(),
+            filter: function(search) {},
+            rootKey: 'resourceType',
+            collection: [],
+            customSelectors: $api().resourceTypeSearchBuilder()
+        };
 
-    ctrl.resourceTypeSelected = function ($item, $model) {
-        var returnObj = {};
-        returnObj.$item = $item;
-        returnObj.$model = $model;
-        ctrl.onSelectItem(returnObj);
-    };
+        ctrl.resourceTypeSelected = function($item, $model) {
+            var returnObj = {};
+            returnObj.$item = $item;
+            returnObj.$model = $model;
+            ctrl.onSelectItem(returnObj);
+        };
 
-    ctrl.resourceTypeRemove = function ($item, $model) {
-        var returnObj = {};
-        returnObj.$item = $item;
-        returnObj.$model = $model;
-        ctrl.onRemove(returnObj);
+        ctrl.resourceTypeRemove = function($item, $model) {
+            var returnObj = {};
+            returnObj.$item = $item;
+            returnObj.$model = $model;
+            ctrl.onRemove(returnObj);
+        };
     };
 }]);
 
@@ -10915,38 +10920,40 @@ angular.module('opengate-angular-js').component('uiSelectResourceType', {
 
 
 angular.module('opengate-angular-js').controller('uiSelectFaStylesController', ['$scope', 'faStylesService', '$window', function($scope, faStylesService, $window) {
-    var ctrl = this;
+    this.$onInit = function() {
+        var ctrl = this;
 
-    ctrl.availableIcons = faStylesService.getStyles();
-    var intervalIconsid = -1;
-    ctrl.maxIcons = 50;
-    ctrl.onOpenClose = function(isOpen) {
+        ctrl.availableIcons = faStylesService.getStyles();
+        var intervalIconsid = -1;
         ctrl.maxIcons = 50;
-        $window.clearInterval(intervalIconsid);
-        if (isOpen) {
-            intervalIconsid = $window.setInterval(function() {
-                ctrl.maxIcons = ctrl.maxIcons + 50;
+        ctrl.onOpenClose = function(isOpen) {
+            ctrl.maxIcons = 50;
+            $window.clearInterval(intervalIconsid);
+            if (isOpen) {
+                intervalIconsid = $window.setInterval(function() {
+                    ctrl.maxIcons = ctrl.maxIcons + 50;
 
-                if (ctrl.maxIcons > Object.keys(ctrl.availableIcons).length) {
-                    $window.clearInterval(intervalIconsid);
-                }
-                $scope.$apply();
-            }, 500);
-        }
-    };
+                    if (ctrl.maxIcons > Object.keys(ctrl.availableIcons).length) {
+                        $window.clearInterval(intervalIconsid);
+                    }
+                    $scope.$apply();
+                }, 500);
+            }
+        };
 
-    ctrl.iconSelected = function($item, $model) {
-        var returnObj = {};
-        returnObj.$item = $item;
-        returnObj.$model = $model;
-        ctrl.onSelectItem(returnObj);
-    };
+        ctrl.iconSelected = function($item, $model) {
+            var returnObj = {};
+            returnObj.$item = $item;
+            returnObj.$model = $model;
+            ctrl.onSelectItem(returnObj);
+        };
 
-    ctrl.iconRemove = function ($item, $model) {
-        var returnObj = {};
-        returnObj.$item = $item;
-        returnObj.$model = $model;
-        ctrl.onRemove(returnObj);
+        ctrl.iconRemove = function($item, $model) {
+            var returnObj = {};
+            returnObj.$item = $item;
+            returnObj.$model = $model;
+            ctrl.onRemove(returnObj);
+        };
     };
 }]);
 
@@ -10971,67 +10978,69 @@ angular.module('opengate-angular-js').component('uiSelectFaStyles', {
 
 
 angular.module('opengate-angular-js').controller('customUiSelectTicketController', ['$scope', '$element', '$attrs', '$api', function($scope, $element, $attrs, $api) {
-    var ctrl = this;
+    this.$onInit = function() {
+        var ctrl = this;
 
-    var ticketsBuilder = $api().ticketsSearchBuilder();
+        var ticketsBuilder = $api().ticketsSearchBuilder();
 
-    if (ctrl.disableDefaultSorted) {
-        ticketsBuilder = ticketsBuilder.disableDefaultSorted();
-    }
+        if (ctrl.disableDefaultSorted) {
+            ticketsBuilder = ticketsBuilder.disableDefaultSorted();
+        }
 
-    ctrl.ownConfig = {
-        builder: ticketsBuilder,
-        filter: function(search) {
-            if (search) {
-                return {
-                    'or': [{
-                            'like': {
-                                'provision.administration.identifier': search
+        ctrl.ownConfig = {
+            builder: ticketsBuilder,
+            filter: function(search) {
+                if (search) {
+                    return {
+                        'or': [{
+                                'like': {
+                                    'provision.administration.identifier': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'provision.ticket.specificType': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'provision.ticket.name': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'provision.ticket.type': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'provision.ticket.entity': search
+                                }
                             }
-                        },
-                        {
-                            'like': {
-                                'provision.ticket.specificType': search
-                            }
-                        },
-                        {
-                            'like': {
-                                'provision.ticket.name': search
-                            }
-                        },
-                        {
-                            'like': {
-                                'provision.ticket.type': search
-                            }
-                        },
-                        {
-                            'like': {
-                                'provision.ticket.entity': search
-                            }
-                        }
-                    ]
-                };
-            } else {
-                return null;
-            }
-        },
-        rootKey: 'tickets',
-        collection: [],
-        customSelectors: $api().ticketsSearchBuilder()
-    };
+                        ]
+                    };
+                } else {
+                    return null;
+                }
+            },
+            rootKey: 'tickets',
+            collection: [],
+            customSelectors: $api().ticketsSearchBuilder()
+        };
 
-    ctrl.ticketSelected = function($item, $model) {
-        var returnObj = {};
-        returnObj.$item = $item;
-        returnObj.$model = $model;
-        ctrl.onSelectItem(returnObj);
-    };
+        ctrl.ticketSelected = function($item, $model) {
+            var returnObj = {};
+            returnObj.$item = $item;
+            returnObj.$model = $model;
+            ctrl.onSelectItem(returnObj);
+        };
 
-    ctrl.ticketRemove = function($item, $model) {
-        var returnObj = {};
-        returnObj.$item = $item;
-        returnObj.$model = $model;
-        ctrl.onRemove(returnObj);
+        ctrl.ticketRemove = function($item, $model) {
+            var returnObj = {};
+            returnObj.$item = $item;
+            returnObj.$model = $model;
+            ctrl.onRemove(returnObj);
+        };
     };
 }]);
 
@@ -11055,365 +11064,367 @@ angular.module('opengate-angular-js').component('customUiSelectTicket', {
 
 angular.module('opengate-angular-js').controller('customUiSelectSubscriptionController', ['$scope', '$element', '$attrs', '$api', '$entityExtractor', '$translate', '$doActions', '$jsonFinderHelper', 'jsonPath', 'Filter',
     function($scope, $element, $attrs, $api, $entityExtractor, $translate, $doActions, $jsonFinderHelper, jsonPath, Filter) {
-        var ctrl = this;
+        this.$onInit = function() {
+            var ctrl = this;
 
-        var subscriptionsBuilder = $api().subscriptionsSearchBuilder();
+            var subscriptionsBuilder = $api().subscriptionsSearchBuilder();
 
-        if (ctrl.disableDefaultSorted) {
-            subscriptionsBuilder = subscriptionsBuilder.disableDefaultSorted();
-        }
-
-        function _getFilter(oql) {
-            var _json = Filter.parseQuery(oql);
-            var _filter = jsonPath(_json, '$..value.filter')[0] || undefined;
-            return _filter.and || ([_filter] || []);
-        }
-
-        ctrl.getSelectMatch = function(item) {
-            if (!item) return item;
-            var defaultPath = 'provision.subscription.identifier';
-            var path = ctrl.uiSelectMatchPath || defaultPath;
-            var match = jsonPath(item, '$..' + path + '._current.value');
-            if (!match) {
-                match = jsonPath(item, '$..' + defaultPath + '._current.value');
+            if (ctrl.disableDefaultSorted) {
+                subscriptionsBuilder = subscriptionsBuilder.disableDefaultSorted();
             }
-            return match[0];
-        };
 
-        var defaultQuickSearchFields = "provision.device.communicationModules[].subscription.identifier,device.communicationModules[].subscription.identifier";
-        var defaultSpecificTypeSearchFields = "provision.device.communicationModules[].subscription.specificType, device.communicationModules[].subscription.specificType";
+            function _getFilter(oql) {
+                var _json = Filter.parseQuery(oql);
+                var _filter = jsonPath(_json, '$..value.filter')[0] || undefined;
+                return _filter.and || ([_filter] || []);
+            }
 
-        function _getQuickSearchFields(search) {
-            var _quickSearchFields = ctrl.quickSearchFields || defaultQuickSearchFields;
-            var fields = _quickSearchFields.split(/[,|, ]+/);
-            var filter = {
-                or: []
+            ctrl.getSelectMatch = function(item) {
+                if (!item) return item;
+                var defaultPath = 'provision.subscription.identifier';
+                var path = ctrl.uiSelectMatchPath || defaultPath;
+                var match = jsonPath(item, '$..' + path + '._current.value');
+                if (!match) {
+                    match = jsonPath(item, '$..' + defaultPath + '._current.value');
+                }
+                return match[0];
             };
-            fields.forEach(function(field) {
-                var _like = {
-                    like: {}
+
+            var defaultQuickSearchFields = "provision.device.communicationModules[].subscription.identifier,device.communicationModules[].subscription.identifier";
+            var defaultSpecificTypeSearchFields = "provision.device.communicationModules[].subscription.specificType, device.communicationModules[].subscription.specificType";
+
+            function _getQuickSearchFields(search) {
+                var _quickSearchFields = ctrl.quickSearchFields || defaultQuickSearchFields;
+                var fields = _quickSearchFields.split(/[,|, ]+/);
+                var filter = {
+                    or: []
                 };
-                _like.like[field] = search;
-                filter.or.push(_like);
-            });
-            return filter;
-        }
-
-
-        function _getSpecificTypeSearchFields(specificType) {
-            var _specificTypeSearchFields = ctrl.specificTypeSearchFields || defaultSpecificTypeSearchFields;
-            var fields = _specificTypeSearchFields.split(/[,|, ]+/);
-            var filter = {
-                or: [],
-                eq: {}
-            };
-            if (fields.length === 1) {
-                delete filter.or;
-                filter.eq[fields[0]] = specificType;
-            } else {
-                delete filter.eq;
                 fields.forEach(function(field) {
-                    var _eq = {
-                        eq: {}
+                    var _like = {
+                        like: {}
                     };
-                    _eq.eq[field] = specificType;
-                    filter.or.push(_eq);
+                    _like.like[field] = search;
+                    filter.or.push(_like);
                 });
-            }
-            return filter;
-        }
-
-        ctrl.ownConfig = {
-            builder: subscriptionsBuilder.provisioned(),
-            filter: function(search) {
-                var filter;
-
-                if (search) {
-                    filter = _getQuickSearchFields(search);
-                }
-
-                if (!!ctrl.specificType) {
-                    if (filter) {
-                        filter = {
-                            'and': [filter]
-                        };
-                    } else {
-                        filter = {
-                            and: []
-                        };
-                    }
-
-                    filter.and.push(_getSpecificTypeSearchFields(ctrl.specificType));
-
-                }
-
-                if (ctrl.excludeDevices) {
-                    if (filter && !filter.and) {
-                        filter = {
-                            'and': [filter]
-                        };
-                    } else if (!filter) {
-                        filter = {
-                            and: []
-                        };
-                    }
-
-                    filter.and.push({
-                        'eq': {
-                            'resourceType': 'entity.subscription'
-                        }
-                    });
-                }
-                if (ctrl.organization && typeof ctrl.organization === 'string') {
-                    if (filter && !filter.and) {
-                        filter = {
-                            'and': [filter]
-                        };
-                    } else if (!filter) {
-                        filter = {
-                            and: []
-                        };
-                    }
-
-                    filter.and.push({
-                        'eq': {
-                            'provision.administration.organization': ctrl.organization
-                        }
-                    });
-                }
-                if (ctrl.channel && typeof ctrl.channel === 'string') {
-                    if (filter && !filter.and) {
-                        filter = {
-                            'and': [filter]
-                        };
-                    } else if (!filter) {
-                        filter = {
-                            and: []
-                        };
-                    }
-
-                    filter.and.push({
-                        'eq': {
-                            'provision.administration.channel': ctrl.channel
-                        }
-                    });
-                }
-
-                if (ctrl.oql) {
-                    var _oql = _getFilter(ctrl.oql);
-
-                    if (!filter) {
-                        filter = {
-                            'and': []
-                        };
-                    } else if (!filter.and) {
-                        filter = {
-                            and: [filter]
-                        };
-                    }
-
-                    var _and = filter.and.concat(_oql);
-                    filter.and = _and;
-                }
-
                 return filter;
-            },
-            rootKey: 'devices',
-            collection: [],
-            customSelectors: $api().subscriptionsSearchBuilder().provisioned(),
-            processingData: $entityExtractor.extractSubscriptions,
-            specificType: ctrl.specificType,
-            organization: ctrl.organization,
-            channel: ctrl.channel,
-            oql: ctrl.oql,
-            quickSearchFields: ctrl.quickSearchFields
-        };
-
-        ctrl.entitySelected = function($item, $model) {
-            if (ctrl.multiple) {
-                var identifierTmp = [];
-
-                angular.forEach(ctrl.entity, function(entityTmp) {
-                    identifierTmp.push(ctrl.getSelectMatch(entityTmp));
-                });
-
-                ctrl.ngModel = identifierTmp;
-            } else {
-                ctrl.ngModel = ctrl.getSelectMatch($item);
             }
 
-            if (ctrl.onSelectItem) {
-                var returnObj = {};
-                returnObj.$item = $item;
-                returnObj.$model = $model;
-                ctrl.onSelectItem(returnObj);
-            }
-        };
 
-        ctrl.entityRemove = function($item, $model) {
-            if (ctrl.onRemove) {
-                var returnObj = {};
-                returnObj.$item = $item;
-                returnObj.$model = $model;
-                ctrl.onRemove(returnObj);
-            }
-
-            if (ctrl.multiple) {
-                if (ctrl.ngModel && ctrl.ngModel.indexOf($item.provision.administration.identifier._current.value) !== -1) {
-                    ctrl.ngModel.splice(ctrl.ngModel.indexOf($item.provision.administration.identifier._current.value), 1);
-                }
-            } else {
-                ctrl.ngModel = undefined;
-            }
-        };
-
-        function _getOperationActionTemplate(operationSelected) {
-            return {
-                title: $translate.instant('BUTTON.TITLE.EXECUTE_OPERATION'),
-                icon: 'glyphicon glyphicon-flash',
-                action: function() {
-                    $doActions.executeModal('executeOperation', {
-                        keys: jsonPath(ctrl.entity, '$..' + $jsonFinderHelper.subscription.provisioned.getPath('identifier') + '._current.value') || [],
-                        entityType: 'SUBSCRIPTION',
-                        operation: operationSelected ? operationSelected.trim().toUpperCase() : undefined
+            function _getSpecificTypeSearchFields(specificType) {
+                var _specificTypeSearchFields = ctrl.specificTypeSearchFields || defaultSpecificTypeSearchFields;
+                var fields = _specificTypeSearchFields.split(/[,|, ]+/);
+                var filter = {
+                    or: [],
+                    eq: {}
+                };
+                if (fields.length === 1) {
+                    delete filter.or;
+                    filter.eq[fields[0]] = specificType;
+                } else {
+                    delete filter.eq;
+                    fields.forEach(function(field) {
+                        var _eq = {
+                            eq: {}
+                        };
+                        _eq.eq[field] = specificType;
+                        filter.or.push(_eq);
                     });
-                },
-                disable: function() {
-                    return !ctrl.entity || ctrl.entity.length === 0;
-                },
-                permissions: 'executeOperation'
-            };
-        }
+                }
+                return filter;
+            }
 
-        var uiSelectActionsDefinition = {
-            operation: _getOperationActionTemplate(),
-            create: {
-                title: $translate.instant('FORM.LABEL.NEW'),
-                icon: 'glyphicon glyphicon-plus-sign',
-                action: function() {
-                    $doActions.executeModal('createSubscription', {}, function(result) {
-                        if (result && result.length > 0) {
-                            ctrl.entity = !ctrl.entity ? [] : ctrl.entity;
-                            ctrl.entity.push({
-                                provision: {
-                                    administration: {
-                                        identifier: {
-                                            _current: {
-                                                value: result[0].identifier
-                                            }
-                                        }
-                                    },
-                                    subscription: {
-                                        identifier: {
-                                            _current: {
-                                                value: result[0].identifier
-                                            }
-                                        }
-                                    }
-                                }
-                            });
+            ctrl.ownConfig = {
+                builder: subscriptionsBuilder.provisioned(),
+                filter: function(search) {
+                    var filter;
+
+                    if (search) {
+                        filter = _getQuickSearchFields(search);
+                    }
+
+                    if (!!ctrl.specificType) {
+                        if (filter) {
+                            filter = {
+                                'and': [filter]
+                            };
+                        } else {
+                            filter = {
+                                and: []
+                            };
                         }
-                    });
-                },
-                permissions: 'manageEntity'
-            }
-        };
 
-        // Actions que finalmente se mostrarán en el control
-        ctrl.uiSelectActions = [];
+                        filter.and.push(_getSpecificTypeSearchFields(ctrl.specificType));
 
-        if (!ctrl.actions) {
-            angular.forEach(uiSelectActionsDefinition, function(action) {
-                ctrl.uiSelectActions.push(action);
-            });
-        } else {
-            angular.forEach(ctrl.actions, function(action) {
-                var finalAction;
-                switch (action.type) {
-                    case 'operation':
-                        finalAction = _getOperationActionTemplate(action.operation);
-                        break;
-                    case 'create':
-                        finalAction = uiSelectActionsDefinition.create;
-                        break;
-                }
-                finalAction.title = action.title || finalAction.title;
-                finalAction.icon = action.icon || finalAction.icon;
-                ctrl.uiSelectActions.push(finalAction);
-            });
+                    }
 
-        }
+                    if (ctrl.excludeDevices) {
+                        if (filter && !filter.and) {
+                            filter = {
+                                'and': [filter]
+                            };
+                        } else if (!filter) {
+                            filter = {
+                                and: []
+                            };
+                        }
 
-        if (ctrl.required !== undefined) {
-            ctrl.ngRequired = ctrl.required;
-        }
-
-        ctrl.$onChanges = function(changesObj) {
-            if (changesObj && changesObj.identifier) {
-                mapIdentifier(changesObj.identifier.currentValue);
-            }
-        };
-
-        if (ctrl.identifier) {
-            mapIdentifier(ctrl.identifier);
-        }
-
-        function mapIdentifier(identifierSource) {
-            var identifier = identifierSource;
-
-            if (identifier) {
-                if (identifier._current) {
-                    identifier = identifier._current.value;
-                }
-                if (ctrl.multiple) {
-                    if (angular.isArray(identifier)) {
-                        ctrl.entity = [];
-
-                        angular.forEach(identifier, function(idTmp) {
-                            ctrl.entity.push({
-                                provision: {
-                                    administration: {
-                                        identifier: {
-                                            _current: {
-                                                value: idTmp
-                                            }
-                                        }
-                                    },
-                                    subscription: {
-                                        identifier: {
-                                            _current: {
-                                                value: idTmp
-                                            }
-                                        }
-                                    }
-                                }
-                            });
+                        filter.and.push({
+                            'eq': {
+                                'resourceType': 'entity.subscription'
+                            }
                         });
                     }
+                    if (ctrl.organization && typeof ctrl.organization === 'string') {
+                        if (filter && !filter.and) {
+                            filter = {
+                                'and': [filter]
+                            };
+                        } else if (!filter) {
+                            filter = {
+                                and: []
+                            };
+                        }
+
+                        filter.and.push({
+                            'eq': {
+                                'provision.administration.organization': ctrl.organization
+                            }
+                        });
+                    }
+                    if (ctrl.channel && typeof ctrl.channel === 'string') {
+                        if (filter && !filter.and) {
+                            filter = {
+                                'and': [filter]
+                            };
+                        } else if (!filter) {
+                            filter = {
+                                and: []
+                            };
+                        }
+
+                        filter.and.push({
+                            'eq': {
+                                'provision.administration.channel': ctrl.channel
+                            }
+                        });
+                    }
+
+                    if (ctrl.oql) {
+                        var _oql = _getFilter(ctrl.oql);
+
+                        if (!filter) {
+                            filter = {
+                                'and': []
+                            };
+                        } else if (!filter.and) {
+                            filter = {
+                                and: [filter]
+                            };
+                        }
+
+                        var _and = filter.and.concat(_oql);
+                        filter.and = _and;
+                    }
+
+                    return filter;
+                },
+                rootKey: 'devices',
+                collection: [],
+                customSelectors: $api().subscriptionsSearchBuilder().provisioned(),
+                processingData: $entityExtractor.extractSubscriptions,
+                specificType: ctrl.specificType,
+                organization: ctrl.organization,
+                channel: ctrl.channel,
+                oql: ctrl.oql,
+                quickSearchFields: ctrl.quickSearchFields
+            };
+
+            ctrl.entitySelected = function($item, $model) {
+                if (ctrl.multiple) {
+                    var identifierTmp = [];
+
+                    angular.forEach(ctrl.entity, function(entityTmp) {
+                        identifierTmp.push(ctrl.getSelectMatch(entityTmp));
+                    });
+
+                    ctrl.ngModel = identifierTmp;
                 } else {
-                    ctrl.entity = [{
-                        provision: {
-                            administration: {
-                                identifier: {
-                                    _current: {
-                                        value: ctrl.identifier
+                    ctrl.ngModel = ctrl.getSelectMatch($item);
+                }
+
+                if (ctrl.onSelectItem) {
+                    var returnObj = {};
+                    returnObj.$item = $item;
+                    returnObj.$model = $model;
+                    ctrl.onSelectItem(returnObj);
+                }
+            };
+
+            ctrl.entityRemove = function($item, $model) {
+                if (ctrl.onRemove) {
+                    var returnObj = {};
+                    returnObj.$item = $item;
+                    returnObj.$model = $model;
+                    ctrl.onRemove(returnObj);
+                }
+
+                if (ctrl.multiple) {
+                    if (ctrl.ngModel && ctrl.ngModel.indexOf($item.provision.administration.identifier._current.value) !== -1) {
+                        ctrl.ngModel.splice(ctrl.ngModel.indexOf($item.provision.administration.identifier._current.value), 1);
+                    }
+                } else {
+                    ctrl.ngModel = undefined;
+                }
+            };
+
+            function _getOperationActionTemplate(operationSelected) {
+                return {
+                    title: $translate.instant('BUTTON.TITLE.EXECUTE_OPERATION'),
+                    icon: 'glyphicon glyphicon-flash',
+                    action: function() {
+                        $doActions.executeModal('executeOperation', {
+                            keys: jsonPath(ctrl.entity, '$..' + $jsonFinderHelper.subscription.provisioned.getPath('identifier') + '._current.value') || [],
+                            entityType: 'SUBSCRIPTION',
+                            operation: operationSelected ? operationSelected.trim().toUpperCase() : undefined
+                        });
+                    },
+                    disable: function() {
+                        return !ctrl.entity || ctrl.entity.length === 0;
+                    },
+                    permissions: 'executeOperation'
+                };
+            }
+
+            var uiSelectActionsDefinition = {
+                operation: _getOperationActionTemplate(),
+                create: {
+                    title: $translate.instant('FORM.LABEL.NEW'),
+                    icon: 'glyphicon glyphicon-plus-sign',
+                    action: function() {
+                        $doActions.executeModal('createSubscription', {}, function(result) {
+                            if (result && result.length > 0) {
+                                ctrl.entity = !ctrl.entity ? [] : ctrl.entity;
+                                ctrl.entity.push({
+                                    provision: {
+                                        administration: {
+                                            identifier: {
+                                                _current: {
+                                                    value: result[0].identifier
+                                                }
+                                            }
+                                        },
+                                        subscription: {
+                                            identifier: {
+                                                _current: {
+                                                    value: result[0].identifier
+                                                }
+                                            }
+                                        }
                                     }
-                                }
-                            },
-                            subscription: {
-                                identifier: {
-                                    _current: {
-                                        value: ctrl.identifier
+                                });
+                            }
+                        });
+                    },
+                    permissions: 'manageEntity'
+                }
+            };
+
+            // Actions que finalmente se mostrarán en el control
+            ctrl.uiSelectActions = [];
+
+            if (!ctrl.actions) {
+                angular.forEach(uiSelectActionsDefinition, function(action) {
+                    ctrl.uiSelectActions.push(action);
+                });
+            } else {
+                angular.forEach(ctrl.actions, function(action) {
+                    var finalAction;
+                    switch (action.type) {
+                        case 'operation':
+                            finalAction = _getOperationActionTemplate(action.operation);
+                            break;
+                        case 'create':
+                            finalAction = uiSelectActionsDefinition.create;
+                            break;
+                    }
+                    finalAction.title = action.title || finalAction.title;
+                    finalAction.icon = action.icon || finalAction.icon;
+                    ctrl.uiSelectActions.push(finalAction);
+                });
+
+            }
+
+            if (ctrl.required !== undefined) {
+                ctrl.ngRequired = ctrl.required;
+            }
+
+            ctrl.$onChanges = function(changesObj) {
+                if (changesObj && changesObj.identifier) {
+                    mapIdentifier(changesObj.identifier.currentValue);
+                }
+            };
+
+            if (ctrl.identifier) {
+                mapIdentifier(ctrl.identifier);
+            }
+
+            function mapIdentifier(identifierSource) {
+                var identifier = identifierSource;
+
+                if (identifier) {
+                    if (identifier._current) {
+                        identifier = identifier._current.value;
+                    }
+                    if (ctrl.multiple) {
+                        if (angular.isArray(identifier)) {
+                            ctrl.entity = [];
+
+                            angular.forEach(identifier, function(idTmp) {
+                                ctrl.entity.push({
+                                    provision: {
+                                        administration: {
+                                            identifier: {
+                                                _current: {
+                                                    value: idTmp
+                                                }
+                                            }
+                                        },
+                                        subscription: {
+                                            identifier: {
+                                                _current: {
+                                                    value: idTmp
+                                                }
+                                            }
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    } else {
+                        ctrl.entity = [{
+                            provision: {
+                                administration: {
+                                    identifier: {
+                                        _current: {
+                                            value: ctrl.identifier
+                                        }
+                                    }
+                                },
+                                subscription: {
+                                    identifier: {
+                                        _current: {
+                                            value: ctrl.identifier
+                                        }
                                     }
                                 }
                             }
-                        }
-                    }];
+                        }];
+                    }
+                } else {
+                    ctrl.entity = [];
                 }
-            } else {
-                ctrl.entity = [];
             }
-        }
+        };
     }
 ]);
 
@@ -11451,132 +11462,133 @@ angular.module('opengate-angular-js').component('customUiSelectSubscription', {
 
 angular.module('opengate-angular-js').controller('customUiSelectSubscriberController', ['$scope', '$element', '$attrs', '$api', '$entityExtractor',
     function($scope, $element, $attrs, $api, $entityExtractor) {
+        this.$onInit = function() {
+            var ctrl = this;
+            ctrl.ownConfig = {
+                builder: $api().subscribersSearchBuilder().provisioned(),
+                filter: function(search) {
+                    var filter;
 
-        var ctrl = this;
-        ctrl.ownConfig = {
-            builder: $api().subscribersSearchBuilder().provisioned(),
-            filter: function(search) {
-                var filter;
-
-                if (search) {
-                    filter = {
-                        'or': [
-                            { 'like': { 'provision.device.communicationModules[].subscriber.identifier': search } },
-                            { 'like': { 'device.communicationModules[].subscriber.identifier': search } },
-                            { 'like': { 'provision.device.communicationModules[].subscriber.mobile.icc': search } }
-                        ]
-                    };
-                }
-
-                if (!!ctrl.specificType) {
-                    if (filter) {
+                    if (search) {
                         filter = {
-                            'and': [filter]
-                        };
-                    } else {
-                        filter = {
-                            and: []
+                            'or': [
+                                { 'like': { 'provision.device.communicationModules[].subscriber.identifier': search } },
+                                { 'like': { 'device.communicationModules[].subscriber.identifier': search } },
+                                { 'like': { 'provision.device.communicationModules[].subscriber.mobile.icc': search } }
+                            ]
                         };
                     }
 
-                    filter.and.push({
-                        'or': [{
-                                'eq': {
-                                    'device.communicationModules[].subscriber.specificType': ctrl.specificType
+                    if (!!ctrl.specificType) {
+                        if (filter) {
+                            filter = {
+                                'and': [filter]
+                            };
+                        } else {
+                            filter = {
+                                and: []
+                            };
+                        }
+
+                        filter.and.push({
+                            'or': [{
+                                    'eq': {
+                                        'device.communicationModules[].subscriber.specificType': ctrl.specificType
+                                    }
+                                },
+                                {
+                                    'eq': {
+                                        'provision.device.communicationModules[].subscriber.specificType': ctrl.specificType
+                                    }
                                 }
-                            },
-                            {
-                                'eq': {
-                                    'provision.device.communicationModules[].subscriber.specificType': ctrl.specificType
-                                }
+                            ]
+                        });
+                    }
+
+                    if (ctrl.excludeDevices) {
+                        if (filter && !filter.and) {
+                            filter = {
+                                'and': [filter]
+                            };
+                        } else if (!filter) {
+                            filter = {
+                                and: []
+                            };
+                        }
+
+                        filter.and.push({
+                            'eq': {
+                                'resourceType': 'entity.subscriber'
                             }
-                        ]
-                    });
-                }
+                        });
 
-                if (ctrl.excludeDevices) {
-                    if (filter && !filter.and) {
-                        filter = {
-                            'and': [filter]
-                        };
-                    } else if (!filter) {
-                        filter = {
-                            and: []
-                        };
                     }
 
-                    filter.and.push({
-                        'eq': {
-                            'resourceType': 'entity.subscriber'
+                    if (ctrl.organization) {
+                        if (filter && !filter.and) {
+                            filter = {
+                                'and': [filter]
+                            };
+                        } else if (!filter) {
+                            filter = {
+                                and: []
+                            };
                         }
-                    });
 
-                }
-
-                if (ctrl.organization) {
-                    if (filter && !filter.and) {
-                        filter = {
-                            'and': [filter]
-                        };
-                    } else if (!filter) {
-                        filter = {
-                            and: []
-                        };
+                        filter.and.push({
+                            'eq': {
+                                'provision.administration.organization': ctrl.organization
+                            }
+                        });
                     }
 
-                    filter.and.push({
-                        'eq': {
-                            'provision.administration.organization': ctrl.organization
+                    if (ctrl.channel) {
+                        if (filter && !filter.and) {
+                            filter = {
+                                'and': [filter]
+                            };
+                        } else if (!filter) {
+                            filter = {
+                                and: []
+                            };
                         }
-                    });
-                }
 
-                if (ctrl.channel) {
-                    if (filter && !filter.and) {
-                        filter = {
-                            'and': [filter]
-                        };
-                    } else if (!filter) {
-                        filter = {
-                            and: []
-                        };
+                        filter.and.push({
+                            'eq': {
+                                'provision.administration.channel': ctrl.channel
+                            }
+                        });
                     }
 
-                    filter.and.push({
-                        'eq': {
-                            'provision.administration.channel': ctrl.channel
-                        }
-                    });
-                }
+                    return filter;
+                },
+                rootKey: 'devices',
+                collection: [],
+                customSelectors: $api().subscribersSearchBuilder().provisioned(),
+                processingData: $entityExtractor.extractSubscribers,
+                specificType: ctrl.specificType,
+                organization: ctrl.organization,
+                channel: ctrl.channel
+            };
 
-                return filter;
-            },
-            rootKey: 'devices',
-            collection: [],
-            customSelectors: $api().subscribersSearchBuilder().provisioned(),
-            processingData: $entityExtractor.extractSubscribers,
-            specificType: ctrl.specificType,
-            organization: ctrl.organization,
-            channel: ctrl.channel
+            ctrl.entitySelected = function($item, $model) {
+                var returnObj = {};
+                returnObj.$item = $item;
+                returnObj.$model = $model;
+                ctrl.onSelectItem(returnObj);
+            };
+
+            ctrl.entityRemove = function($item, $model) {
+                var returnObj = {};
+                returnObj.$item = $item;
+                returnObj.$model = $model;
+                ctrl.onRemove(returnObj);
+            };
+
+            if (ctrl.required !== undefined) {
+                ctrl.ngRequired = ctrl.required;
+            }
         };
-
-        ctrl.entitySelected = function($item, $model) {
-            var returnObj = {};
-            returnObj.$item = $item;
-            returnObj.$model = $model;
-            ctrl.onSelectItem(returnObj);
-        };
-
-        ctrl.entityRemove = function($item, $model) {
-            var returnObj = {};
-            returnObj.$item = $item;
-            returnObj.$model = $model;
-            ctrl.onRemove(returnObj);
-        };
-
-        if (ctrl.required !== undefined) {
-            ctrl.ngRequired = ctrl.required;
-        }
     }
 ]);
 
@@ -11603,136 +11615,138 @@ angular.module('opengate-angular-js').component('customUiSelectSubscriber', {
 
 
 angular.module('opengate-angular-js').controller('customUiSelectServiceGroupController', ['$scope', '$element', '$attrs', '$api', '$q',
-    function ($scope, $element, $attrs, $api, $q) {
-        var ctrl = this;
-        ctrl.serviceGroup = ctrl.serviceGroup || (ctrl.ngModel && [ctrl.ngModel]);
-        var firstLoad = ctrl.ngRequired || ctrl.required;
-        var builder = $api().serviceGroupSearchBuilder();
-        if (!!ctrl.entityType && ctrl.entityType.toUpperCase() !== 'DEVICE') {
-            builder.withEntityType(ctrl.entityType.toUpperCase());
-        } else {
-            builder.withEntityType('GATEWAY');
-        }
+    function($scope, $element, $attrs, $api, $q) {
+        this.$onInit = function() {
+            var ctrl = this;
+            ctrl.serviceGroup = ctrl.serviceGroup || (ctrl.ngModel && [ctrl.ngModel]);
+            var firstLoad = ctrl.ngRequired || ctrl.required;
+            var builder = $api().serviceGroupSearchBuilder();
+            if (!!ctrl.entityType && ctrl.entityType.toUpperCase() !== 'DEVICE') {
+                builder.withEntityType(ctrl.entityType.toUpperCase());
+            } else {
+                builder.withEntityType('GATEWAY');
+            }
 
-        var savedSearch;
-        ctrl.ownConfig = {
-            builder: builder,
-            filter: function (search) {
-                savedSearch = search;
-            },
-            rootKey: 'serviceGroups',
-            collection: [],
-            simpleMode: true,
-            customSelectors: builder,
-            processingData: function (result, serviceGroups) {
+            var savedSearch;
+            ctrl.ownConfig = {
+                builder: builder,
+                filter: function(search) {
+                    savedSearch = search;
+                },
+                rootKey: 'serviceGroups',
+                collection: [],
+                simpleMode: true,
+                customSelectors: builder,
+                processingData: function(result, serviceGroups) {
 
-                if (firstLoad) {
-                    var _selectedServiceGroup = ctrl.serviceGroup && ctrl.serviceGroup.length === 1;
-                    if (!_selectedServiceGroup) {
-                        var item = {
-                            name: serviceGroups.indexOf('emptyServiceGroup') === -1 ? ctrl.serviceGroup[0] : 'emptyServiceGroup'
-                        };
-                        ctrl.serviceGroup = [item];
+                    if (firstLoad) {
+                        var _selectedServiceGroup = ctrl.serviceGroup && ctrl.serviceGroup.length === 1;
+                        if (!_selectedServiceGroup) {
+                            var item = {
+                                name: serviceGroups.indexOf('emptyServiceGroup') === -1 ? ctrl.serviceGroup[0] : 'emptyServiceGroup'
+                            };
+                            ctrl.serviceGroup = [item];
+                        }
+                        firstLoad = false;
                     }
-                    firstLoad = false;
-                }
 
-                var serviceGroupsFormatted = serviceGroups.map(function (item) {
-                    return {
-                        name: item
-                    };
-                });
-
-                if (savedSearch) {
-                    serviceGroupsFormatted = serviceGroupsFormatted.filter(function (tmp) {
-                        return tmp.name.toLowerCase().indexOf(savedSearch.trim().toLowerCase()) !== -1;
+                    var serviceGroupsFormatted = serviceGroups.map(function(item) {
+                        return {
+                            name: item
+                        };
                     });
-                }
 
-                var deferred = $q.defer();
-
-                deferred.resolve(serviceGroupsFormatted);
-
-                return deferred.promise;
-            }
-        };
-
-        ctrl.serviceGroupSelected = function ($item, $model) {
-            if (ctrl.multiple) {
-                var identifierTmp = [];
-
-                angular.forEach(ctrl.serviceGroup, function (sgTmp) {
-                    identifierTmp.push(sgTmp.name);
-                });
-
-                ctrl.ngModel = identifierTmp;
-            } else {
-                ctrl.ngModel = $item.name;
-            }
-
-            if (ctrl.onSelectItem) {
-                var returnObj = {};
-                returnObj.$item = $item;
-                returnObj.$model = $model;
-                ctrl.onSelectItem(returnObj);
-            }
-        };
-
-        ctrl.serviceGroupRemove = function ($item, $model) {
-            if (ctrl.onRemove) {
-                var returnObj = {};
-                returnObj.$item = $item;
-                returnObj.$model = $model;
-                ctrl.onRemove(returnObj);
-            }
-
-            if (ctrl.multiple) {
-                if (ctrl.ngModel && ctrl.ngModel.indexOf($item.name) !== -1) {
-                    ctrl.ngModel.splice(ctrl.ngModel.indexOf($item.name), 1);
-                }
-            } else {
-                ctrl.ngModel = undefined;
-            }
-        };
-
-
-        ctrl.$onChanges = function (changesObj) {
-            if (changesObj && changesObj.identifier) {
-                mapIdentifier(changesObj.identifier.currentValue);
-            }
-        };
-
-        if (ctrl.identifier) {
-            mapIdentifier(ctrl.identifier);
-        }
-
-        function mapIdentifier(identifierSrc) {
-            var identifier = identifierSrc;
-            if (identifier) {
-                if (identifier._current) {
-                    identifier = identifier._current.value;
-                }
-
-                if (ctrl.multiple) {
-                    if (angular.isArray(identifier)) {
-                        ctrl.serviceGroup = [];
-
-                        angular.forEach(identifier, function (idTmp) {
-                            ctrl.serviceGroup.push({
-                                name: idTmp
-                            });
+                    if (savedSearch) {
+                        serviceGroupsFormatted = serviceGroupsFormatted.filter(function(tmp) {
+                            return tmp.name.toLowerCase().indexOf(savedSearch.trim().toLowerCase()) !== -1;
                         });
                     }
 
-                } else {
-                    ctrl.serviceGroup = [{
-                        name: ctrl.identifier
-                    }];
+                    var deferred = $q.defer();
+
+                    deferred.resolve(serviceGroupsFormatted);
+
+                    return deferred.promise;
                 }
-            } else {
-                ctrl.serviceGroup = [];
+            };
+
+            ctrl.serviceGroupSelected = function($item, $model) {
+                if (ctrl.multiple) {
+                    var identifierTmp = [];
+
+                    angular.forEach(ctrl.serviceGroup, function(sgTmp) {
+                        identifierTmp.push(sgTmp.name);
+                    });
+
+                    ctrl.ngModel = identifierTmp;
+                } else {
+                    ctrl.ngModel = $item.name;
+                }
+
+                if (ctrl.onSelectItem) {
+                    var returnObj = {};
+                    returnObj.$item = $item;
+                    returnObj.$model = $model;
+                    ctrl.onSelectItem(returnObj);
+                }
+            };
+
+            ctrl.serviceGroupRemove = function($item, $model) {
+                if (ctrl.onRemove) {
+                    var returnObj = {};
+                    returnObj.$item = $item;
+                    returnObj.$model = $model;
+                    ctrl.onRemove(returnObj);
+                }
+
+                if (ctrl.multiple) {
+                    if (ctrl.ngModel && ctrl.ngModel.indexOf($item.name) !== -1) {
+                        ctrl.ngModel.splice(ctrl.ngModel.indexOf($item.name), 1);
+                    }
+                } else {
+                    ctrl.ngModel = undefined;
+                }
+            };
+
+
+            ctrl.$onChanges = function(changesObj) {
+                if (changesObj && changesObj.identifier) {
+                    mapIdentifier(changesObj.identifier.currentValue);
+                }
+            };
+
+            if (ctrl.identifier) {
+                mapIdentifier(ctrl.identifier);
             }
-        }
+
+            function mapIdentifier(identifierSrc) {
+                var identifier = identifierSrc;
+                if (identifier) {
+                    if (identifier._current) {
+                        identifier = identifier._current.value;
+                    }
+
+                    if (ctrl.multiple) {
+                        if (angular.isArray(identifier)) {
+                            ctrl.serviceGroup = [];
+
+                            angular.forEach(identifier, function(idTmp) {
+                                ctrl.serviceGroup.push({
+                                    name: idTmp
+                                });
+                            });
+                        }
+
+                    } else {
+                        ctrl.serviceGroup = [{
+                            name: ctrl.identifier
+                        }];
+                    }
+                } else {
+                    ctrl.serviceGroup = [];
+                }
+            }
+        };
     }
 ]);
 
@@ -11759,109 +11773,111 @@ angular.module('opengate-angular-js').component('customUiSelectServiceGroup', {
 
 
 angular.module('opengate-angular-js').controller('customUiSelectProvisionDatastreamController', ['$api', '$q', '$provisionDatastreamsUtils',
-    function ($api, $q, $provisionDatastreamsUtils) {
-        var ctrl = this;
-        ctrl.filter = 'provision.';
+    function($api, $q, $provisionDatastreamsUtils) {
+        this.$onInit = function() {
+            var ctrl = this;
+            ctrl.filter = 'provision.';
 
-        ctrl.ownConfig = {
-            builder: $api().datamodelsSearchBuilder(),
-            filter: function (search) {
-                ctrl.lastSearch = search;
-                var filter = $provisionDatastreamsUtils.getFilter();
-                if (ctrl.allowedResourceTypes) {
-                    var allowedResourceTypes = ctrl.allowedResourceTypes.replace("\s*,\s*", ",").split(",");
-                    filter.and.push({
-                        'in': {
-                            'datamodels.allowedResourceTypes': allowedResourceTypes
-                        }
-                    });
-                }
-
-                if (ctrl.organization && ctrl.organization.length > 0) {
-                    if (!filter.and) {
-                        filter.and = [];
-                    }
-                    filter.and.push({
-                        'eq': {
-                            'datamodels.organizationName': ctrl.organization
-                        }
-                    });
-                }
-
-                if (search) {
-                    var orFilter = {
-                        or: [{
-                                'like': {
-                                    'datamodels.categories.datastreams.identifier': search
-                                }
-                            },
-                            {
-                                'like': {
-                                    'datamodels.categories.datastreams.name': search
-                                }
-                            }
-                        ]
-                    };
-                    filter.and.push(orFilter);
-                }
-                return filter;
-            },
-            rootKey: 'datamodels',
-            collection: [],
-            processingData: function (data, collection) {
-                return $q(function (ok) {
-                    var _datastreams = [];
-                    var datamodels = data.data.datamodels;
-                    datamodels = $provisionDatastreamsUtils.filterForCoreDatamodelsCatalog(datamodels);
-                    angular.forEach(datamodels, function (datamodel, key) {
-                        var categories = datamodel.categories;
-                        var _datamodel = {
-                            identifier: datamodel.identifier,
-                            description: datamodel.description,
-                            name: datamodel.name,
-                            organization: datamodel.organizationName
-                        };
-                        angular.forEach(categories, function (category, key) {
-                            var datastreams = category.datastreams;
-                            if (datastreams) {
-                                var _category = {
-                                    identifier: category.identifier
-                                };
-                                angular.forEach(datastreams
-                                    .filter(function (ds) {
-                                        if (/^(provision\.).*/.test(ds.identifier)) {
-                                            return (ds.identifier.indexOf(ctrl.lastSearch) > -1 && !!ctrl.lastSearch.length) || !ctrl.lastSearch;
-                                        }
-                                        return false;
-                                    }),
-                                    function (datastream, key) {
-                                        var _datastream = angular.copy(datastream);
-                                        _datastream.datamodel = _datamodel;
-                                        _datastream.category = _category;
-                                        _datastreams.push(_datastream);
-                                    });
+            ctrl.ownConfig = {
+                builder: $api().datamodelsSearchBuilder(),
+                filter: function(search) {
+                    ctrl.lastSearch = search;
+                    var filter = $provisionDatastreamsUtils.getFilter();
+                    if (ctrl.allowedResourceTypes) {
+                        var allowedResourceTypes = ctrl.allowedResourceTypes.replace("\s*,\s*", ",").split(",");
+                        filter.and.push({
+                            'in': {
+                                'datamodels.allowedResourceTypes': allowedResourceTypes
                             }
                         });
+                    }
+
+                    if (ctrl.organization && ctrl.organization.length > 0) {
+                        if (!filter.and) {
+                            filter.and = [];
+                        }
+                        filter.and.push({
+                            'eq': {
+                                'datamodels.organizationName': ctrl.organization
+                            }
+                        });
+                    }
+
+                    if (search) {
+                        var orFilter = {
+                            or: [{
+                                    'like': {
+                                        'datamodels.categories.datastreams.identifier': search
+                                    }
+                                },
+                                {
+                                    'like': {
+                                        'datamodels.categories.datastreams.name': search
+                                    }
+                                }
+                            ]
+                        };
+                        filter.and.push(orFilter);
+                    }
+                    return filter;
+                },
+                rootKey: 'datamodels',
+                collection: [],
+                processingData: function(data, collection) {
+                    return $q(function(ok) {
+                        var _datastreams = [];
+                        var datamodels = data.data.datamodels;
+                        datamodels = $provisionDatastreamsUtils.filterForCoreDatamodelsCatalog(datamodels);
+                        angular.forEach(datamodels, function(datamodel, key) {
+                            var categories = datamodel.categories;
+                            var _datamodel = {
+                                identifier: datamodel.identifier,
+                                description: datamodel.description,
+                                name: datamodel.name,
+                                organization: datamodel.organizationName
+                            };
+                            angular.forEach(categories, function(category, key) {
+                                var datastreams = category.datastreams;
+                                if (datastreams) {
+                                    var _category = {
+                                        identifier: category.identifier
+                                    };
+                                    angular.forEach(datastreams
+                                        .filter(function(ds) {
+                                            if (/^(provision\.).*/.test(ds.identifier)) {
+                                                return (ds.identifier.indexOf(ctrl.lastSearch) > -1 && !!ctrl.lastSearch.length) || !ctrl.lastSearch;
+                                            }
+                                            return false;
+                                        }),
+                                        function(datastream, key) {
+                                            var _datastream = angular.copy(datastream);
+                                            _datastream.datamodel = _datamodel;
+                                            _datastream.category = _category;
+                                            _datastreams.push(_datastream);
+                                        });
+                                }
+                            });
+                        });
+                        angular.copy(_datastreams, collection);
+                        ok(collection);
                     });
-                    angular.copy(_datastreams, collection);
-                    ok(collection);
-                });
-            },
-            customSelectors: $api().datamodelsSearchBuilder()
-        };
+                },
+                customSelectors: $api().datamodelsSearchBuilder()
+            };
 
-        ctrl.datastreamSelected = function ($item, $model) {
-            var returnObj = {};
-            returnObj.$item = $item;
-            returnObj.$model = $model;
-            ctrl.onSelectItem(returnObj);
-        };
+            ctrl.datastreamSelected = function($item, $model) {
+                var returnObj = {};
+                returnObj.$item = $item;
+                returnObj.$model = $model;
+                ctrl.onSelectItem(returnObj);
+            };
 
-        ctrl.datastreamRemove = function ($item, $model) {
-            var returnObj = {};
-            returnObj.$item = $item;
-            returnObj.$model = $model;
-            ctrl.onRemove(returnObj);
+            ctrl.datastreamRemove = function($item, $model) {
+                var returnObj = {};
+                returnObj.$item = $item;
+                returnObj.$model = $model;
+                ctrl.onRemove(returnObj);
+            };
         };
     }
 ]);
@@ -11885,126 +11901,128 @@ angular.module('opengate-angular-js').component('customUiSelectProvisionDatastre
 
 
 angular.module('opengate-angular-js').controller('customUiSelectOrganizationController', ['$scope', '$element', '$attrs', '$api', 'Authentication', '$q',
-    function ($scope, $element, $attrs, $api, Authentication, $q) {
-        var ctrl = this;
-        var firstLoad = ctrl.ngRequired || ctrl.required;
-        ctrl.organization = ctrl.organization || (ctrl.ngModel && ([ctrl.ngModel]));
-        var savedSearch;
-        ctrl.ownConfig = {
-            builder: $api().newOrganizationFinder().findByDomainAndWorkgroup(Authentication.getUser().domain, Authentication.getUser().workgroup),
-            filter: function (search) {
-                savedSearch = search;
-            },
-            rootKey: undefined,
-            collection: [],
-            isGet: true,
-            simpleMode: true,
-            customSelectors: $api().newOrganizationFinder().findByDomainAndWorkgroup(Authentication.getUser().domain, Authentication.getUser().workgroup),
-            processingData: function (result, organizations) {
-                var organizationsFormatted = organizations;
+    function($scope, $element, $attrs, $api, Authentication, $q) {
+        this.$onInit = function() {
+            var ctrl = this;
+            var firstLoad = ctrl.ngRequired || ctrl.required;
+            ctrl.organization = ctrl.organization || (ctrl.ngModel && ([ctrl.ngModel]));
+            var savedSearch;
+            ctrl.ownConfig = {
+                builder: $api().newOrganizationFinder().findByDomainAndWorkgroup(Authentication.getUser().domain, Authentication.getUser().workgroup),
+                filter: function(search) {
+                    savedSearch = search;
+                },
+                rootKey: undefined,
+                collection: [],
+                isGet: true,
+                simpleMode: true,
+                customSelectors: $api().newOrganizationFinder().findByDomainAndWorkgroup(Authentication.getUser().domain, Authentication.getUser().workgroup),
+                processingData: function(result, organizations) {
+                    var organizationsFormatted = organizations;
 
-                if (savedSearch) {
-                    organizationsFormatted = organizations.filter(function (tmp) {
-                        return tmp.name.toLowerCase().indexOf(savedSearch.trim().toLowerCase()) !== -1;
-                    });
-                }
-
-                if (firstLoad) {
-                    var _selectedOrganization = ctrl.organization && ctrl.organization.length === 1;
-                    if (!_selectedOrganization) {
-                        ctrl.organization = [organizationsFormatted[0]];
-                    }
-                    firstLoad = false;
-                }
-
-                var deferred = $q.defer();
-
-                deferred.resolve(organizationsFormatted);
-
-                return deferred.promise;
-            }
-        };
-
-        ctrl.organizationSelected = function ($item, $model) {
-            if (ctrl.multiple) {
-                var identifierTmp = [];
-
-                angular.forEach(ctrl.organization, function (organizationTmp) {
-                    identifierTmp.push(organizationTmp.name);
-                });
-
-                ctrl.ngModel = identifierTmp;
-            } else {
-                ctrl.ngModel = $item.name;
-            }
-
-            if (ctrl.onSelectItem) {
-                var returnObj = {};
-                returnObj.$item = $item;
-                returnObj.$model = $model;
-                ctrl.onSelectItem(returnObj);
-            }
-        };
-
-        ctrl.organizationRemove = function ($item, $model) {
-            if (ctrl.onRemove) {
-                var returnObj = {};
-                returnObj.$item = $item;
-                returnObj.$model = $model;
-                ctrl.onRemove(returnObj);
-            }
-
-            if (ctrl.multiple) {
-                if (ctrl.ngModel && ctrl.ngModel.indexOf($item.name) !== -1) {
-                    ctrl.ngModel.splice(ctrl.ngModel.indexOf($item.name), 1);
-                }
-            } else {
-                ctrl.ngModel = undefined;
-            }
-        };
-
-
-        ctrl.$onChanges = function (changesObj) {
-            if (changesObj && changesObj.identifier) {
-                mapIdentifier(changesObj.identifier.currentValue);
-            }
-        };
-
-        if (ctrl.required !== undefined) {
-            ctrl.ngRequired = ctrl.required;
-        }
-
-        if (ctrl.identifier) {
-            mapIdentifier(ctrl.identifier);
-        }
-
-        function mapIdentifier(identifierSrc) {
-            var identifier = identifierSrc;
-            if (identifier) {
-                if (identifier._current) {
-                    identifier = identifier._current.value;
-                }
-
-                if (ctrl.multiple) {
-                    if (angular.isArray(identifier)) {
-                        ctrl.organization = [];
-
-                        angular.forEach(identifier, function (idTmp) {
-                            ctrl.organization.push({
-                                name: idTmp
-                            });
+                    if (savedSearch) {
+                        organizationsFormatted = organizations.filter(function(tmp) {
+                            return tmp.name.toLowerCase().indexOf(savedSearch.trim().toLowerCase()) !== -1;
                         });
                     }
 
-                } else {
-                    ctrl.organization = [{
-                        name: ctrl.identifier
-                    }];
+                    if (firstLoad) {
+                        var _selectedOrganization = ctrl.organization && ctrl.organization.length === 1;
+                        if (!_selectedOrganization) {
+                            ctrl.organization = [organizationsFormatted[0]];
+                        }
+                        firstLoad = false;
+                    }
+
+                    var deferred = $q.defer();
+
+                    deferred.resolve(organizationsFormatted);
+
+                    return deferred.promise;
                 }
-            } else {
-                ctrl.organization = [];
+            };
+
+            ctrl.organizationSelected = function($item, $model) {
+                if (ctrl.multiple) {
+                    var identifierTmp = [];
+
+                    angular.forEach(ctrl.organization, function(organizationTmp) {
+                        identifierTmp.push(organizationTmp.name);
+                    });
+
+                    ctrl.ngModel = identifierTmp;
+                } else {
+                    ctrl.ngModel = $item.name;
+                }
+
+                if (ctrl.onSelectItem) {
+                    var returnObj = {};
+                    returnObj.$item = $item;
+                    returnObj.$model = $model;
+                    ctrl.onSelectItem(returnObj);
+                }
+            };
+
+            ctrl.organizationRemove = function($item, $model) {
+                if (ctrl.onRemove) {
+                    var returnObj = {};
+                    returnObj.$item = $item;
+                    returnObj.$model = $model;
+                    ctrl.onRemove(returnObj);
+                }
+
+                if (ctrl.multiple) {
+                    if (ctrl.ngModel && ctrl.ngModel.indexOf($item.name) !== -1) {
+                        ctrl.ngModel.splice(ctrl.ngModel.indexOf($item.name), 1);
+                    }
+                } else {
+                    ctrl.ngModel = undefined;
+                }
+            };
+
+
+            ctrl.$onChanges = function(changesObj) {
+                if (changesObj && changesObj.identifier) {
+                    mapIdentifier(changesObj.identifier.currentValue);
+                }
+            };
+
+            if (ctrl.required !== undefined) {
+                ctrl.ngRequired = ctrl.required;
             }
-        }
+
+            if (ctrl.identifier) {
+                mapIdentifier(ctrl.identifier);
+            }
+
+            function mapIdentifier(identifierSrc) {
+                var identifier = identifierSrc;
+                if (identifier) {
+                    if (identifier._current) {
+                        identifier = identifier._current.value;
+                    }
+
+                    if (ctrl.multiple) {
+                        if (angular.isArray(identifier)) {
+                            ctrl.organization = [];
+
+                            angular.forEach(identifier, function(idTmp) {
+                                ctrl.organization.push({
+                                    name: idTmp
+                                });
+                            });
+                        }
+
+                    } else {
+                        ctrl.organization = [{
+                            name: ctrl.identifier
+                        }];
+                    }
+                } else {
+                    ctrl.organization = [];
+                }
+            }
+        };
     }
 ]);
 
@@ -12030,105 +12048,107 @@ angular.module('opengate-angular-js').component('customUiSelectOrganization', {
 
 
 
-angular.module('opengate-angular-js').controller('customUiSelectOgtypeListController', ['$scope', '$element', '$attrs', '$api', '$q', function ($scope, $element, $attrs, $api, $q) {
-    var ctrl = this;
-    var builder = $api().basicTypesSearchBuilder();
-    if (ctrl.path) {
-        builder = builder.withPath(ctrl.path);
-    }
-    ctrl.ownConfig = {
-        builder: builder.build().execute(),
-        filter: function (search) {},
-        rootKey: 'enum',
-        collection: [],
-        isGet: true,
-        customSelectors: builder.build().execute(),
-        path: ctrl.path
-    };
-
-    ctrl.elementSelected = function ($item, $model) {
-        if (ctrl.multiple) {
-            var identifierTmp = [];
-
-            angular.forEach(ctrl.element, function (element) {
-                identifierTmp.push(element);
-            });
-
-            ctrl.ngModel = identifierTmp;
-        } else {
-            ctrl.ngModel = $item;
+angular.module('opengate-angular-js').controller('customUiSelectOgtypeListController', ['$scope', '$element', '$attrs', '$api', '$q', function($scope, $element, $attrs, $api, $q) {
+    this.$onInit = function() {
+        var ctrl = this;
+        var builder = $api().basicTypesSearchBuilder();
+        if (ctrl.path) {
+            builder = builder.withPath(ctrl.path);
         }
+        ctrl.ownConfig = {
+            builder: builder.build().execute(),
+            filter: function(search) {},
+            rootKey: 'enum',
+            collection: [],
+            isGet: true,
+            customSelectors: builder.build().execute(),
+            path: ctrl.path
+        };
 
-        if (ctrl.onSelectItem) {
-            var returnObj = {};
-            returnObj.$item = $item;
-            returnObj.$model = $model;
-            ctrl.onSelectItem(returnObj);
-        }
-    };
-
-    ctrl.elementRemove = function ($item, $model) {
-        if (ctrl.onRemove) {
-            var returnObj = {};
-            returnObj.$item = $item;
-            returnObj.$model = $model;
-            ctrl.onRemove(returnObj);
-        }
-        if (ctrl.multiple) {
-            if (ctrl.ngModel && ctrl.ngModel.indexOf($item) !== -1) {
-                ctrl.ngModel.splice(ctrl.ngModel.indexOf($item), 1);
-            }
-        } else {
-            ctrl.ngModel = undefined;
-        }
-    };
-
-
-    ctrl.$onChanges = function (changesObj) {
-        Object.keys(changesObj).forEach(function (key) {
-            switch (key) {
-                case 'identifier':
-                    mapIdentifier(changesObj.identifier.currentValue);
-                    break;
-                case 'path':
-                    ctrl.ownConfig.collection = [];
-                    ctrl.ownConfig.builder = builder.withPath(ctrl.path).build().execute();
-                    break;
-            }
-        });
-    };
-
-    if (ctrl.required !== undefined) {
-        ctrl.ngRequired = ctrl.required;
-    }
-
-    if (ctrl.identifier) {
-        mapIdentifier(ctrl.identifier);
-    }
-
-
-    function mapIdentifier(identifierSrc) {
-        var identifier = identifierSrc;
-        if (identifier) {
-            if (identifier._current) {
-                identifier = identifier._current.value;
-            }
-
+        ctrl.elementSelected = function($item, $model) {
             if (ctrl.multiple) {
-                if (angular.isArray(identifier)) {
-                    ctrl.element = [];
+                var identifierTmp = [];
 
-                    angular.forEach(identifier, function (idTmp) {
-                        ctrl.element.push(idTmp);
-                    });
+                angular.forEach(ctrl.element, function(element) {
+                    identifierTmp.push(element);
+                });
+
+                ctrl.ngModel = identifierTmp;
+            } else {
+                ctrl.ngModel = $item;
+            }
+
+            if (ctrl.onSelectItem) {
+                var returnObj = {};
+                returnObj.$item = $item;
+                returnObj.$model = $model;
+                ctrl.onSelectItem(returnObj);
+            }
+        };
+
+        ctrl.elementRemove = function($item, $model) {
+            if (ctrl.onRemove) {
+                var returnObj = {};
+                returnObj.$item = $item;
+                returnObj.$model = $model;
+                ctrl.onRemove(returnObj);
+            }
+            if (ctrl.multiple) {
+                if (ctrl.ngModel && ctrl.ngModel.indexOf($item) !== -1) {
+                    ctrl.ngModel.splice(ctrl.ngModel.indexOf($item), 1);
+                }
+            } else {
+                ctrl.ngModel = undefined;
+            }
+        };
+
+
+        ctrl.$onChanges = function(changesObj) {
+            Object.keys(changesObj).forEach(function(key) {
+                switch (key) {
+                    case 'identifier':
+                        mapIdentifier(changesObj.identifier.currentValue);
+                        break;
+                    case 'path':
+                        ctrl.ownConfig.collection = [];
+                        ctrl.ownConfig.builder = builder.withPath(ctrl.path).build().execute();
+                        break;
+                }
+            });
+        };
+
+        if (ctrl.required !== undefined) {
+            ctrl.ngRequired = ctrl.required;
+        }
+
+        if (ctrl.identifier) {
+            mapIdentifier(ctrl.identifier);
+        }
+
+
+        function mapIdentifier(identifierSrc) {
+            var identifier = identifierSrc;
+            if (identifier) {
+                if (identifier._current) {
+                    identifier = identifier._current.value;
                 }
 
+                if (ctrl.multiple) {
+                    if (angular.isArray(identifier)) {
+                        ctrl.element = [];
+
+                        angular.forEach(identifier, function(idTmp) {
+                            ctrl.element.push(idTmp);
+                        });
+                    }
+
+                } else {
+                    ctrl.element = [ctrl.identifier];
+                }
             } else {
-                ctrl.element = [ctrl.identifier];
+                ctrl.element = [];
             }
-        } else {
-            ctrl.element = [];
-        }
+        };
     }
 }]);
 
@@ -12158,136 +12178,138 @@ angular.module('opengate-angular-js').component('customUiSelectOgtypeList', {
 
 
 angular.module('opengate-angular-js').controller('customUiSelectHardwareController', ['$scope', '$element', '$attrs', '$api', '$q',
-    function ($scope, $element, $attrs, $api, $q) {
-        var ctrl = this;
-        ctrl.hardware = ctrl.hardware || (ctrl.ngModel && [ctrl.ngModel]);
-        ctrl.ownConfig = {
-            builder: $api().hardwaresSearchBuilder(),
-            filter: function (search) {
-                return {
-                    'or': [{
-                            'like': {
-                                'modelName': search
-                            }
-                        },
-                        {
-                            'like': {
-                                'modelVersion': search
-                            }
-                        },
-                        {
-                            'like': {
-                                'manufacturerName': search
-                            }
-                        }
-                    ]
-                };
-            },
-            rootKey: 'hardwares',
-            collection: [],
-            customSelectors: $api().hardwaresSearchBuilder(),
-            processingData: function (data, collection) {
-                try {
-                    return $q(function (C_ok, reject) {
-                        collection = [];
-                        if (typeof data.data.hardware !== 'undefined') {
-                            angular.copy(data.data.hardware, collection);
-                        } else if (typeof data.data.manufacturer !== 'undefined') {
-                            data.data.manufacturer.forEach(function (manuf) {
-                                var manuf_name = manuf.name;
-                                var manuf_id = manuf.id;
-                                if (manuf.models) {
-                                    manuf.models.forEach(function (model) {
-                                        var model_name = model.name;
-                                        var id = model.id;
-                                        var model_version = model.version;
-                                        var _model = {
-                                            name: model_name,
-                                            manufacturer: manuf_name,
-                                            version: model_version
-                                        };
-                                        if (ctrl.fullResult) {
-                                            _model.id = id;
-                                            _model.manufacturerId = manuf_id;
-                                        }
-                                        collection.push(_model);
-                                    });
+    function($scope, $element, $attrs, $api, $q) {
+        this.$onInit = function() {
+            var ctrl = this;
+            ctrl.hardware = ctrl.hardware || (ctrl.ngModel && [ctrl.ngModel]);
+            ctrl.ownConfig = {
+                builder: $api().hardwaresSearchBuilder(),
+                filter: function(search) {
+                    return {
+                        'or': [{
+                                'like': {
+                                    'modelName': search
                                 }
-                            });
-                        } else {
-                            reject('OGAPI->API-WS: Incompatible hardware catalog searching.');
-                        }
-                        C_ok(collection);
-                    });
-                } catch (err) {
-                    console.log(err);
-                }
-            }
-        };
-
-        ctrl.hardwareSelected = function ($item, $model) {
-            var _$item = ctrl.ngModel = $item;
-            if (!ctrl.multiple) {
-                _$item = ctrl.ngModel = $item;
-            }
-
-            if (ctrl.onSelectItem) {
-                var returnObj = {};
-                returnObj.$item = _$item;
-                returnObj.$model = $model;
-                ctrl.onSelectItem(returnObj);
-            }
-        };
-
-        ctrl.hardwareRemove = function ($item, $model) {
-            var _$item = ctrl.ngModel = $item;
-            if (!ctrl.multiple) {
-                _$item = ctrl.ngModel = undefined;
-            }
-
-            if (ctrl.onRemove) {
-                var returnObj = {};
-                returnObj.$item = _$item;
-                returnObj.$model = $model;
-                ctrl.onRemove(returnObj);
-            }
-
-        };
-
-
-        ctrl.$onChanges = function (changesObj) {
-            if (changesObj && changesObj.identifier) {
-                mapIdentifier(changesObj.identifier.currentValue);
-            }
-        };
-
-        if (ctrl.identifier) {
-            mapIdentifier(ctrl.identifier);
-        }
-
-        function mapIdentifier(identifierSrc) {
-            var identifier = identifierSrc;
-            if (identifier) {
-                if (identifier._current) {
-                    identifier = identifier._current.value;
-                }
-
-                if (ctrl.multiple) {
-                    if (angular.isArray(identifier)) {
-                        ctrl.hardware = [];
-
-                        angular.forEach(identifier, function (idTmp) {
-                            ctrl.hardware.push(idTmp);
+                            },
+                            {
+                                'like': {
+                                    'modelVersion': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'manufacturerName': search
+                                }
+                            }
+                        ]
+                    };
+                },
+                rootKey: 'hardwares',
+                collection: [],
+                customSelectors: $api().hardwaresSearchBuilder(),
+                processingData: function(data, collection) {
+                    try {
+                        return $q(function(C_ok, reject) {
+                            collection = [];
+                            if (typeof data.data.hardware !== 'undefined') {
+                                angular.copy(data.data.hardware, collection);
+                            } else if (typeof data.data.manufacturer !== 'undefined') {
+                                data.data.manufacturer.forEach(function(manuf) {
+                                    var manuf_name = manuf.name;
+                                    var manuf_id = manuf.id;
+                                    if (manuf.models) {
+                                        manuf.models.forEach(function(model) {
+                                            var model_name = model.name;
+                                            var id = model.id;
+                                            var model_version = model.version;
+                                            var _model = {
+                                                name: model_name,
+                                                manufacturer: manuf_name,
+                                                version: model_version
+                                            };
+                                            if (ctrl.fullResult) {
+                                                _model.id = id;
+                                                _model.manufacturerId = manuf_id;
+                                            }
+                                            collection.push(_model);
+                                        });
+                                    }
+                                });
+                            } else {
+                                reject('OGAPI->API-WS: Incompatible hardware catalog searching.');
+                            }
+                            C_ok(collection);
                         });
+                    } catch (err) {
+                        console.log(err);
+                    }
+                }
+            };
+
+            ctrl.hardwareSelected = function($item, $model) {
+                var _$item = ctrl.ngModel = $item;
+                if (!ctrl.multiple) {
+                    _$item = ctrl.ngModel = $item;
+                }
+
+                if (ctrl.onSelectItem) {
+                    var returnObj = {};
+                    returnObj.$item = _$item;
+                    returnObj.$model = $model;
+                    ctrl.onSelectItem(returnObj);
+                }
+            };
+
+            ctrl.hardwareRemove = function($item, $model) {
+                var _$item = ctrl.ngModel = $item;
+                if (!ctrl.multiple) {
+                    _$item = ctrl.ngModel = undefined;
+                }
+
+                if (ctrl.onRemove) {
+                    var returnObj = {};
+                    returnObj.$item = _$item;
+                    returnObj.$model = $model;
+                    ctrl.onRemove(returnObj);
+                }
+
+            };
+
+
+            ctrl.$onChanges = function(changesObj) {
+                if (changesObj && changesObj.identifier) {
+                    mapIdentifier(changesObj.identifier.currentValue);
+                }
+            };
+
+            if (ctrl.identifier) {
+                mapIdentifier(ctrl.identifier);
+            }
+
+            function mapIdentifier(identifierSrc) {
+                var identifier = identifierSrc;
+                if (identifier) {
+                    if (identifier._current) {
+                        identifier = identifier._current.value;
                     }
 
+                    if (ctrl.multiple) {
+                        if (angular.isArray(identifier)) {
+                            ctrl.hardware = [];
+
+                            angular.forEach(identifier, function(idTmp) {
+                                ctrl.hardware.push(idTmp);
+                            });
+                        }
+
+                    } else {
+                        ctrl.hardware = [ctrl.identifier];
+                    }
                 } else {
-                    ctrl.hardware = [ctrl.identifier];
+                    ctrl.hardware = [];
                 }
-            } else {
-                ctrl.hardware = [];
             }
-        }
+        };
     }
 ]);
 
@@ -12315,192 +12337,194 @@ angular.module('opengate-angular-js').component('customUiSelectHardware', {
 
 
 angular.module('opengate-angular-js').controller('customUiSelectEntityController', ['$scope', '$element', '$attrs', '$api',
-    function ($scope, $element, $attrs, $api) {
-        var ctrl = this;
+    function($scope, $element, $attrs, $api) {
+        this.$onInit = function() {
+            var ctrl = this;
 
-        var entitiesBuilder = $api().entitiesSearchBuilder();
+            var entitiesBuilder = $api().entitiesSearchBuilder();
 
-        if (ctrl.disableDefaultSorted) {
-            entitiesBuilder = entitiesBuilder.disableDefaultSorted();
-        }
+            if (ctrl.disableDefaultSorted) {
+                entitiesBuilder = entitiesBuilder.disableDefaultSorted();
+            }
 
-        var selectBuilder = $api().newSelectBuilder();
-        var SE = $api().SE;
+            var selectBuilder = $api().newSelectBuilder();
+            var SE = $api().SE;
 
-        selectBuilder.add(SE.element('provision.administration.identifier', [{
-            field: 'value'
-        }]));
-        selectBuilder.add(SE.element('provision.administration.organization', [{
-            field: 'value'
-        }]));
-        selectBuilder.add(SE.element('provision.administration.channel', [{
-            field: 'value'
-        }]));
-        selectBuilder.add(SE.element('resourceType', [{
-            field: 'value'
-        }]));
-        selectBuilder.add(SE.element('provision.device.identifier', [{
-            field: 'value'
-        }]));
-        selectBuilder.add(SE.element('provision.device.specificType', [{
-            field: 'value'
-        }]));
-        selectBuilder.add(SE.element('provision.device.operationalStatus', [{
-            field: 'value'
-        }]));
-        selectBuilder.add(SE.element('provision.device.communicationModules[].specificType', [{
-            field: 'value'
-        }]));
-        selectBuilder.add(SE.element('provision.device.communicationModules[].subscription.specificType', [{
-            field: 'value'
-        }]));
-        selectBuilder.add(SE.element('provision.device.communicationModules[].subscriber.specificType', [{
-            field: 'value'
-        }]));
+            selectBuilder.add(SE.element('provision.administration.identifier', [{
+                field: 'value'
+            }]));
+            selectBuilder.add(SE.element('provision.administration.organization', [{
+                field: 'value'
+            }]));
+            selectBuilder.add(SE.element('provision.administration.channel', [{
+                field: 'value'
+            }]));
+            selectBuilder.add(SE.element('resourceType', [{
+                field: 'value'
+            }]));
+            selectBuilder.add(SE.element('provision.device.identifier', [{
+                field: 'value'
+            }]));
+            selectBuilder.add(SE.element('provision.device.specificType', [{
+                field: 'value'
+            }]));
+            selectBuilder.add(SE.element('provision.device.operationalStatus', [{
+                field: 'value'
+            }]));
+            selectBuilder.add(SE.element('provision.device.communicationModules[].specificType', [{
+                field: 'value'
+            }]));
+            selectBuilder.add(SE.element('provision.device.communicationModules[].subscription.specificType', [{
+                field: 'value'
+            }]));
+            selectBuilder.add(SE.element('provision.device.communicationModules[].subscriber.specificType', [{
+                field: 'value'
+            }]));
 
-        selectBuilder.add(SE.element('provision.asset.identifier', [{
-            field: 'value'
-        }]));
-        selectBuilder.add(SE.element('provision.asset.specificType', [{
-            field: 'value'
-        }]));
+            selectBuilder.add(SE.element('provision.asset.identifier', [{
+                field: 'value'
+            }]));
+            selectBuilder.add(SE.element('provision.asset.specificType', [{
+                field: 'value'
+            }]));
 
-        ctrl.ownConfig = {
-            builder: entitiesBuilder.select(selectBuilder),
-            filter: function (search) {
-                if (search) {
-                    return {
-                        'or': [{
-                                'like': {
-                                    'provision.administration.identifier': search
+            ctrl.ownConfig = {
+                builder: entitiesBuilder.select(selectBuilder),
+                filter: function(search) {
+                    if (search) {
+                        return {
+                            'or': [{
+                                    'like': {
+                                        'provision.administration.identifier': search
+                                    }
+                                },
+                                {
+                                    'like': {
+                                        'provision.device.specificType': search
+                                    }
+                                },
+                                {
+                                    'like': {
+                                        'device.specificType': search
+                                    }
+                                },
+                                {
+                                    'like': {
+                                        'provision.entity.specificType': search
+                                    }
+                                },
+                                {
+                                    'like': {
+                                        'provision.device.communicationModules[].specificType': search
+                                    }
                                 }
-                            },
-                            {
-                                'like': {
-                                    'provision.device.specificType': search
-                                }
-                            },
-                            {
-                                'like': {
-                                    'device.specificType': search
-                                }
-                            },
-                            {
-                                'like': {
-                                    'provision.entity.specificType': search
-                                }
-                            },
-                            {
-                                'like': {
-                                    'provision.device.communicationModules[].specificType': search
-                                }
-                            }
-                        ]
-                    };
+                            ]
+                        };
+                    } else {
+                        return null;
+                    }
+                },
+                rootKey: 'entities',
+                collection: [],
+                customSelectors: $api().entitiesSearchBuilder()
+            };
+
+            ctrl.entitySelected = function($item, $model) {
+                if (ctrl.multiple) {
+                    var identifierTmp = ctrl.ngModel || [];
+
+                    angular.forEach(ctrl.entity, function(entityTmp) {
+                        identifierTmp.push(entityTmp.provision.administration.identifier._current.value);
+                    });
+
+                    ctrl.ngModel = identifierTmp;
                 } else {
-                    return null;
+                    ctrl.ngModel = $item.provision.administration.identifier._current.value;
                 }
-            },
-            rootKey: 'entities',
-            collection: [],
-            customSelectors: $api().entitiesSearchBuilder()
-        };
 
-        ctrl.entitySelected = function ($item, $model) {
-            if (ctrl.multiple) {
-                var identifierTmp = ctrl.ngModel || [];
-
-                angular.forEach(ctrl.entity, function (entityTmp) {
-                    identifierTmp.push(entityTmp.provision.administration.identifier._current.value);
-                });
-
-                ctrl.ngModel = identifierTmp;
-            } else {
-                ctrl.ngModel = $item.provision.administration.identifier._current.value;
-            }
-
-            if (ctrl.onSelectItem) {
-                var returnObj = {};
-                returnObj.$item = $item;
-                returnObj.$model = $model;
-                ctrl.onSelectItem(returnObj);
-            }
-        };
-
-        ctrl.entityRemove = function ($item, $model) {
-            if (ctrl.onRemove) {
-                var returnObj = {};
-                returnObj.$item = $item;
-                returnObj.$model = $model;
-                ctrl.onRemove(returnObj);
-            }
-
-            if (ctrl.multiple) {
-                if (ctrl.ngModel && ctrl.ngModel.indexOf($item.provision.administration.identifier._current.value) !== -1) {
-                    ctrl.ngModel.splice(ctrl.ngModel.indexOf($item.provision.administration.identifier._current.value), 1);
+                if (ctrl.onSelectItem) {
+                    var returnObj = {};
+                    returnObj.$item = $item;
+                    returnObj.$model = $model;
+                    ctrl.onSelectItem(returnObj);
                 }
-            } else {
-                ctrl.ngModel = undefined;
-            }
-        };
+            };
 
-        ctrl.$onChanges = function (changesObj) {
-            if (changesObj && changesObj.identifier) {
-                mapIdentifier(changesObj.identifier.currentValue);
-            }
-        };
-
-        if (ctrl.required !== undefined) {
-            ctrl.ngRequired = ctrl.required;
-        }
-
-        if (ctrl.identifier) {
-            mapIdentifier(ctrl.identifier);
-        }
-
-        function mapIdentifier(identifierSource) {
-            var identifier = identifierSource;
-
-            if (identifier) {
-                if (identifier._current) {
-                    identifier = identifier._current.value;
+            ctrl.entityRemove = function($item, $model) {
+                if (ctrl.onRemove) {
+                    var returnObj = {};
+                    returnObj.$item = $item;
+                    returnObj.$model = $model;
+                    ctrl.onRemove(returnObj);
                 }
 
                 if (ctrl.multiple) {
-                    if (angular.isArray(identifier)) {
-                        ctrl.entity = [];
+                    if (ctrl.ngModel && ctrl.ngModel.indexOf($item.provision.administration.identifier._current.value) !== -1) {
+                        ctrl.ngModel.splice(ctrl.ngModel.indexOf($item.provision.administration.identifier._current.value), 1);
+                    }
+                } else {
+                    ctrl.ngModel = undefined;
+                }
+            };
 
-                        angular.forEach(identifier, function (idTmp) {
-                            ctrl.entity.push({
-                                provision: {
-                                    administration: {
-                                        identifier: {
-                                            _current: {
-                                                value: idTmp
+            ctrl.$onChanges = function(changesObj) {
+                if (changesObj && changesObj.identifier) {
+                    mapIdentifier(changesObj.identifier.currentValue);
+                }
+            };
+
+            if (ctrl.required !== undefined) {
+                ctrl.ngRequired = ctrl.required;
+            }
+
+            if (ctrl.identifier) {
+                mapIdentifier(ctrl.identifier);
+            }
+
+            function mapIdentifier(identifierSource) {
+                var identifier = identifierSource;
+
+                if (identifier) {
+                    if (identifier._current) {
+                        identifier = identifier._current.value;
+                    }
+
+                    if (ctrl.multiple) {
+                        if (angular.isArray(identifier)) {
+                            ctrl.entity = [];
+
+                            angular.forEach(identifier, function(idTmp) {
+                                ctrl.entity.push({
+                                    provision: {
+                                        administration: {
+                                            identifier: {
+                                                _current: {
+                                                    value: idTmp
+                                                }
                                             }
                                         }
                                     }
-                                }
+                                });
                             });
-                        });
-                    }
-                } else {
-                    ctrl.entity = [{
-                        provision: {
-                            administration: {
-                                identifier: {
-                                    _current: {
-                                        value: ctrl.identifier
+                        }
+                    } else {
+                        ctrl.entity = [{
+                            provision: {
+                                administration: {
+                                    identifier: {
+                                        _current: {
+                                            value: ctrl.identifier
+                                        }
                                     }
                                 }
                             }
-                        }
-                    }];
+                        }];
+                    }
+                } else {
+                    ctrl.entity = [];
                 }
-            } else {
-                ctrl.entity = [];
             }
-        }
+        };
     }
 ]);
 
@@ -12528,59 +12552,61 @@ angular.module('opengate-angular-js').component('customUiSelectEntity', {
 
 
 angular.module('opengate-angular-js').controller('customUiSelectDomainController', ['$scope', '$element', '$attrs', '$api', '$q', function($scope, $element, $attrs, $api, $q) {
-    var ctrl = this;
-    var firstLoad = ctrl.ngRequired || ctrl.required;
-    ctrl.ownConfig = {
-        builder: $api().domainsSearchBuilder(),
-        rootKey: 'domains',
-        collection: [],
-        filter: function(search) {
-            if (search) {
-                return {
-                    'or': [{
-                            'like': {
-                                'domain.name': search
+    this.$onInit = function() {
+        var ctrl = this;
+        var firstLoad = ctrl.ngRequired || ctrl.required;
+        ctrl.ownConfig = {
+            builder: $api().domainsSearchBuilder(),
+            rootKey: 'domains',
+            collection: [],
+            filter: function(search) {
+                if (search) {
+                    return {
+                        'or': [{
+                                'like': {
+                                    'domain.name': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'domain.description': search
+                                }
                             }
-                        },
-                        {
-                            'like': {
-                                'domain.description': search
-                            }
-                        }
-                    ]
-                };
-            } else {
-                return null;
+                        ]
+                    };
+                } else {
+                    return null;
+                }
+            },
+            customSelectors: $api().domainsSearchBuilder(),
+            processingData: function(result, domains) {
+                if (firstLoad) {
+                    var _selectedDomain = Array.isArray(ctrl.domain) ? ctrl.domain : (ctrl.domain && [ctrl.domain]);
+                    ctrl.domain = _selectedDomain || [domains[0]];
+                    firstLoad = false;
+                }
+
+                var deferred = $q.defer();
+
+                deferred.resolve(domains);
+
+                return deferred.promise;
             }
-        },
-        customSelectors: $api().domainsSearchBuilder(),
-        processingData: function(result, domains) {
-            if (firstLoad) {
-                var _selectedDomain = Array.isArray(ctrl.domain) ? ctrl.domain : (ctrl.domain && [ctrl.domain]);
-                ctrl.domain = _selectedDomain || [domains[0]];
-                firstLoad = false;
-            }
+        };
 
-            var deferred = $q.defer();
+        ctrl.domainSelected = function($item, $model) {
+            var returnObj = {};
+            returnObj.$item = $item;
+            returnObj.$model = $model;
+            ctrl.onSelectItem(returnObj);
+        };
 
-            deferred.resolve(domains);
-
-            return deferred.promise;
-        }
-    };
-
-    ctrl.domainSelected = function($item, $model) {
-        var returnObj = {};
-        returnObj.$item = $item;
-        returnObj.$model = $model;
-        ctrl.onSelectItem(returnObj);
-    };
-
-    ctrl.domainRemove = function($item, $model) {
-        var returnObj = {};
-        returnObj.$item = $item;
-        returnObj.$model = $model;
-        ctrl.onRemove(returnObj);
+        ctrl.domainRemove = function($item, $model) {
+            var returnObj = {};
+            returnObj.$item = $item;
+            returnObj.$model = $model;
+            ctrl.onRemove(returnObj);
+        };
     };
 }]);
 
@@ -12604,414 +12630,416 @@ angular.module('opengate-angular-js').component('customUiSelectDomain', {
 
 angular.module('opengate-angular-js').controller('customUiSelectDeviceController', ['$scope', '$element', '$attrs', '$api', '$translate', '$doActions', '$jsonFinderHelper', 'jsonPath', '_', 'toastr', 'Filter',
     function($scope, $element, $attrs, $api, $translate, $doActions, $jsonFinderHelper, jsonPath, _, toastr, Filter) {
-        var ctrl = this;
+        this.$onInit = function() {
+            var ctrl = this;
 
-        var deviceBuilder = $api().devicesSearchBuilder();
+            var deviceBuilder = $api().devicesSearchBuilder();
 
-        if (ctrl.disableDefaultSorted) {
-            deviceBuilder = deviceBuilder.disableDefaultSorted();
-        }
+            if (ctrl.disableDefaultSorted) {
+                deviceBuilder = deviceBuilder.disableDefaultSorted();
+            }
 
-        if (!ctrl.fullInfo) {
-            var selectBuilder = $api().newSelectBuilder();
-            var SE = $api().SE;
+            if (!ctrl.fullInfo) {
+                var selectBuilder = $api().newSelectBuilder();
+                var SE = $api().SE;
 
-            selectBuilder.add(SE.element('provision.administration.identifier', [{
-                field: 'value'
-            }]));
-            selectBuilder.add(SE.element('provision.administration.organization', [{
-                field: 'value'
-            }]));
-            selectBuilder.add(SE.element('provision.administration.channel', [{
-                field: 'value'
-            }]));
-            selectBuilder.add(SE.element('resourceType', [{
-                field: 'value'
-            }]));
-            selectBuilder.add(SE.element('provision.device.identifier', [{
-                field: 'value'
-            }]));
-            selectBuilder.add(SE.element('provision.device.specificType', [{
-                field: 'value'
-            }]));
-            selectBuilder.add(SE.element('provision.device.operationalStatus', [{
-                field: 'value'
-            }]));
+                selectBuilder.add(SE.element('provision.administration.identifier', [{
+                    field: 'value'
+                }]));
+                selectBuilder.add(SE.element('provision.administration.organization', [{
+                    field: 'value'
+                }]));
+                selectBuilder.add(SE.element('provision.administration.channel', [{
+                    field: 'value'
+                }]));
+                selectBuilder.add(SE.element('resourceType', [{
+                    field: 'value'
+                }]));
+                selectBuilder.add(SE.element('provision.device.identifier', [{
+                    field: 'value'
+                }]));
+                selectBuilder.add(SE.element('provision.device.specificType', [{
+                    field: 'value'
+                }]));
+                selectBuilder.add(SE.element('provision.device.operationalStatus', [{
+                    field: 'value'
+                }]));
 
-            selectBuilder.add(SE.element('provision.device.communicationModules[].specificType', [{
-                field: 'value'
-            }]));
-            selectBuilder.add(SE.element('provision.device.communicationModules[].subscription.specificType', [{
-                field: 'value'
-            }]));
-            selectBuilder.add(SE.element('provision.device.communicationModules[].subscriber.specificType', [{
-                field: 'value'
-            }]));
+                selectBuilder.add(SE.element('provision.device.communicationModules[].specificType', [{
+                    field: 'value'
+                }]));
+                selectBuilder.add(SE.element('provision.device.communicationModules[].subscription.specificType', [{
+                    field: 'value'
+                }]));
+                selectBuilder.add(SE.element('provision.device.communicationModules[].subscriber.specificType', [{
+                    field: 'value'
+                }]));
 
-            deviceBuilder.select(selectBuilder);
-        }
+                deviceBuilder.select(selectBuilder);
+            }
 
-        var defaultQuickSearchFields = "provision.administration.identifier,provision.device.specificType,device.specificType";
-        var defaultSpecificTypeSearchFields = "provision.device.specificType, device.specificType";
+            var defaultQuickSearchFields = "provision.administration.identifier,provision.device.specificType,device.specificType";
+            var defaultSpecificTypeSearchFields = "provision.device.specificType, device.specificType";
 
-        function _getQuickSearchFields(search) {
-            var _quickSearchFields = ctrl.quickSearchFields || defaultQuickSearchFields;
-            var fields = _quickSearchFields.split(/[,|, ]+/);
-            var filter = {
-                or: []
-            };
-            fields.forEach(function(field) {
-                var _like = {
-                    like: {}
+            function _getQuickSearchFields(search) {
+                var _quickSearchFields = ctrl.quickSearchFields || defaultQuickSearchFields;
+                var fields = _quickSearchFields.split(/[,|, ]+/);
+                var filter = {
+                    or: []
                 };
-                _like.like[field] = search;
-                filter.or.push(_like);
-            });
-            return filter;
-        }
-
-        function _getSpecificTypeSearchFields(specificType) {
-            var _specificTypeSearchFields = ctrl.specificTypeSearchFields || defaultSpecificTypeSearchFields;
-            var fields = _specificTypeSearchFields.split(/[,|, ]+/);
-            var filter = {
-                or: [],
-                eq: {}
-            };
-            if (fields.length === 1) {
-                delete filter.or;
-                filter.eq[fields[0]] = specificType;
-            } else {
-                delete filter.eq;
                 fields.forEach(function(field) {
-                    var _eq = {
-                        eq: {}
+                    var _like = {
+                        like: {}
                     };
-                    _eq.eq[field] = specificType;
-                    filter.or.push(_eq);
+                    _like.like[field] = search;
+                    filter.or.push(_like);
                 });
-            }
-            return filter;
-        }
-
-        function _getFilter(oql) {
-            var _json = Filter.parseQuery(oql);
-            var _filter = jsonPath(_json, '$..value.filter')[0] || undefined;
-            return _filter.and || ([_filter] || []);
-        }
-
-        ctrl.ownConfig = {
-            builder: deviceBuilder,
-            filter: function(search) {
-                var filter;
-
-                if (search) {
-                    filter = _getQuickSearchFields(search);
-                }
-
-                if (!!ctrl.specificType) {
-                    if (filter) {
-                        filter = {
-                            'and': [filter]
-                        };
-                    } else {
-                        filter = {
-                            and: []
-                        };
-                    }
-
-                    filter.and.push(_getSpecificTypeSearchFields(ctrl.specificType));
-                }
-
-                if (ctrl.oql) {
-                    var _oql = _getFilter(ctrl.oql);
-
-                    if (!filter) {
-                        filter = {
-                            'and': []
-                        };
-                    } else if (!filter.and) {
-                        filter = {
-                            and: [filter]
-                        };
-                    }
-
-                    var _and = filter.and.concat(_oql);
-                    filter.and = _and;
-                }
-
                 return filter;
-            },
-            rootKey: 'devices',
-            collection: [],
-            customSelectors: $api().devicesSearchBuilder(),
-            specificType: ctrl.specificType,
-            oql: ctrl.oql,
-            quickSearchFields: ctrl.quickSearchFields
-        };
+            }
 
-        ctrl.deviceSelected = function($item, $model) {
-            if (ctrl.multiple) {
-                var identifierTmp = [];
+            function _getSpecificTypeSearchFields(specificType) {
+                var _specificTypeSearchFields = ctrl.specificTypeSearchFields || defaultSpecificTypeSearchFields;
+                var fields = _specificTypeSearchFields.split(/[,|, ]+/);
+                var filter = {
+                    or: [],
+                    eq: {}
+                };
+                if (fields.length === 1) {
+                    delete filter.or;
+                    filter.eq[fields[0]] = specificType;
+                } else {
+                    delete filter.eq;
+                    fields.forEach(function(field) {
+                        var _eq = {
+                            eq: {}
+                        };
+                        _eq.eq[field] = specificType;
+                        filter.or.push(_eq);
+                    });
+                }
+                return filter;
+            }
 
-                angular.forEach(ctrl.device, function(deviceTmp) {
-                    identifierTmp.push(deviceTmp.provision.administration.identifier._current.value);
+            function _getFilter(oql) {
+                var _json = Filter.parseQuery(oql);
+                var _filter = jsonPath(_json, '$..value.filter')[0] || undefined;
+                return _filter.and || ([_filter] || []);
+            }
+
+            ctrl.ownConfig = {
+                builder: deviceBuilder,
+                filter: function(search) {
+                    var filter;
+
+                    if (search) {
+                        filter = _getQuickSearchFields(search);
+                    }
+
+                    if (!!ctrl.specificType) {
+                        if (filter) {
+                            filter = {
+                                'and': [filter]
+                            };
+                        } else {
+                            filter = {
+                                and: []
+                            };
+                        }
+
+                        filter.and.push(_getSpecificTypeSearchFields(ctrl.specificType));
+                    }
+
+                    if (ctrl.oql) {
+                        var _oql = _getFilter(ctrl.oql);
+
+                        if (!filter) {
+                            filter = {
+                                'and': []
+                            };
+                        } else if (!filter.and) {
+                            filter = {
+                                and: [filter]
+                            };
+                        }
+
+                        var _and = filter.and.concat(_oql);
+                        filter.and = _and;
+                    }
+
+                    return filter;
+                },
+                rootKey: 'devices',
+                collection: [],
+                customSelectors: $api().devicesSearchBuilder(),
+                specificType: ctrl.specificType,
+                oql: ctrl.oql,
+                quickSearchFields: ctrl.quickSearchFields
+            };
+
+            ctrl.deviceSelected = function($item, $model) {
+                if (ctrl.multiple) {
+                    var identifierTmp = [];
+
+                    angular.forEach(ctrl.device, function(deviceTmp) {
+                        identifierTmp.push(deviceTmp.provision.administration.identifier._current.value);
+                    });
+
+                    ctrl.ngModel = identifierTmp;
+                } else {
+                    ctrl.ngModel = $item.provision.administration.identifier._current.value;
+                }
+
+                if (ctrl.onSelectItem) {
+                    var returnObj = {};
+                    returnObj.$item = $item;
+                    returnObj.$model = $model;
+                    ctrl.onSelectItem(returnObj);
+                }
+            };
+
+            ctrl.deviceRemove = function($item, $model) {
+                if (ctrl.onRemove) {
+                    var returnObj = {};
+                    returnObj.$item = $item;
+                    returnObj.$model = $model;
+                    ctrl.onRemove(returnObj);
+                }
+
+                if (ctrl.multiple) {
+                    if (ctrl.ngModel && ctrl.ngModel.indexOf($item.provision.administration.identifier._current.value) !== -1) {
+                        ctrl.ngModel.splice(ctrl.ngModel.indexOf($item.provision.administration.identifier._current.value), 1);
+                    }
+                } else {
+                    ctrl.ngModel = undefined;
+                }
+
+            };
+
+            ctrl.editDevice = function(deviceData) {
+                var entityId = deviceData.provision.administration.identifier._current.value || deviceData.identifier;
+                var deviceFinder = $api().devicesSearchBuilder().filter({
+                    "and": [{
+                        "eq": {
+                            "provision.device.identifier": entityId
+                        }
+                    }]
                 });
 
-                ctrl.ngModel = identifierTmp;
-            } else {
-                ctrl.ngModel = $item.provision.administration.identifier._current.value;
-            }
-
-            if (ctrl.onSelectItem) {
-                var returnObj = {};
-                returnObj.$item = $item;
-                returnObj.$model = $model;
-                ctrl.onSelectItem(returnObj);
-            }
-        };
-
-        ctrl.deviceRemove = function($item, $model) {
-            if (ctrl.onRemove) {
-                var returnObj = {};
-                returnObj.$item = $item;
-                returnObj.$model = $model;
-                ctrl.onRemove(returnObj);
-            }
-
-            if (ctrl.multiple) {
-                if (ctrl.ngModel && ctrl.ngModel.indexOf($item.provision.administration.identifier._current.value) !== -1) {
-                    ctrl.ngModel.splice(ctrl.ngModel.indexOf($item.provision.administration.identifier._current.value), 1);
-                }
-            } else {
-                ctrl.ngModel = undefined;
-            }
-
-        };
-
-        ctrl.editDevice = function(deviceData) {
-            var entityId = deviceData.provision.administration.identifier._current.value || deviceData.identifier;
-            var deviceFinder = $api().devicesSearchBuilder().filter({
-                "and": [{
-                    "eq": {
-                        "provision.device.identifier": entityId
-                    }
-                }]
-            });
-
-            deviceFinder.build().execute()
-                .then(function(result) {
-                    if (result.statusCode === 204) {
-                        $translate('TOASTR.ENTITY_NOT_FOUND', {
-                            identifier: entityId
-                        }).
+                deviceFinder.build().execute()
+                    .then(function(result) {
+                        if (result.statusCode === 204) {
+                            $translate('TOASTR.ENTITY_NOT_FOUND', {
+                                identifier: entityId
+                            }).
+                            then(function(translatedMessage) {
+                                toastr.error(translatedMessage);
+                            });
+                        } else {
+                            $doActions.executeModal('editDevice', angular.copy(result.data.devices[0]));
+                        }
+                    })
+                    .catch(function(err) {
+                        $translate('TOASTR.CANNOT_GET_ENTITY_INFO').
                         then(function(translatedMessage) {
                             toastr.error(translatedMessage);
                         });
-                    } else {
-                        $doActions.executeModal('editDevice', angular.copy(result.data.devices[0]));
-                    }
-                })
-                .catch(function(err) {
-                    $translate('TOASTR.CANNOT_GET_ENTITY_INFO').
-                    then(function(translatedMessage) {
-                        toastr.error(translatedMessage);
                     });
-                });
-        };
-
-        function _getOperationActionTemplate(operationSelected) {
-            return {
-                title: $translate.instant('BUTTON.TITLE.EXECUTE_OPERATION'),
-                icon: 'glyphicon glyphicon-flash',
-                action: function() {
-                    $doActions.executeModal('executeOperation', {
-                        keys: jsonPath(ctrl.device, '$..' + $jsonFinderHelper.provisioned.getPath('identifier') + '._current.value') || [],
-                        entityType: 'GATEWAY',
-                        operation: operationSelected ? operationSelected.trim().toUpperCase() : undefined
-                    });
-                },
-                disable: function() {
-                    return !ctrl.device || ctrl.device.length === 0;
-                },
-                permissions: 'executeOperation'
             };
-        }
 
-        var uiSelectActionsDefinition = {
-            operation: _getOperationActionTemplate(),
-            create: {
-                title: $translate.instant('FORM.LABEL.NEW'),
-                icon: 'glyphicon glyphicon-plus-sign',
-                action: function() {
-                    var actionData = {};
-                    if (!!ctrl.specificType) {
-                        actionData = {
-                            resourceType: {
-                                _current: {
-                                    value: 'entity.device'
-                                }
-                            },
-                            provision: {
-                                device: {
-                                    specificType: {
-                                        _current: {
-                                            value: ctrl.specificType
-                                        }
+            function _getOperationActionTemplate(operationSelected) {
+                return {
+                    title: $translate.instant('BUTTON.TITLE.EXECUTE_OPERATION'),
+                    icon: 'glyphicon glyphicon-flash',
+                    action: function() {
+                        $doActions.executeModal('executeOperation', {
+                            keys: jsonPath(ctrl.device, '$..' + $jsonFinderHelper.provisioned.getPath('identifier') + '._current.value') || [],
+                            entityType: 'GATEWAY',
+                            operation: operationSelected ? operationSelected.trim().toUpperCase() : undefined
+                        });
+                    },
+                    disable: function() {
+                        return !ctrl.device || ctrl.device.length === 0;
+                    },
+                    permissions: 'executeOperation'
+                };
+            }
+
+            var uiSelectActionsDefinition = {
+                operation: _getOperationActionTemplate(),
+                create: {
+                    title: $translate.instant('FORM.LABEL.NEW'),
+                    icon: 'glyphicon glyphicon-plus-sign',
+                    action: function() {
+                        var actionData = {};
+                        if (!!ctrl.specificType) {
+                            actionData = {
+                                resourceType: {
+                                    _current: {
+                                        value: 'entity.device'
                                     }
-                                }
-                            }
-                        };
-                    }
-                    $doActions.executeModal('createDevice', actionData, function(result) {
-                        if (result && result.length > 0) {
-                            ctrl.device = !ctrl.device ? [] : ctrl.device;
-                            ctrl.device.push({
+                                },
                                 provision: {
-                                    administration: {
-                                        identifier: {
-                                            _current: {
-                                                value: result[0].identifier
-                                            }
-                                        }
-                                    },
                                     device: {
-                                        identifier: {
+                                        specificType: {
                                             _current: {
-                                                value: result[0].identifier
+                                                value: ctrl.specificType
                                             }
                                         }
                                     }
                                 }
-                            });
-
-                            var deviceFinder = $api().devicesSearchBuilder().filter({
-                                "and": [{
-                                    "eq": {
-                                        "provision.device.identifier": result[0].identifier
+                            };
+                        }
+                        $doActions.executeModal('createDevice', actionData, function(result) {
+                            if (result && result.length > 0) {
+                                ctrl.device = !ctrl.device ? [] : ctrl.device;
+                                ctrl.device.push({
+                                    provision: {
+                                        administration: {
+                                            identifier: {
+                                                _current: {
+                                                    value: result[0].identifier
+                                                }
+                                            }
+                                        },
+                                        device: {
+                                            identifier: {
+                                                _current: {
+                                                    value: result[0].identifier
+                                                }
+                                            }
+                                        }
                                     }
-                                }]
-                            });
+                                });
 
-                            deviceFinder.build().execute()
-                                .then(function(result) {
-                                    if (result.statusCode === 204) {
-                                        $translate('TOASTR.ENTITY_NOT_FOUND', {
-                                            identifier: result[0].identifier
-                                        }).
+                                var deviceFinder = $api().devicesSearchBuilder().filter({
+                                    "and": [{
+                                        "eq": {
+                                            "provision.device.identifier": result[0].identifier
+                                        }
+                                    }]
+                                });
+
+                                deviceFinder.build().execute()
+                                    .then(function(result) {
+                                        if (result.statusCode === 204) {
+                                            $translate('TOASTR.ENTITY_NOT_FOUND', {
+                                                identifier: result[0].identifier
+                                            }).
+                                            then(function(translatedMessage) {
+                                                toastr.error(translatedMessage);
+                                            });
+                                        } else {
+                                            ctrl.deviceSelected(result.data.devices[0]);
+                                        }
+                                    })
+                                    .catch(function(err) {
+                                        $translate('TOASTR.CANNOT_GET_ENTITY_INFO').
                                         then(function(translatedMessage) {
                                             toastr.error(translatedMessage);
                                         });
-                                    } else {
-                                        ctrl.deviceSelected(result.data.devices[0]);
-                                    }
-                                })
-                                .catch(function(err) {
-                                    $translate('TOASTR.CANNOT_GET_ENTITY_INFO').
-                                    then(function(translatedMessage) {
-                                        toastr.error(translatedMessage);
                                     });
-                                });
-                        }
-                    });
-                },
-                permissions: 'manageEntity'
-            }
-        };
-        // Actions que finalmente se mostrarán en el control
-        ctrl.uiSelectActions = [];
-
-        if (!ctrl.actions) {
-            angular.forEach(uiSelectActionsDefinition, function(action) {
-                ctrl.uiSelectActions.push(action);
-            });
-        } else {
-            angular.forEach(ctrl.actions, function(action) {
-                var finalAction;
-                switch (action.type) {
-                    case 'operation':
-                        finalAction = _getOperationActionTemplate(action.operation);
-                        break;
-                    case 'create':
-                        finalAction = uiSelectActionsDefinition.create;
-                        break;
-                }
-                finalAction.title = action.title || finalAction.title;
-                finalAction.icon = action.icon || finalAction.icon;
-                ctrl.uiSelectActions.push(finalAction);
-            });
-
-        }
-
-        ctrl.$onChanges = function(changesObj) {
-            if (changesObj && changesObj.identifier) {
-                mapIdentifier(changesObj.identifier.currentValue);
-            }
-        };
-
-        if (ctrl.required !== undefined) {
-            ctrl.ngRequired = ctrl.required;
-        }
-
-        if (ctrl.identifier) {
-            mapIdentifier(ctrl.identifier);
-        }
-
-        function mapIdentifier(identifierSource) {
-            var identifier = identifierSource;
-
-            if (identifier) {
-                if (identifier._current) {
-                    identifier = identifier._current.value;
-                }
-                if (ctrl.multiple) {
-                    if (angular.isArray(identifier)) {
-                        ctrl.device = [];
-
-                        angular.forEach(identifier, function(idTmp) {
-                            ctrl.device.push({
-                                provision: {
-                                    administration: {
-                                        identifier: {
-                                            _current: {
-                                                value: idTmp
-                                            }
-                                        }
-                                    },
-                                    device: {
-                                        identifier: {
-                                            _current: {
-                                                value: idTmp
-                                            }
-                                        }
-                                    }
-                                }
-                            });
+                            }
                         });
+                    },
+                    permissions: 'manageEntity'
+                }
+            };
+            // Actions que finalmente se mostrarán en el control
+            ctrl.uiSelectActions = [];
+
+            if (!ctrl.actions) {
+                angular.forEach(uiSelectActionsDefinition, function(action) {
+                    ctrl.uiSelectActions.push(action);
+                });
+            } else {
+                angular.forEach(ctrl.actions, function(action) {
+                    var finalAction;
+                    switch (action.type) {
+                        case 'operation':
+                            finalAction = _getOperationActionTemplate(action.operation);
+                            break;
+                        case 'create':
+                            finalAction = uiSelectActionsDefinition.create;
+                            break;
                     }
-                } else {
-                    ctrl.device = [{
-                        provision: {
-                            administration: {
-                                identifier: {
-                                    _current: {
-                                        value: ctrl.identifier
+                    finalAction.title = action.title || finalAction.title;
+                    finalAction.icon = action.icon || finalAction.icon;
+                    ctrl.uiSelectActions.push(finalAction);
+                });
+
+            }
+
+            ctrl.$onChanges = function(changesObj) {
+                if (changesObj && changesObj.identifier) {
+                    mapIdentifier(changesObj.identifier.currentValue);
+                }
+            };
+
+            if (ctrl.required !== undefined) {
+                ctrl.ngRequired = ctrl.required;
+            }
+
+            if (ctrl.identifier) {
+                mapIdentifier(ctrl.identifier);
+            }
+
+            function mapIdentifier(identifierSource) {
+                var identifier = identifierSource;
+
+                if (identifier) {
+                    if (identifier._current) {
+                        identifier = identifier._current.value;
+                    }
+                    if (ctrl.multiple) {
+                        if (angular.isArray(identifier)) {
+                            ctrl.device = [];
+
+                            angular.forEach(identifier, function(idTmp) {
+                                ctrl.device.push({
+                                    provision: {
+                                        administration: {
+                                            identifier: {
+                                                _current: {
+                                                    value: idTmp
+                                                }
+                                            }
+                                        },
+                                        device: {
+                                            identifier: {
+                                                _current: {
+                                                    value: idTmp
+                                                }
+                                            }
+                                        }
                                     }
-                                }
-                            },
-                            device: {
-                                identifier: {
-                                    _current: {
-                                        value: ctrl.identifier
+                                });
+                            });
+                        }
+                    } else {
+                        ctrl.device = [{
+                            provision: {
+                                administration: {
+                                    identifier: {
+                                        _current: {
+                                            value: ctrl.identifier
+                                        }
+                                    }
+                                },
+                                device: {
+                                    identifier: {
+                                        _current: {
+                                            value: ctrl.identifier
+                                        }
                                     }
                                 }
                             }
-                        }
-                    }];
+                        }];
+                    }
+                } else {
+                    ctrl.device = [];
                 }
-            } else {
-                ctrl.device = [];
             }
-        }
+        };
     }
 ]);
 
@@ -13045,234 +13073,236 @@ angular.module('opengate-angular-js').component('customUiSelectDevice', {
 
 
 angular.module('opengate-angular-js').controller('customUiSelectDatastreamController', ['$api', '$q', 'Authentication', function($api, $q, Authentication) {
-    var ctrl = this;
+    this.$onInit = function() {
+        var ctrl = this;
 
-    // special chars to be replaced/escaped when the api is called
-    var specialCharsApi = ['\\', '[', '{'];
+        // special chars to be replaced/escaped when the api is called
+        var specialCharsApi = ['\\', '[', '{'];
 
-    ctrl.ownConfig = {
-        builder: $api().datamodelsSearchBuilder(),
-        limit: 5,
-        filter: function(search) {
-            ctrl.lastSearch = search;
+        ctrl.ownConfig = {
+            builder: $api().datamodelsSearchBuilder(),
+            limit: 5,
+            filter: function(search) {
+                ctrl.lastSearch = search;
 
-            // Escape characters para compatibilidad en api
-            if (search) {
-                specialCharsApi.forEach(function(specialchar) {
-                    search = search.replace(specialchar, '\\' + specialchar);
-                });
-            }
-
-            var finalFilter = {};
-            if (ctrl.resourceTypes && angular.isArray(ctrl.resourceTypes) && ctrl.resourceTypes.length > 0) {
-                finalFilter.and = [{ in: {
-                        'datamodels.allowedResourceTypes': ctrl.resourceTypes
-                    }
-                }];
-            }
-            if (ctrl.organization && ctrl.organization.length > 0) {
-                if (!finalFilter.and) {
-                    finalFilter.and = [];
+                // Escape characters para compatibilidad en api
+                if (search) {
+                    specialCharsApi.forEach(function(specialchar) {
+                        search = search.replace(specialchar, '\\' + specialchar);
+                    });
                 }
-                finalFilter.and.push({
-                    'eq': {
-                        'datamodels.organizationName': ctrl.organization
-                    }
-                });
-            }
 
-            if (!search) {
-                if (Authentication && Authentication.user && Authentication.user.domain && (!ctrl.organization || ctrl.organization.length <= 0)) {
+                var finalFilter = {};
+                if (ctrl.resourceTypes && angular.isArray(ctrl.resourceTypes) && ctrl.resourceTypes.length > 0) {
+                    finalFilter.and = [{ in: {
+                            'datamodels.allowedResourceTypes': ctrl.resourceTypes
+                        }
+                    }];
+                }
+                if (ctrl.organization && ctrl.organization.length > 0) {
                     if (!finalFilter.and) {
                         finalFilter.and = [];
                     }
-
                     finalFilter.and.push({
                         'eq': {
-                            'datamodels.organizationName': Authentication.user.domain
+                            'datamodels.organizationName': ctrl.organization
                         }
                     });
                 }
-                return finalFilter;
-            } else {
-                var quickSearchFilter = {
-                    'or': [{
-                            'like': {
-                                'datamodels.categories.datastreams.identifier': search
-                            }
-                        },
-                        {
-                            'like': {
-                                'datamodels.categories.datastreams.name': search
-                            }
-                        },
-                        {
-                            'like': {
-                                'datamodels.identifier': search
-                            }
-                        },
-                        {
-                            'like': {
-                                'datamodels.name': search
-                            }
-                        },
-                        {
-                            'like': {
-                                'datamodels.description': search
-                            }
-                        },
-                        {
-                            'like': {
-                                'datamodels.version': search
-                            }
+
+                if (!search) {
+                    if (Authentication && Authentication.user && Authentication.user.domain && (!ctrl.organization || ctrl.organization.length <= 0)) {
+                        if (!finalFilter.and) {
+                            finalFilter.and = [];
                         }
-                    ]
-                };
 
-                if (finalFilter.and) {
-                    finalFilter.and.push(quickSearchFilter);
+                        finalFilter.and.push({
+                            'eq': {
+                                'datamodels.organizationName': Authentication.user.domain
+                            }
+                        });
+                    }
+                    return finalFilter;
                 } else {
-                    return quickSearchFilter;
-                }
-                return finalFilter;
-            }
-
-
-        },
-        rootKey: 'datamodels',
-        collection: [],
-        processingData: function(data, collection) {
-            return $q(function(C_ok) {
-                var _datastreams = [];
-                var datamodels = data.data.datamodels;
-                angular.forEach(datamodels, function(datamodel, key) {
-                    var categories = datamodel.categories;
-                    var _datamodel = {
-                        identifier: datamodel.identifier,
-                        description: datamodel.description,
-                        name: datamodel.name,
-                        organization: datamodel.organizationName
+                    var quickSearchFilter = {
+                        'or': [{
+                                'like': {
+                                    'datamodels.categories.datastreams.identifier': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'datamodels.categories.datastreams.name': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'datamodels.identifier': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'datamodels.name': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'datamodels.description': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'datamodels.version': search
+                                }
+                            }
+                        ]
                     };
-                    angular.forEach(categories, function(category, key) {
-                        var datastreams = category.datastreams;
-                        if (datastreams) {
-                            var _category = {
-                                identifier: category.identifier
-                            };
-                            angular.forEach(datastreams
-                                .filter(function(ds) {
-                                    return (ds.identifier.toLowerCase().indexOf(ctrl.lastSearch.toLowerCase()) > -1 && !!ctrl.lastSearch.length) || !ctrl.lastSearch;
-                                }),
-                                function(datastream, key) {
-                                    var _datastream = angular.copy(datastream);
-                                    _datastream.datamodel = _datamodel;
-                                    _datastream.category = _category;
 
-                                    if (ctrl.postFilter) {
-                                        var filter = ctrl.postFilter(_datastream);
+                    if (finalFilter.and) {
+                        finalFilter.and.push(quickSearchFilter);
+                    } else {
+                        return quickSearchFilter;
+                    }
+                    return finalFilter;
+                }
 
-                                        if (!filter) {
+
+            },
+            rootKey: 'datamodels',
+            collection: [],
+            processingData: function(data, collection) {
+                return $q(function(C_ok) {
+                    var _datastreams = [];
+                    var datamodels = data.data.datamodels;
+                    angular.forEach(datamodels, function(datamodel, key) {
+                        var categories = datamodel.categories;
+                        var _datamodel = {
+                            identifier: datamodel.identifier,
+                            description: datamodel.description,
+                            name: datamodel.name,
+                            organization: datamodel.organizationName
+                        };
+                        angular.forEach(categories, function(category, key) {
+                            var datastreams = category.datastreams;
+                            if (datastreams) {
+                                var _category = {
+                                    identifier: category.identifier
+                                };
+                                angular.forEach(datastreams
+                                    .filter(function(ds) {
+                                        return (ds.identifier.toLowerCase().indexOf(ctrl.lastSearch.toLowerCase()) > -1 && !!ctrl.lastSearch.length) || !ctrl.lastSearch;
+                                    }),
+                                    function(datastream, key) {
+                                        var _datastream = angular.copy(datastream);
+                                        _datastream.datamodel = _datamodel;
+                                        _datastream.category = _category;
+
+                                        if (ctrl.postFilter) {
+                                            var filter = ctrl.postFilter(_datastream);
+
+                                            if (!filter) {
+                                                _datastreams.push(_datastream);
+                                            }
+                                        } else {
                                             _datastreams.push(_datastream);
                                         }
-                                    } else {
-                                        _datastreams.push(_datastream);
-                                    }
-                                });
-                        }
+                                    });
+                            }
+                        });
                     });
+                    angular.copy(_datastreams, collection);
+                    C_ok(collection);
                 });
-                angular.copy(_datastreams, collection);
-                C_ok(collection);
-            });
-        },
-        customSelectors: $api().datamodelsSearchBuilder()
-    };
+            },
+            customSelectors: $api().datamodelsSearchBuilder()
+        };
 
-    ctrl.datastreamSelected = function($item, $model) {
-        if (ctrl.multiple) {
-            var identifierTmp = ctrl.ngModel || [];
+        ctrl.datastreamSelected = function($item, $model) {
+            if (ctrl.multiple) {
+                var identifierTmp = ctrl.ngModel || [];
 
-            angular.forEach(ctrl.datastream, function(datastreamTmp) {
-                identifierTmp.push(datastreamTmp.identifier);
-            });
+                angular.forEach(ctrl.datastream, function(datastreamTmp) {
+                    identifierTmp.push(datastreamTmp.identifier);
+                });
 
-            ctrl.ngModel = identifierTmp;
-        } else {
-            ctrl.ngModel = $item.identifier;
-        }
-
-        if (ctrl.onSelectItem) {
-            var returnObj = {};
-            returnObj.$item = $item;
-            returnObj.$model = $model;
-            ctrl.onSelectItem(returnObj);
-        }
-    };
-
-    ctrl.datastreamRemove = function($item, $model) {
-        if (ctrl.onRemove) {
-            var returnObj = {};
-            returnObj.$item = $item;
-            returnObj.$model = $model;
-            ctrl.onRemove(returnObj);
-        }
-
-        if (ctrl.multiple) {
-            if (ctrl.ngModel && ctrl.ngModel.indexOf($item.identifier) !== -1) {
-                ctrl.ngModel.splice(ctrl.ngModel.indexOf($item.identifier), 1);
+                ctrl.ngModel = identifierTmp;
+            } else {
+                ctrl.ngModel = $item.identifier;
             }
-        } else {
-            ctrl.ngModel = undefined;
-        }
-    };
 
-    ctrl.$onChanges = function(changesObj) {
-        if (changesObj && changesObj.identifier) {
-            mapIdentifier(changesObj.identifier.currentValue);
-        }
-    };
+            if (ctrl.onSelectItem) {
+                var returnObj = {};
+                returnObj.$item = $item;
+                returnObj.$model = $model;
+                ctrl.onSelectItem(returnObj);
+            }
+        };
 
-    if (ctrl.required !== undefined) {
-        ctrl.ngRequired = ctrl.required;
-    }
-
-    if (ctrl.identifier) {
-        mapIdentifier(ctrl.identifier);
-    }
-
-    function mapIdentifier(identifierSource) {
-        var identifier = identifierSource;
-
-        if (identifier) {
-            if (identifier._current) {
-                identifier = identifier._current.value;
+        ctrl.datastreamRemove = function($item, $model) {
+            if (ctrl.onRemove) {
+                var returnObj = {};
+                returnObj.$item = $item;
+                returnObj.$model = $model;
+                ctrl.onRemove(returnObj);
             }
 
             if (ctrl.multiple) {
-                if (angular.isArray(identifier)) {
-                    ctrl.datastream = [];
-
-                    angular.forEach(identifier, function(idTmp) {
-                        ctrl.datastream.push({
-                            identifier: idTmp
-
-                        });
-                    });
+                if (ctrl.ngModel && ctrl.ngModel.indexOf($item.identifier) !== -1) {
+                    ctrl.ngModel.splice(ctrl.ngModel.indexOf($item.identifier), 1);
                 }
             } else {
-                ctrl.datastream = [{
-                    identifier: ctrl.identifier
-
-                }];
+                ctrl.ngModel = undefined;
             }
-        } else {
-            ctrl.datastream = [];
-        }
-    }
+        };
 
-    if (!ctrl.maxResults) {
-        ctrl.maxResults = 100;
-    }
+        ctrl.$onChanges = function(changesObj) {
+            if (changesObj && changesObj.identifier) {
+                mapIdentifier(changesObj.identifier.currentValue);
+            }
+        };
+
+        if (ctrl.required !== undefined) {
+            ctrl.ngRequired = ctrl.required;
+        }
+
+        if (ctrl.identifier) {
+            mapIdentifier(ctrl.identifier);
+        }
+
+        function mapIdentifier(identifierSource) {
+            var identifier = identifierSource;
+
+            if (identifier) {
+                if (identifier._current) {
+                    identifier = identifier._current.value;
+                }
+
+                if (ctrl.multiple) {
+                    if (angular.isArray(identifier)) {
+                        ctrl.datastream = [];
+
+                        angular.forEach(identifier, function(idTmp) {
+                            ctrl.datastream.push({
+                                identifier: idTmp
+
+                            });
+                        });
+                    }
+                } else {
+                    ctrl.datastream = [{
+                        identifier: ctrl.identifier
+
+                    }];
+                }
+            } else {
+                ctrl.datastream = [];
+            }
+        }
+
+        if (!ctrl.maxResults) {
+            ctrl.maxResults = 100;
+        }
+    };
 }]);
 
 angular.module('opengate-angular-js').component('customUiSelectDatastream', {
@@ -13303,9 +13333,6 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
     function($scope, $element, $attrs, $api, $q) {
         this.$onInit = function() {
             var ctrl = this;
-
-            console.log('2:' + $attrs);
-            console.log('2:' + $scope.channel);
 
             var firstLoad = ctrl.ngRequired || ctrl.required;
             var defaultQuickSearchFields = 'provision.channel.identifier,provision.channel.description';
@@ -13520,127 +13547,129 @@ angular.module('opengate-angular-js').component('customUiSelectChannel', {
 
 
 angular.module('opengate-angular-js').controller('customUiSelectCertificateController', ['$scope', '$element', '$attrs', '$api',
-    function ($scope, $element, $attrs, $api) {
-        var ctrl = this;
-        ctrl.certificate = ctrl.certificate || (ctrl.ngModel && [ctrl.ngModel]);
-        var builder = $api().certificatesSearchBuilder().assignable();
-        ctrl.ownConfig = {
-            builder: builder,
-            filter: function (search) {
-                return {
-                    'or': [{
-                            'like': {
-                                'certificateName': search
+    function($scope, $element, $attrs, $api) {
+        this.$onInit = function() {
+            var ctrl = this;
+            ctrl.certificate = ctrl.certificate || (ctrl.ngModel && [ctrl.ngModel]);
+            var builder = $api().certificatesSearchBuilder().assignable();
+            ctrl.ownConfig = {
+                builder: builder,
+                filter: function(search) {
+                    return {
+                        'or': [{
+                                'like': {
+                                    'certificateName': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'certificateVersion': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'certificateId': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'certificateAdministrativeState': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'certificateSerialNumber': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'certificateValidFrom': search
+                                }
                             }
-                        },
-                        {
-                            'like': {
-                                'certificateVersion': search
-                            }
-                        },
-                        {
-                            'like': {
-                                'certificateId': search
-                            }
-                        },
-                        {
-                            'like': {
-                                'certificateAdministrativeState': search
-                            }
-                        },
-                        {
-                            'like': {
-                                'certificateSerialNumber': search
-                            }
-                        },
-                        {
-                            'like': {
-                                'certificateValidFrom': search
-                            }
+                        ]
+                    };
+                },
+                rootKey: 'certificates',
+                collection: [],
+                customSelectors: builder
+            };
+
+            ctrl.certificateSelected = function($item, $model) {
+                if (ctrl.multiple) {
+                    var identifierTmp = [];
+
+                    angular.forEach(ctrl.certificate, function(sgTmp) {
+                        if (sgTmp.id) {
+                            identifierTmp.push(sgTmp.id);
+                        } else {
+                            identifierTmp.push(sgTmp);
                         }
-                    ]
-                };
-            },
-            rootKey: 'certificates',
-            collection: [],
-            customSelectors: builder
-        };
+                    });
 
-        ctrl.certificateSelected = function ($item, $model) {
-            if (ctrl.multiple) {
-                var identifierTmp = [];
-
-                angular.forEach(ctrl.certificate, function (sgTmp) {
-                    if (sgTmp.id) {
-                        identifierTmp.push(sgTmp.id);
-                    } else {
-                        identifierTmp.push(sgTmp);
-                    }
-                });
-
-                ctrl.ngModel = identifierTmp;
-            } else {
-                ctrl.ngModel = $item.id;
-            }
-
-            if (ctrl.onSelectItem) {
-                var returnObj = {};
-                returnObj.$item = $item;
-                returnObj.$model = $model;
-                ctrl.onSelectItem(returnObj);
-            }
-        };
-
-        ctrl.certificateRemove = function ($item, $model) {
-            if (ctrl.onRemove) {
-                var returnObj = {};
-                returnObj.$item = $item;
-                returnObj.$model = $model;
-                ctrl.onRemove(returnObj);
-            }
-
-            if (ctrl.multiple) {
-                if (ctrl.ngModel && ctrl.ngModel.indexOf($item.id) !== -1) {
-                    ctrl.ngModel.splice(ctrl.ngModel.indexOf($item.id), 1);
+                    ctrl.ngModel = identifierTmp;
+                } else {
+                    ctrl.ngModel = $item.id;
                 }
-            } else {
-                ctrl.ngModel = undefined;
-            }
-        };
 
-        ctrl.$onChanges = function (changesObj) {
-            if (changesObj && changesObj.identifier) {
-                mapIdentifier(changesObj.identifier.currentValue);
-            }
-        };
+                if (ctrl.onSelectItem) {
+                    var returnObj = {};
+                    returnObj.$item = $item;
+                    returnObj.$model = $model;
+                    ctrl.onSelectItem(returnObj);
+                }
+            };
 
-        if (ctrl.identifier) {
-            mapIdentifier(ctrl.identifier);
-        }
-
-        function mapIdentifier(identifierSrc) {
-            var identifier = identifierSrc;
-            if (identifier) {
-                if (identifier._current) {
-                    identifier = identifier._current.value;
+            ctrl.certificateRemove = function($item, $model) {
+                if (ctrl.onRemove) {
+                    var returnObj = {};
+                    returnObj.$item = $item;
+                    returnObj.$model = $model;
+                    ctrl.onRemove(returnObj);
                 }
 
                 if (ctrl.multiple) {
-                    if (angular.isArray(identifier)) {
-                        ctrl.certificate = [];
+                    if (ctrl.ngModel && ctrl.ngModel.indexOf($item.id) !== -1) {
+                        ctrl.ngModel.splice(ctrl.ngModel.indexOf($item.id), 1);
+                    }
+                } else {
+                    ctrl.ngModel = undefined;
+                }
+            };
 
-                        angular.forEach(identifier, function (idTmp) {
-                            ctrl.certificate.push(idTmp);
-                        });
+            ctrl.$onChanges = function(changesObj) {
+                if (changesObj && changesObj.identifier) {
+                    mapIdentifier(changesObj.identifier.currentValue);
+                }
+            };
+
+            if (ctrl.identifier) {
+                mapIdentifier(ctrl.identifier);
+            }
+
+            function mapIdentifier(identifierSrc) {
+                var identifier = identifierSrc;
+                if (identifier) {
+                    if (identifier._current) {
+                        identifier = identifier._current.value;
                     }
 
+                    if (ctrl.multiple) {
+                        if (angular.isArray(identifier)) {
+                            ctrl.certificate = [];
+
+                            angular.forEach(identifier, function(idTmp) {
+                                ctrl.certificate.push(idTmp);
+                            });
+                        }
+
+                    } else {
+                        ctrl.certificate = [ctrl.identifier];
+                    }
                 } else {
-                    ctrl.certificate = [ctrl.identifier];
+                    ctrl.certificate = [];
                 }
-            } else {
-                ctrl.certificate = [];
             }
-        }
+        };
     }
 ]);
 
@@ -13666,42 +13695,44 @@ angular.module('opengate-angular-js').component('customUiSelectCertificate', {
 
 
 angular.module('opengate-angular-js').controller('customUiSelectBundleController', ['$scope', '$element', '$attrs', '$api', '$q', function($scope, $element, $attrs, $api, $q) {
-    var ctrl = this;
+    this.$onInit = function() {
+        var ctrl = this;
 
-    ctrl.ownConfig = {
-        builder: $api().bundlesSearchBuilder(),
-        filter: function(search) {
-            ctrl.lastSearch = search;
+        ctrl.ownConfig = {
+            builder: $api().bundlesSearchBuilder(),
+            filter: function(search) {
+                ctrl.lastSearch = search;
 
-            if (!search) {
-                return null;
-            } else {
-                return {
-                    'or': [
-                        { 'like': { 'bundles.name': search } },
-                        { 'like': { 'bundles.version': search } },
-                        { 'like': { 'bundles.description': search } }
-                    ]
-                };
-            }
-        },
-        rootKey: 'bundles',
-        collection: [],
-        customSelectors: $api().bundlesSearchBuilder()
-    };
+                if (!search) {
+                    return null;
+                } else {
+                    return {
+                        'or': [
+                            { 'like': { 'bundles.name': search } },
+                            { 'like': { 'bundles.version': search } },
+                            { 'like': { 'bundles.description': search } }
+                        ]
+                    };
+                }
+            },
+            rootKey: 'bundles',
+            collection: [],
+            customSelectors: $api().bundlesSearchBuilder()
+        };
 
-    ctrl.bundleSelected = function($item, $model) {
-        var returnObj = {};
-        returnObj.$item = $item;
-        returnObj.$model = $model;
-        ctrl.onSelectItem(returnObj);
-    };
+        ctrl.bundleSelected = function($item, $model) {
+            var returnObj = {};
+            returnObj.$item = $item;
+            returnObj.$model = $model;
+            ctrl.onSelectItem(returnObj);
+        };
 
-    ctrl.bundleRemove = function($item, $model) {
-        var returnObj = {};
-        returnObj.$item = $item;
-        returnObj.$model = $model;
-        ctrl.onRemove(returnObj);
+        ctrl.bundleRemove = function($item, $model) {
+            var returnObj = {};
+            returnObj.$item = $item;
+            returnObj.$model = $model;
+            ctrl.onRemove(returnObj);
+        };
     };
 }]);
 
@@ -13722,347 +13753,348 @@ angular.module('opengate-angular-js').component('customUiSelectBundle', {
 
 angular.module('opengate-angular-js').controller('customUiSelectAssetController', ['$scope', '$element', '$attrs', '$api', '$doActions', '$translate', 'jsonPath', 'Filter',
     function($scope, $element, $attrs, $api, $doActions, $translate, jsonPath, Filter) {
+        this.$onInit = function() {
+            var ctrl = this;
 
-        var ctrl = this;
+            var assetsBuilder = $api().assetsSearchBuilder();
 
-        var assetsBuilder = $api().assetsSearchBuilder();
+            if (ctrl.disableDefaultSorted) {
+                assetsBuilder = assetsBuilder.disableDefaultSorted();
+            }
 
-        if (ctrl.disableDefaultSorted) {
-            assetsBuilder = assetsBuilder.disableDefaultSorted();
-        }
+            var defaultQuickSearchFields = "provision.administration.identifier, provision.asset.specificType, asset.specificType";
+            var defaultSpecificTypeSearchFields = "provision.asset.specificType, asset.specificType";
 
-        var defaultQuickSearchFields = "provision.administration.identifier, provision.asset.specificType, asset.specificType";
-        var defaultSpecificTypeSearchFields = "provision.asset.specificType, asset.specificType";
-
-        function _getQuickSearchFields(search) {
-            var _quickSearchFields = ctrl.quickSearchFields || defaultQuickSearchFields;
-            var fields = _quickSearchFields.split(/[,|, ]+/);
-            var filter = {
-                or: []
-            };
-            fields.forEach(function(field) {
-                var _like = {
-                    like: {}
+            function _getQuickSearchFields(search) {
+                var _quickSearchFields = ctrl.quickSearchFields || defaultQuickSearchFields;
+                var fields = _quickSearchFields.split(/[,|, ]+/);
+                var filter = {
+                    or: []
                 };
-                _like.like[field] = search;
-                filter.or.push(_like);
-            });
-            return filter;
-        }
-
-        function _getSpecificTypeSearchFields(specificType) {
-            var _specificTypeSearchFields = ctrl.specificTypeSearchFields || defaultSpecificTypeSearchFields;
-            var fields = _specificTypeSearchFields.split(/[,|, ]+/);
-            var filter = {
-                or: [],
-                eq: {}
-            };
-            if (fields.length === 1) {
-                delete filter.or;
-                filter.eq[fields[0]] = specificType;
-            } else {
-                delete filter.eq;
                 fields.forEach(function(field) {
-                    var _eq = {
-                        eq: {}
+                    var _like = {
+                        like: {}
                     };
-                    _eq.eq[field] = specificType;
-                    filter.or.push(_eq);
+                    _like.like[field] = search;
+                    filter.or.push(_like);
                 });
-            }
-            return filter;
-        }
-
-        function _getFilter(oql) {
-            var _json = Filter.parseQuery(oql);
-            var _filter = jsonPath(_json, '$..value.filter')[0] || undefined;
-            return _filter.and || ([_filter] || []);
-        }
-
-        var selectBuilder = $api().newSelectBuilder();
-        var SE = $api().SE;
-
-        selectBuilder.add(SE.element('provision.administration.identifier', [{
-            field: 'value'
-        }]));
-        selectBuilder.add(SE.element('provision.administration.organization', [{
-            field: 'value'
-        }]));
-        selectBuilder.add(SE.element('provision.administration.channel', [{
-            field: 'value'
-        }]));
-        selectBuilder.add(SE.element('resourceType', [{
-            field: 'value'
-        }]));
-        selectBuilder.add(SE.element('provision.asset.identifier', [{
-            field: 'value'
-        }]));
-        selectBuilder.add(SE.element('provision.asset.name', [{
-            field: 'value'
-        }]));
-        selectBuilder.add(SE.element('provision.asset.specificType', [{
-            field: 'value'
-        }]));
-
-
-        ctrl.ownConfig = {
-            builder: assetsBuilder.select(selectBuilder),
-            filter: function(search) {
-                var filter;
-
-                if (search) {
-                    filter = _getQuickSearchFields(search);
-                }
-
-                if (!!ctrl.specificType) {
-                    if (filter) {
-                        filter = {
-                            'and': [filter]
-                        };
-                    } else {
-                        filter = {
-                            and: []
-                        };
-                    }
-                    filter.and.push(_getSpecificTypeSearchFields(ctrl.specificType));
-                }
-
-
-                if (ctrl.oql) {
-                    var _oql = _getFilter(ctrl.oql);
-
-                    if (!filter) {
-                        filter = {
-                            'and': []
-                        };
-                    } else if (!filter.and) {
-                        filter = {
-                            and: [filter]
-                        };
-                    }
-
-                    var _and = filter.and.concat(_oql);
-                    filter.and = _and;
-                }
-
                 return filter;
-            },
-            rootKey: 'assets',
-            collection: [],
-            customSelectors: $api().assetsSearchBuilder(),
-            specificType: ctrl.specificType
-        };
-
-        ctrl.assetSelected = function($item, $model) {
-            if (ctrl.multiple) {
-                var identifierTmp = [];
-
-                angular.forEach(ctrl.asset, function(assetTmp) {
-                    identifierTmp.push(assetTmp.provision.administration.identifier._current.value);
-                });
-
-                ctrl.ngModel = identifierTmp;
-            } else {
-                ctrl.ngModel = $item.provision.administration.identifier._current.value;
             }
 
-            if (ctrl.onSelectItem) {
-                var returnObj = {};
-                returnObj.$item = $item;
-                returnObj.$model = $model;
-                ctrl.onSelectItem(returnObj);
-            }
-        };
-
-        ctrl.assetRemove = function($item, $model) {
-            if (ctrl.onRemove) {
-                var returnObj = {};
-                returnObj.$item = $item;
-                returnObj.$model = $model;
-                ctrl.onRemove(returnObj);
-            }
-
-            if (ctrl.multiple) {
-                if (ctrl.ngModel && ctrl.ngModel.indexOf($item.provision.administration.identifier._current.value) !== -1) {
-                    ctrl.ngModel.splice(ctrl.ngModel.indexOf($item.provision.administration.identifier._current.value), 1);
-                }
-            } else {
-                ctrl.ngModel = undefined;
-            }
-        };
-
-        var uiSelectActionsDefinition = {
-            create: {
-                title: $translate.instant('FORM.LABEL.NEW'),
-                icon: 'glyphicon glyphicon-plus-sign',
-                action: function() {
-                    var actionData = {};
-                    if (!!ctrl.specificType) {
-                        actionData = {
-                            resourceType: {
-                                _current: {
-                                    value: 'entity.asset'
-                                }
-                            },
-                            provision: {
-                                asset: {
-                                    specificType: {
-                                        _current: {
-                                            value: ctrl.specificType
-                                        }
-                                    }
-                                }
-                            }
+            function _getSpecificTypeSearchFields(specificType) {
+                var _specificTypeSearchFields = ctrl.specificTypeSearchFields || defaultSpecificTypeSearchFields;
+                var fields = _specificTypeSearchFields.split(/[,|, ]+/);
+                var filter = {
+                    or: [],
+                    eq: {}
+                };
+                if (fields.length === 1) {
+                    delete filter.or;
+                    filter.eq[fields[0]] = specificType;
+                } else {
+                    delete filter.eq;
+                    fields.forEach(function(field) {
+                        var _eq = {
+                            eq: {}
                         };
-                    }
-                    $doActions.executeModal('createAsset', actionData, function(result) {
-                        if (result && result.length > 0) {
-                            ctrl.asset = !ctrl.asset ? [] : ctrl.asset;
-                            ctrl.asset.push({
-                                provision: {
-                                    administration: {
-                                        identifier: {
-                                            _current: {
-                                                value: result[0].identifier
-                                            }
-                                        }
-                                    },
-                                    asset: {
-                                        identifier: {
-                                            _current: {
-                                                value: result[0].identifier
-                                            }
-                                        }
-                                    }
-                                }
-                            });
-
-                            var assetFinder = $api().assetsSearchBuilder().disableDefaultSorted().filter({
-                                "and": [{
-                                    "eq": {
-                                        "provision.asset.identifier": result[0].identifier
-                                    }
-                                }]
-                            });
-
-                            assetFinder.build().execute()
-                                .then(function(result) {
-                                    if (result.statusCode === 204) {
-                                        $translate('TOASTR.ENTITY_NOT_FOUND', {
-                                            identifier: result[0].identifier
-                                        }).
-                                        then(function(translatedMessage) {
-                                            toastr.error(translatedMessage);
-                                        });
-                                    } else {
-                                        ctrl.assetSelected(result.data.assets[0], result.data.assets[0]);
-                                    }
-                                })
-                                .catch(function(err) {
-                                    $translate('TOASTR.CANNOT_GET_ENTITY_INFO').
-                                    then(function(translatedMessage) {
-                                        toastr.error(translatedMessage);
-                                    });
-                                });
-                        }
+                        _eq.eq[field] = specificType;
+                        filter.or.push(_eq);
                     });
-                },
-                permissions: 'manageEntity'
-            }
-        };
-        // Actions que finalmente se mostrarán en el control
-        ctrl.uiSelectActions = [];
-
-        if (!ctrl.actions) {
-            angular.forEach(uiSelectActionsDefinition, function(action) {
-                ctrl.uiSelectActions.push(action);
-            });
-        } else {
-            angular.forEach(ctrl.actions, function(action) {
-                var finalAction;
-                switch (action.type) {
-                    case 'create':
-                        finalAction = uiSelectActionsDefinition.create;
-                        break;
                 }
-                finalAction.title = action.title || finalAction.title;
-                finalAction.icon = action.icon || finalAction.icon;
-                ctrl.uiSelectActions.push(finalAction);
-            });
-
-        }
-
-        ctrl.$onChanges = function(changesObj) {
-            if (changesObj && changesObj.identifier) {
-                mapIdentifier(changesObj.identifier.currentValue);
+                return filter;
             }
-        };
 
-        if (ctrl.required !== undefined) {
-            ctrl.ngRequired = ctrl.required;
-        }
+            function _getFilter(oql) {
+                var _json = Filter.parseQuery(oql);
+                var _filter = jsonPath(_json, '$..value.filter')[0] || undefined;
+                return _filter.and || ([_filter] || []);
+            }
 
-        if (ctrl.identifier) {
-            mapIdentifier(ctrl.identifier);
-        }
+            var selectBuilder = $api().newSelectBuilder();
+            var SE = $api().SE;
 
-        function mapIdentifier(identifierSrc) {
-            var identifier = identifierSrc;
-            if (identifier) {
-                if (identifier._current) {
-                    identifier = identifier._current.value;
+            selectBuilder.add(SE.element('provision.administration.identifier', [{
+                field: 'value'
+            }]));
+            selectBuilder.add(SE.element('provision.administration.organization', [{
+                field: 'value'
+            }]));
+            selectBuilder.add(SE.element('provision.administration.channel', [{
+                field: 'value'
+            }]));
+            selectBuilder.add(SE.element('resourceType', [{
+                field: 'value'
+            }]));
+            selectBuilder.add(SE.element('provision.asset.identifier', [{
+                field: 'value'
+            }]));
+            selectBuilder.add(SE.element('provision.asset.name', [{
+                field: 'value'
+            }]));
+            selectBuilder.add(SE.element('provision.asset.specificType', [{
+                field: 'value'
+            }]));
+
+
+            ctrl.ownConfig = {
+                builder: assetsBuilder.select(selectBuilder),
+                filter: function(search) {
+                    var filter;
+
+                    if (search) {
+                        filter = _getQuickSearchFields(search);
+                    }
+
+                    if (!!ctrl.specificType) {
+                        if (filter) {
+                            filter = {
+                                'and': [filter]
+                            };
+                        } else {
+                            filter = {
+                                and: []
+                            };
+                        }
+                        filter.and.push(_getSpecificTypeSearchFields(ctrl.specificType));
+                    }
+
+
+                    if (ctrl.oql) {
+                        var _oql = _getFilter(ctrl.oql);
+
+                        if (!filter) {
+                            filter = {
+                                'and': []
+                            };
+                        } else if (!filter.and) {
+                            filter = {
+                                and: [filter]
+                            };
+                        }
+
+                        var _and = filter.and.concat(_oql);
+                        filter.and = _and;
+                    }
+
+                    return filter;
+                },
+                rootKey: 'assets',
+                collection: [],
+                customSelectors: $api().assetsSearchBuilder(),
+                specificType: ctrl.specificType
+            };
+
+            ctrl.assetSelected = function($item, $model) {
+                if (ctrl.multiple) {
+                    var identifierTmp = [];
+
+                    angular.forEach(ctrl.asset, function(assetTmp) {
+                        identifierTmp.push(assetTmp.provision.administration.identifier._current.value);
+                    });
+
+                    ctrl.ngModel = identifierTmp;
+                } else {
+                    ctrl.ngModel = $item.provision.administration.identifier._current.value;
+                }
+
+                if (ctrl.onSelectItem) {
+                    var returnObj = {};
+                    returnObj.$item = $item;
+                    returnObj.$model = $model;
+                    ctrl.onSelectItem(returnObj);
+                }
+            };
+
+            ctrl.assetRemove = function($item, $model) {
+                if (ctrl.onRemove) {
+                    var returnObj = {};
+                    returnObj.$item = $item;
+                    returnObj.$model = $model;
+                    ctrl.onRemove(returnObj);
                 }
 
                 if (ctrl.multiple) {
-                    if (angular.isArray(identifier)) {
-                        ctrl.asset = [];
+                    if (ctrl.ngModel && ctrl.ngModel.indexOf($item.provision.administration.identifier._current.value) !== -1) {
+                        ctrl.ngModel.splice(ctrl.ngModel.indexOf($item.provision.administration.identifier._current.value), 1);
+                    }
+                } else {
+                    ctrl.ngModel = undefined;
+                }
+            };
 
-                        angular.forEach(identifier, function(idTmp) {
-                            ctrl.asset.push({
+            var uiSelectActionsDefinition = {
+                create: {
+                    title: $translate.instant('FORM.LABEL.NEW'),
+                    icon: 'glyphicon glyphicon-plus-sign',
+                    action: function() {
+                        var actionData = {};
+                        if (!!ctrl.specificType) {
+                            actionData = {
+                                resourceType: {
+                                    _current: {
+                                        value: 'entity.asset'
+                                    }
+                                },
                                 provision: {
-                                    administration: {
-                                        identifier: {
-                                            _current: {
-                                                value: idTmp
-                                            }
-                                        }
-                                    },
                                     asset: {
-                                        identifier: {
+                                        specificType: {
                                             _current: {
-                                                value: idTmp
+                                                value: ctrl.specificType
                                             }
                                         }
                                     }
                                 }
-                            });
+                            };
+                        }
+                        $doActions.executeModal('createAsset', actionData, function(result) {
+                            if (result && result.length > 0) {
+                                ctrl.asset = !ctrl.asset ? [] : ctrl.asset;
+                                ctrl.asset.push({
+                                    provision: {
+                                        administration: {
+                                            identifier: {
+                                                _current: {
+                                                    value: result[0].identifier
+                                                }
+                                            }
+                                        },
+                                        asset: {
+                                            identifier: {
+                                                _current: {
+                                                    value: result[0].identifier
+                                                }
+                                            }
+                                        }
+                                    }
+                                });
+
+                                var assetFinder = $api().assetsSearchBuilder().disableDefaultSorted().filter({
+                                    "and": [{
+                                        "eq": {
+                                            "provision.asset.identifier": result[0].identifier
+                                        }
+                                    }]
+                                });
+
+                                assetFinder.build().execute()
+                                    .then(function(result) {
+                                        if (result.statusCode === 204) {
+                                            $translate('TOASTR.ENTITY_NOT_FOUND', {
+                                                identifier: result[0].identifier
+                                            }).
+                                            then(function(translatedMessage) {
+                                                toastr.error(translatedMessage);
+                                            });
+                                        } else {
+                                            ctrl.assetSelected(result.data.assets[0], result.data.assets[0]);
+                                        }
+                                    })
+                                    .catch(function(err) {
+                                        $translate('TOASTR.CANNOT_GET_ENTITY_INFO').
+                                        then(function(translatedMessage) {
+                                            toastr.error(translatedMessage);
+                                        });
+                                    });
+                            }
                         });
+                    },
+                    permissions: 'manageEntity'
+                }
+            };
+            // Actions que finalmente se mostrarán en el control
+            ctrl.uiSelectActions = [];
+
+            if (!ctrl.actions) {
+                angular.forEach(uiSelectActionsDefinition, function(action) {
+                    ctrl.uiSelectActions.push(action);
+                });
+            } else {
+                angular.forEach(ctrl.actions, function(action) {
+                    var finalAction;
+                    switch (action.type) {
+                        case 'create':
+                            finalAction = uiSelectActionsDefinition.create;
+                            break;
+                    }
+                    finalAction.title = action.title || finalAction.title;
+                    finalAction.icon = action.icon || finalAction.icon;
+                    ctrl.uiSelectActions.push(finalAction);
+                });
+
+            }
+
+            ctrl.$onChanges = function(changesObj) {
+                if (changesObj && changesObj.identifier) {
+                    mapIdentifier(changesObj.identifier.currentValue);
+                }
+            };
+
+            if (ctrl.required !== undefined) {
+                ctrl.ngRequired = ctrl.required;
+            }
+
+            if (ctrl.identifier) {
+                mapIdentifier(ctrl.identifier);
+            }
+
+            function mapIdentifier(identifierSrc) {
+                var identifier = identifierSrc;
+                if (identifier) {
+                    if (identifier._current) {
+                        identifier = identifier._current.value;
                     }
 
-                } else {
-                    ctrl.asset = [{
-                        provision: {
-                            administration: {
-                                identifier: {
-                                    _current: {
-                                        value: ctrl.identifier
+                    if (ctrl.multiple) {
+                        if (angular.isArray(identifier)) {
+                            ctrl.asset = [];
+
+                            angular.forEach(identifier, function(idTmp) {
+                                ctrl.asset.push({
+                                    provision: {
+                                        administration: {
+                                            identifier: {
+                                                _current: {
+                                                    value: idTmp
+                                                }
+                                            }
+                                        },
+                                        asset: {
+                                            identifier: {
+                                                _current: {
+                                                    value: idTmp
+                                                }
+                                            }
+                                        }
                                     }
-                                }
-                            },
-                            asset: {
-                                identifier: {
-                                    _current: {
-                                        value: ctrl.identifier
+                                });
+                            });
+                        }
+
+                    } else {
+                        ctrl.asset = [{
+                            provision: {
+                                administration: {
+                                    identifier: {
+                                        _current: {
+                                            value: ctrl.identifier
+                                        }
+                                    }
+                                },
+                                asset: {
+                                    identifier: {
+                                        _current: {
+                                            value: ctrl.identifier
+                                        }
                                     }
                                 }
                             }
-                        }
-                    }];
+                        }];
+                    }
+                } else {
+                    ctrl.asset = [];
                 }
-            } else {
-                ctrl.asset = [];
             }
-        }
+        };
     }
 ]);
 
@@ -14096,61 +14128,63 @@ angular.module('opengate-angular-js').component('customUiSelectAsset', {
 
 
 angular.module('opengate-angular-js').controller('customUiSelectAreaController', ['$scope', '$element', '$attrs', '$api', '$q', function($scope, $element, $attrs, $api, $q) {
-    var ctrl = this;
+    this.$onInit = function() {
+        var ctrl = this;
 
-    var andFilter;
-    if (ctrl.organization) {
-        andFilter = [{ 'eq': { 'areas.organization': ctrl.organization } }];
-    }
+        var andFilter;
+        if (ctrl.organization) {
+            andFilter = [{ 'eq': { 'areas.organization': ctrl.organization } }];
+        }
 
-    ctrl.ownConfig = {
-        builder: $api().areasSearchBuilder(),
-        filter: function(search) {
-            ctrl.lastSearch = search;
+        ctrl.ownConfig = {
+            builder: $api().areasSearchBuilder(),
+            filter: function(search) {
+                ctrl.lastSearch = search;
 
-            if (andFilter) {
-                if (search) {
-                    andFilter.push({
-                        'or': [
-                            { 'like': { 'areas.name': search } },
-                            { 'like': { 'areas.organization': search } }
-                        ]
-                    });
-                }
+                if (andFilter) {
+                    if (search) {
+                        andFilter.push({
+                            'or': [
+                                { 'like': { 'areas.name': search } },
+                                { 'like': { 'areas.organization': search } }
+                            ]
+                        });
+                    }
 
-                return {
-                    'and': andFilter
-                };
-            } else {
-                if (!search) {
-                    return null;
-                } else {
                     return {
-                        'or': [
-                            { 'like': { 'areas.name': search } },
-                            { 'like': { 'areas.organization': search } }
-                        ]
+                        'and': andFilter
                     };
+                } else {
+                    if (!search) {
+                        return null;
+                    } else {
+                        return {
+                            'or': [
+                                { 'like': { 'areas.name': search } },
+                                { 'like': { 'areas.organization': search } }
+                            ]
+                        };
+                    }
                 }
-            }
-        },
-        rootKey: 'areas',
-        collection: [],
-        customSelectors: $api().areasSearchBuilder()
-    };
+            },
+            rootKey: 'areas',
+            collection: [],
+            customSelectors: $api().areasSearchBuilder()
+        };
 
-    ctrl.areaSelected = function($item, $model) {
-        var returnObj = {};
-        returnObj.$item = $item;
-        returnObj.$model = $model;
-        ctrl.onSelectItem(returnObj);
-    };
+        ctrl.areaSelected = function($item, $model) {
+            var returnObj = {};
+            returnObj.$item = $item;
+            returnObj.$model = $model;
+            ctrl.onSelectItem(returnObj);
+        };
 
-    ctrl.areaRemove = function($item, $model) {
-        var returnObj = {};
-        returnObj.$item = $item;
-        returnObj.$model = $model;
-        ctrl.onRemove(returnObj);
+        ctrl.areaRemove = function($item, $model) {
+            var returnObj = {};
+            returnObj.$item = $item;
+            returnObj.$model = $model;
+            ctrl.onRemove(returnObj);
+        };
     };
 }]);
 

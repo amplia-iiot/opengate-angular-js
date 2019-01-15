@@ -595,7 +595,7 @@ _wizard.controller('helperDialogModalController', ['$scope', '$uibModalInstance'
         };
 
         //clear evetns
-        $scope.$on('destroy', function() {
+        $scope.$on('$destroy', function() {
             for (var eventToDestroy in events) {
                 eventToDestroy();
             }

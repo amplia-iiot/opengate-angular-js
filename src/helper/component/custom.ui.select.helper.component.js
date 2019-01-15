@@ -3,8 +3,8 @@
 angular.module('opengate-angular-js').controller('helperUiSelectController', ['$scope', '$element', '$attrs', function($scope, $element, $attrs) {
     var $ctrl = this;
     $ctrl.$helper_keys = {};
-    $ctrl.labelError = $ctrl.labelError ? $ctrl.labelError : 'Parameter is required';
-    $ctrl.labelText = $ctrl.labelText ? $ctrl.labelText : 'Parameter';
+    // $ctrl.labelError = $ctrl.labelError ? $ctrl.labelError : 'Parameter is required';
+    // $ctrl.labelText = $ctrl.labelText ? $ctrl.labelText : 'Parameter';
 
     $ctrl.helperTagTransform = function(newTag) {
         return {
@@ -35,6 +35,9 @@ angular.module('opengate-angular-js').controller('helperUiSelectController', ['$
     };
 
     $ctrl.$onInit = function() {
+        $ctrl.labelError = $ctrl.labelError ? $ctrl.labelError : 'Parameter is required';
+        $ctrl.labelText = $ctrl.labelText ? $ctrl.labelText : 'Parameter';
+
         if (!$ctrl.helperCtrl.onMulti) {
             $ctrl.helperCtrl.onMulti = [];
         }

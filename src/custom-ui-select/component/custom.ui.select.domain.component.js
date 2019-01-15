@@ -2,59 +2,61 @@
 
 
 angular.module('opengate-angular-js').controller('customUiSelectDomainController', ['$scope', '$element', '$attrs', '$api', '$q', function($scope, $element, $attrs, $api, $q) {
-    var ctrl = this;
-    var firstLoad = ctrl.ngRequired || ctrl.required;
-    ctrl.ownConfig = {
-        builder: $api().domainsSearchBuilder(),
-        rootKey: 'domains',
-        collection: [],
-        filter: function(search) {
-            if (search) {
-                return {
-                    'or': [{
-                            'like': {
-                                'domain.name': search
+    this.$onInit = function() {
+        var ctrl = this;
+        var firstLoad = ctrl.ngRequired || ctrl.required;
+        ctrl.ownConfig = {
+            builder: $api().domainsSearchBuilder(),
+            rootKey: 'domains',
+            collection: [],
+            filter: function(search) {
+                if (search) {
+                    return {
+                        'or': [{
+                                'like': {
+                                    'domain.name': search
+                                }
+                            },
+                            {
+                                'like': {
+                                    'domain.description': search
+                                }
                             }
-                        },
-                        {
-                            'like': {
-                                'domain.description': search
-                            }
-                        }
-                    ]
-                };
-            } else {
-                return null;
+                        ]
+                    };
+                } else {
+                    return null;
+                }
+            },
+            customSelectors: $api().domainsSearchBuilder(),
+            processingData: function(result, domains) {
+                if (firstLoad) {
+                    var _selectedDomain = Array.isArray(ctrl.domain) ? ctrl.domain : (ctrl.domain && [ctrl.domain]);
+                    ctrl.domain = _selectedDomain || [domains[0]];
+                    firstLoad = false;
+                }
+
+                var deferred = $q.defer();
+
+                deferred.resolve(domains);
+
+                return deferred.promise;
             }
-        },
-        customSelectors: $api().domainsSearchBuilder(),
-        processingData: function(result, domains) {
-            if (firstLoad) {
-                var _selectedDomain = Array.isArray(ctrl.domain) ? ctrl.domain : (ctrl.domain && [ctrl.domain]);
-                ctrl.domain = _selectedDomain || [domains[0]];
-                firstLoad = false;
-            }
+        };
 
-            var deferred = $q.defer();
+        ctrl.domainSelected = function($item, $model) {
+            var returnObj = {};
+            returnObj.$item = $item;
+            returnObj.$model = $model;
+            ctrl.onSelectItem(returnObj);
+        };
 
-            deferred.resolve(domains);
-
-            return deferred.promise;
-        }
-    };
-
-    ctrl.domainSelected = function($item, $model) {
-        var returnObj = {};
-        returnObj.$item = $item;
-        returnObj.$model = $model;
-        ctrl.onSelectItem(returnObj);
-    };
-
-    ctrl.domainRemove = function($item, $model) {
-        var returnObj = {};
-        returnObj.$item = $item;
-        returnObj.$model = $model;
-        ctrl.onRemove(returnObj);
+        ctrl.domainRemove = function($item, $model) {
+            var returnObj = {};
+            returnObj.$item = $item;
+            returnObj.$model = $model;
+            ctrl.onRemove(returnObj);
+        };
     };
 }]);
 
