@@ -18,34 +18,37 @@ var annotateOptions = {
 
 var templateOptions = {
     root: '',
-    module: 'opengate-angular-js'
+    module: 'opengate-angular-js',
+    transformUrl: function(url) {
+        return url.replace(/^\//, '')
+    }
 };
 
 /** lint **/
 
-gulp.task('csslint', function () {
+gulp.task('csslint', function() {
     return gulp.src('src/**/*.css')
         .pipe($.csslint())
         .pipe($.csslint.reporter());
 });
 
-gulp.task('jslint', function () {
+gulp.task('jslint', function() {
     return gulp.src('src/**/*.js')
         .pipe($.jshint())
         .pipe($.jshint.reporter(jsReporter));
 });
 
-gulp.task('lint', ['csslint', 'jslint']);
+gulp.task('lint', gulp.series('csslint', 'jslint'));
 
 /** serve **/
 
-gulp.task('templates', function () {
+gulp.task('templates', function() {
     return gulp.src('src/**/*.html')
         .pipe($.angularTemplatecache('templates.tpl.js', templateOptions))
         .pipe(gulp.dest('.tmp/dist'));
 });
 
-gulp.task('sample', ['templates'], function () {
+gulp.task('sample', gulp.series('templates', function() {
     var files = gulp.src(['src/**/*.js', 'src/**/*.css', 'src/*.less', '.tmp/dist/*.js'])
         .pipe($.if('*.js', $.angularFilesort()));
 
@@ -59,21 +62,22 @@ gulp.task('sample', ['templates'], function () {
         .pipe($.inject(files))
         .pipe(gulp.dest('.tmp/dist'))
         .pipe(connect.reload());
+}));
+
+gulp.task('watch', function() {
+    return gulp.watch(['src/**'], gulp.series('sample'));
 });
 
-gulp.task('watch', function () {
-    return gulp.watch(['src/**'], ['sample']);
-});
-
-gulp.task('serve', ['watch', 'sample'], function () {
+gulp.task('serve', gulp.parallel('watch', 'sample', function(done) {
     return connect.server({
-        root: ['.tmp/dist', '.'],
-        livereload: true,
-        port: 9002
-    });
-});
+            root: ['.tmp/dist', '.'],
+            livereload: true,
+            port: 9002
+        },
+        function() { this.server.on('close', done) });
+}));
 
-gulp.task('test', function () {
+gulp.task('test', function() {
     return gulp
         .src('test/opengate-angular-js.test.html')
         .pipe(mochaPhantomJS({
@@ -82,21 +86,21 @@ gulp.task('test', function () {
                 useColors: true
             }
         }))
-        .on('error', function (err) {
+        .on('error', function(err) {
             console.error(err);
         });
 });
 
 /** build **/
-gulp.task('imgs', function () {
-    copyImgs();
+gulp.task('imgs', function() {
+    return copyImgs();
 });
 
-gulp.task('css', function () {
+gulp.task('css', function() {
     return compileCSS();
 });
 
-gulp.task('js', function () {
+gulp.task('js', function() {
     return compileJS();
 });
 
@@ -105,7 +109,6 @@ var ver = require('gulp-ver'),
     git = require('gulp-git'),
     bump = require('gulp-bump'),
     argv = require('yargs').argv,
-    runSequence = require('run-sequence'),
     ext_replace = require('gulp-ext-replace'),
     tag_version = require('gulp-tag-version');
 
@@ -143,11 +146,11 @@ function copyImgs() {
 
 /** clean **/
 
-gulp.task('clean', function (cb) {
+gulp.task('clean', function(cb) {
     del(['dist', '.tmp'], cb);
 });
 
-gulp.task('default', ['imgs', 'css', 'js']);
+gulp.task('default', gulp.series('imgs', 'css', 'js'));
 
 
 
@@ -167,29 +170,28 @@ gulp.task('default', ['imgs', 'css', 'js']);
  */
 
 //STEP 1 
-gulp.task('create:release:branch', function (cb) {
+gulp.task('create:release:branch', function(cb) {
     git.checkout(temporalBranchRelease(), {
         args: '-b'
-    }, function (err) {
+    }, function(err) {
         cb(err);
     });
 });
 
 // STEP 2
 
-gulp.task('increase:version', ['create:release:branch'], function () {
+gulp.task('increase:version', function() {
     console.log(versionType());
     return increase(versionType());
 });
 
-gulp.task('build:all', function (cb) {
-    runSequence('clean', 'increase:version', 'imgs', 'js', 'css', cb);
-});
+gulp.task('build:all', gulp.series('clean', 'create:release:branch', 'increase:version', 'imgs', 'js', 'css'));
+
 
 // STEP 2
 
 // STEP 3 
-gulp.task('commit:increase:version', ['build:all'], function () {
+gulp.task('commit:increase:version', function() {
     return gulp.src(['dist', './bower.json', './package.json'])
         .pipe(git.add())
         .pipe(git.commit('release ' + versionType() + ' version:' + versionNumber()));
@@ -197,34 +199,34 @@ gulp.task('commit:increase:version', ['build:all'], function () {
 // STEP 3 
 
 // STEP 4
-gulp.task('checkout:master:increase', ['commit:increase:version'], function (cb) {
-    git.checkout(masterBranch(), function (err) {
+gulp.task('checkout:master:increase', function(cb) {
+    git.checkout(masterBranch(), function(err) {
         cb(err);
     });
 });
-gulp.task('merge:master:increase', ['checkout:master:increase'], function (cb) {
-    git.merge(temporalBranchRelease(), function (err) {
+gulp.task('merge:master:increase', function(cb) {
+    git.merge(temporalBranchRelease(), function(err) {
         cb(err);
     });
 });
 
-gulp.task('commit:master:increase:version', ['merge:master:increase'], function () {
+gulp.task('commit:master:increase:version', function() {
     return gulp.src(['.'])
         .pipe(git.add())
         .pipe(git.commit('release ' + versionType() + ' version:' + versionNumber()));
 });
 
-gulp.task('prepare_tag:increase', ['commit:master:increase:version'], function () {
+gulp.task('prepare_tag:increase', function() {
     return gulp.src(['./package.json'])
         .pipe(tag_version());
 });
 
-gulp.task('prepare:master:increase', ['prepare_tag:increase']);
+gulp.task('prepare:master:increase', gulp.series('build:all', 'commit:increase:version', 'checkout:master:increase', 'merge:master:increase', 'commit:master:increase:version', 'prepare_tag:increase'));
 
-gulp.task('prepare:develop:increase', ['prepare:master:increase'], function (cb) {
-    git.checkout(developBranch(), function (err) {
+gulp.task('checkout:develop', function(cb) {
+    git.checkout(developBranch(), function(err) {
         if (!err) {
-            git.merge(masterBranch(), function (err) {
+            git.merge(masterBranch(), function(err) {
                 cb(err);
             });
         } else {
@@ -233,23 +235,25 @@ gulp.task('prepare:develop:increase', ['prepare:master:increase'], function (cb)
         }
     });
 });
+
+gulp.task('prepare:develop:increase', gulp.series('prepare:master:increase', 'checkout:develop'));
 // STEP 4
 
-gulp.task('push:increase', ['prepare:develop:increase', 'prepare:master:increase'], function (cb) {
+gulp.task('push:increase', gulp.series('prepare:develop:increase', function(cb) {
     git.push('origin', [masterBranch(), developBranch()], {
         args: " --follow-tags"
-    }, function (err) {
+    }, function(err) {
         if (!err) {
             git.branch(temporalBranchRelease(), {
                 args: "-D"
-            }, function (err) {
+            }, function(err) {
                 cb(err);
             });
         } else {
             cb(err);
         }
     });
-});
+}));
 
 
 function increase(importance) {
