@@ -3,6 +3,6 @@
     <custom-ui-select-subscription label="form.title" specific-type="{{form.specificType}}" on-select-item="evalExpr(form.onselectitem, {$item: $item, $model: $model})" on-remove="evalExpr(form.onremove, {$item: $item, $model: $model})" identifier="$$value$$"
         multiple="form.multiple" sf-field-model="replaceAll" entity="form.dummy" ng-model="$$value$$" placeholder="{{form.placeholder || 'FORM.PLACEHOLDER.ELEMENT' | translate }}" title="{{form.title || 'ENTITY.SUBSCRIPTION' | translate }}" ng-required="form.required"
         exclude-devices="form.excludeDevices" organization="{{form.organization}}" channel="{{form.channel}}" oql="{{form.oql}}" quick-search-fields="{{form.quickSearchFields}}" specific-type-search-fields="{{form.specificTypeSearchFields}}" ui-select-match-path="{{form.uiSelectMatchPath}}"
-        ui-select-match-class="{{form.uiSelectMatchClass}}" actions="form.actions" disabled='form.readonly || form.disabled' disable-default-sorted="form.disableDefaultSorted">
+        ui-select-match-class="{{form.uiSelectMatchClass}}" actions="form.actions" disabled='form.readonly || form.disabled' disable-default-sorted="form.disableDefaultSorted" disable-case-sensitive="form.disableCaseSensitive">
     </custom-ui-select-subscription>
 </div>

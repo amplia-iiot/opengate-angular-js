@@ -11,6 +11,10 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             if (ctrl.disableDefaultSorted) {
                 subscriptionsBuilder = subscriptionsBuilder.disableDefaultSorted();
             }
+            if (ctrl.disableCaseSensitive) {
+                subscriptionsBuilder = subscriptionsBuilder.disableCaseSensitive();
+            }
+
 
             function _getFilter(oql) {
                 var _json = Filter.parseQuery(oql);
@@ -392,7 +396,8 @@ angular.module('opengate-angular-js').component('customUiSelectSubscription', {
         identifier: '<?',
         ngModel: '=?',
         uiSelectMatchPath: '@?',
-        disableDefaultSorted: '=?'
+        disableDefaultSorted: '=?',
+        disableCaseSensitive: '=?'
     }
 
 })

@@ -11,6 +11,9 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
             if (ctrl.disableDefaultSorted) {
                 assetsBuilder = assetsBuilder.disableDefaultSorted();
             }
+            if (ctrl.disableCaseSensitive) {
+                assetsBuilder = assetsBuilder.disableCaseSensitive();
+            }
 
             var defaultQuickSearchFields = "provision.administration.identifier, provision.asset.specificType, asset.specificType";
             var defaultSpecificTypeSearchFields = "provision.asset.specificType, asset.specificType";
@@ -370,7 +373,9 @@ angular.module('opengate-angular-js').component('customUiSelectAsset', {
         oql: '@',
         quickSearchFields: '@',
         specificTypeSearchFields: '@',
-        disableDefaultSorted: '=?'
+        disableDefaultSorted: '=?',
+        disableCaseSensitive: '=?'
+
     }
 
 });

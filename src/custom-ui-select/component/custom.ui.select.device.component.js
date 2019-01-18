@@ -11,6 +11,9 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
             if (ctrl.disableDefaultSorted) {
                 deviceBuilder = deviceBuilder.disableDefaultSorted();
             }
+            if (ctrl.disableCaseSensitive) {
+                deviceBuilder = deviceBuilder.disableCaseSensitive();
+            }
 
             if (!ctrl.fullInfo) {
                 var selectBuilder = $api().newSelectBuilder();
@@ -438,7 +441,8 @@ angular.module('opengate-angular-js').component('customUiSelectDevice', {
         quickSearchFields: '@',
         specificTypeSearchFields: '@',
         fullInfo: '=?',
-        disableDefaultSorted: '=?'
+        disableDefaultSorted: '=?',
+        disableCaseSensitive: '=?'
     }
 
 });

@@ -11,6 +11,9 @@ angular.module('opengate-angular-js').controller('customUiSelectEntityController
             if (ctrl.disableDefaultSorted) {
                 entitiesBuilder = entitiesBuilder.disableDefaultSorted();
             }
+            if (ctrl.disableCaseSensitive) {
+                entitiesBuilder = entitiesBuilder.disableCaseSensitive();
+            }
 
             var selectBuilder = $api().newSelectBuilder();
             var SE = $api().SE;
@@ -209,7 +212,8 @@ angular.module('opengate-angular-js').component('customUiSelectEntity', {
         disabled: '<?',
         ngModel: '=?',
         uiSelectMatchClass: '@?',
-        disableDefaultSorted: '=?'
+        disableDefaultSorted: '=?',
+        disableCaseSensitive: '=?'
     }
 
 });
