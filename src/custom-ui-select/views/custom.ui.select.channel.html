@@ -12,6 +12,9 @@
                 (<span ng-bind-html="channel.provision.administration.organization._current.value | highlight: $select.search"></span>)
             </small>
         </ui-select-choices>
+        <ui-select-no-choice>
+            {{ 'UX-ERROR.DATA_NOT_FOUND' | translate }}
+        </ui-select-no-choice>
     </ui-select>
 </div>
 <div class="form-group no-margin" mass-autocomplete ng-if="!$ctrl.multiple">
@@ -29,5 +32,8 @@
                 (<span ng-bind-html="channel.provision.administration.organization._current.value | highlight: $select.search"></span>)
             </small>
         </ui-select-choices>
+        <ui-select-no-choice>
+            {{ 'UX-ERROR.DATA_NOT_FOUND' | translate }}
+        </ui-select-no-choice>
     </ui-select>
 </div>

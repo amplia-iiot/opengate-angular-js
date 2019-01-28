@@ -2,6 +2,7 @@
     <!-- Surrounding DIV for sfField builder to add a sfField directive to. -->
     <custom-ui-select-device label="form.title" specific-type="{{form.specificType}}" on-select-item="evalExpr(form.onselectitem, {$item: $item, $model: $model})" on-remove="evalExpr(form.onremove, {$item: $item, $model: $model})" identifier="$$value$$" multiple="form.multiple"
         oql="{{form.oql}}" quick-search-fields="{{form.quickSearchFields}}" specific-type-search-fields="{{form.specificTypeSearchFields}}" sf-field-model="replaceAll" device="form.dummy" ng-model="$$value$$" full-info="form.fullInfo" ng-required="form.required"
-        ui-select-match-class="form.uiSelectMatchClass" actions="form.actions" disabled='form.readonly || form.disabled' disable-default-sorted="form.disableDefaultSorted" disable-case-sensitive="form.disableCaseSensitive">
+        ui-select-match-class="form.uiSelectMatchClass" actions="form.actions" disabled='form.readonly || form.disabled' disable-default-sorted="form.disableDefaultSorted" disable-case-sensitive="form.disableCaseSensitive" exact-search="form.exactSearch"
+        force-filter="form.forceFilter">
     </custom-ui-select-device>
 </div>

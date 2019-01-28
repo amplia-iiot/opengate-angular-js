@@ -17,6 +17,9 @@
                 <div ng-if="!entityData.provision.device.specificType && entityData.provision.device.communicationModules && entityData.provision.device.communicationModules[0] && entityData.provision.device.communicationModules[0].subscription && entityData.provision.device.communicationModules[0].subscription.specificType._current.value">{{ 'FORM.LABEL.SPECIFIC_TYPE' | translate }}: <span ng-bind-html="entityData.provision.device.communicationModules[0].subscription.specificType._current.value | highlight: $select.search"></span></div>
         </small>
         </ui-select-choices>
+        <ui-select-no-choice>
+            {{ 'UX-ERROR.DATA_NOT_FOUND' | translate }}
+        </ui-select-no-choice>
     </ui-select>
 </div>
 <div class="form-group no-margin" mass-autocomplete ng-if="!$ctrl.multiple">
@@ -38,5 +41,8 @@
                 <div ng-if="!entityData.provision.device.specificType && entityData.provision.device.communicationModules && entityData.provision.device.communicationModules[0] && entityData.provision.device.communicationModules[0].subscription && entityData.provision.device.communicationModules[0].subscription.specificType._current.value">{{ 'FORM.LABEL.SPECIFIC_TYPE' | translate }}: <span ng-bind-html="entityData.provision.device.communicationModules[0].subscription.specificType._current.value | highlight: $select.search"></span></div>
         </small>
         </ui-select-choices>
+        <ui-select-no-choice>
+            {{ 'UX-ERROR.DATA_NOT_FOUND' | translate }}
+        </ui-select-no-choice>
     </ui-select>
 </div>

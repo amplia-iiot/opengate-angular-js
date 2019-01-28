@@ -69,7 +69,13 @@ angular.module('opengate-angular-js')
 
                     //Filtro simple con or-like
                     $scope.asyncfilter = function(search) {
-                        _loadCollection(processFilter(uiConfig.filter(search)));
+                        if (!uiConfig.forceFilter || search.trim() !== '') {
+                            _loadCollection(processFilter(uiConfig.filter(search)));
+                        } else {
+                            if (uiConfig.collection && uiConfig.collection.length > 0) {
+                                uiConfig.collection.splice(0, uiConfig.collection.length);
+                            }
+                        }
                     };
 
                     $scope._complex = $attrs.$$button.querySelectorAll('.fa-filter').hasClass('text-primary');

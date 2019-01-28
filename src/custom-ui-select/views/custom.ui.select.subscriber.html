@@ -11,6 +11,9 @@
                 <div ng-if="subscriberData.provision.subscriber.name._current.value">Name: <span ng-bind-html="''+subscriberData.provision.subscriber.name._current.value | highlight: $select.search"></span></div>
             </small>
         </ui-select-choices>
+        <ui-select-no-choice>
+            {{ 'UX-ERROR.DATA_NOT_FOUND' | translate }}
+        </ui-select-no-choice>
     </ui-select>
 </div>
 <div class="form-group no-margin" mass-autocomplete ng-if="!$ctrl.multiple">
@@ -27,5 +30,8 @@
                 <div ng-if="subscriberData.provision.subscriber.mobile.icc._current.value">{{ 'FORM.LABEL.NAME' | translate }}: <span ng-bind-html="''+subscriberData.provision.subscriber.mobile.icc.name._current.value | highlight: $select.search"></span></div>
             </small>
         </ui-select-choices>
+        <ui-select-no-choice>
+            {{ 'UX-ERROR.DATA_NOT_FOUND' | translate }}
+        </ui-select-no-choice>
     </ui-select>
 </div>

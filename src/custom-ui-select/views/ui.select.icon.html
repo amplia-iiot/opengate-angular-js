@@ -1,9 +1,8 @@
 <div class="form-group no-margin">
     <label ng-if="$ctrl.label" for="icon" translate>FORM.LABEL.ICON</label>
     <div class="{{$ctrl.allowClear ? 'input-group' : ''}}">
-        <ui-select id="icon" name="icon" ng-model="$ctrl.icon" theme="bootstrap" ng-required="$ctrl.required" title="$ctrl.title"
-            ng-disabled="$ctrl.disabled" on-remove="$ctrl.iconRemove($item, $model)" on-select="$ctrl.iconSelected($item, $model)"
-            ng-required="$ctrl.required" allow-clear="$ctrl.allowClear" uis-open-close="$ctrl.onOpenClose(isOpen)">
+        <ui-select id="icon" name="icon" ng-model="$ctrl.icon" theme="bootstrap" ng-required="$ctrl.required" title="$ctrl.title" ng-disabled="$ctrl.disabled" on-remove="$ctrl.iconRemove($item, $model)" on-select="$ctrl.iconSelected($item, $model)" ng-required="$ctrl.required"
+            allow-clear="$ctrl.allowClear" uis-open-close="$ctrl.onOpenClose(isOpen)">
             <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.ICON.CHOOSE' | translate }}" allow-clear="$ctrl.allowClear">
                 <i class="fa {{$select.selected.key}} fa-2x"></i>
                 <span>{{$select.selected.key}}</span>
@@ -13,11 +12,14 @@
                 <br />
                 <span ng-bind-html="icon.key| highlight: $select.search"></span>
             </ui-select-choices>
+            <ui-select-no-choice>
+                {{ 'UX-ERROR.DATA_NOT_FOUND' | translate }}
+            </ui-select-no-choice>
         </ui-select>
         <span class="input-group-btn" ng-if="$ctrl.allowClear">
             <button type="button" ng-click="$ctrl.icon = undefined" class="btn btn-default">
                 <span class="glyphicon glyphicon-trash"></span>
-            </button>
+        </button>
         </span>
     </div>
 </div>

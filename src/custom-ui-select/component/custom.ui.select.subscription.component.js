@@ -43,11 +43,21 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
                     or: []
                 };
                 fields.forEach(function(field) {
-                    var _like = {
-                        like: {}
-                    };
-                    _like.like[field] = search;
-                    filter.or.push(_like);
+                    var _condition;
+
+                    if (ctrl.exactSearch) {
+                        _condition = {
+                            eq: {}
+                        };
+                        _condition.eq[field] = search;
+                    } else {
+                        _condition = {
+                            like: {}
+                        };
+                        _condition.like[field] = search;
+                    }
+
+                    filter.or.push(_condition);
                 });
                 return filter;
             }
@@ -179,7 +189,8 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
                 organization: ctrl.organization,
                 channel: ctrl.channel,
                 oql: ctrl.oql,
-                quickSearchFields: ctrl.quickSearchFields
+                quickSearchFields: ctrl.quickSearchFields,
+                forceFilter: ctrl.forceFilter
             };
 
             ctrl.entitySelected = function($item, $model) {
@@ -385,6 +396,7 @@ angular.module('opengate-angular-js').component('customUiSelectSubscription', {
         oql: '@',
         specificTypeSearchFields: '@',
         quickSearchFields: '@',
+        exactSearch: '<',
         multiple: '<',
         ngRequired: '<',
         placeholder: '@',
@@ -397,7 +409,8 @@ angular.module('opengate-angular-js').component('customUiSelectSubscription', {
         ngModel: '=?',
         uiSelectMatchPath: '@?',
         disableDefaultSorted: '=?',
-        disableCaseSensitive: '=?'
+        disableCaseSensitive: '=?',
+        forceFilter: '=?'
     }
 
 })

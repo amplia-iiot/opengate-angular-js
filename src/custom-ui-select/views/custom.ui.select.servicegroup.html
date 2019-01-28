@@ -6,7 +6,10 @@
         <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.SERVICEGROUP' | translate }}" allow-clear="true"> {{$item.name}} </ui-select-match>
         <ui-select-choices repeat="serviceGroup in $ctrl.ownConfig.collection track by $index">
             <span ng-bind-html="serviceGroup.name | highlight: $select.search">
-        </ui-select-choices>
+        </ui-select-choices> 
+        <ui-select-no-choice>
+            {{ 'UX-ERROR.DATA_NOT_FOUND' | translate }}
+        </ui-select-no-choice>
     </ui-select>
 </div>
 <div class="form-group no-margin" mass-autocomplete ng-if="!$ctrl.multiple">
@@ -18,6 +21,9 @@
         <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.SERVICEGROUP' | translate }}" allow-clear="true"> {{$item.name}} </ui-select-match>
         <ui-select-choices repeat="serviceGroup in $ctrl.ownConfig.collection track by $index">
             <span ng-bind-html="serviceGroup.name | highlight: $select.search">
-        </ui-select-choices>
+        </ui-select-choices> 
+        <ui-select-no-choice>
+            {{ 'UX-ERROR.DATA_NOT_FOUND' | translate }}
+        </ui-select-no-choice>
     </ui-select>
 </div>

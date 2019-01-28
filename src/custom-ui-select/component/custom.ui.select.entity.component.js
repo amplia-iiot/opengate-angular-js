@@ -94,7 +94,8 @@ angular.module('opengate-angular-js').controller('customUiSelectEntityController
                 },
                 rootKey: 'entities',
                 collection: [],
-                customSelectors: $api().entitiesSearchBuilder()
+                customSelectors: $api().entitiesSearchBuilder(),
+                forceFilter: ctrl.forceFilter
             };
 
             ctrl.entitySelected = function($item, $model) {
@@ -213,7 +214,8 @@ angular.module('opengate-angular-js').component('customUiSelectEntity', {
         ngModel: '=?',
         uiSelectMatchClass: '@?',
         disableDefaultSorted: '=?',
-        disableCaseSensitive: '=?'
+        disableCaseSensitive: '=?',
+        forceFilter: '=?'
     }
 
 });

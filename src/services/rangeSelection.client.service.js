@@ -24,19 +24,25 @@ angular.module('opengate-angular-js')
          */
         function process(options) {
             var windowSelection = $window.getSelection();
-            var range = windowSelection.getRangeAt(0);
 
-            var selection = service.Selection(range);
+            try {
+                var range = windowSelection.getRangeAt(0);
 
-            if (options.snapToWord) {
-                selection.snapToWord();
+                var selection = service.Selection(range);
+
+                if (options.snapToWord) {
+                    selection.snapToWord();
+                }
+
+                if (options.highlight) {
+                    selection.highlight('<span style="background-color: yellow;"></span>');
+                }
+
+                return selection;
+            } catch (ignoreError) {
+                return null;
             }
 
-            if (options.highlight) {
-                selection.highlight('<span style="background-color: yellow;"></span>');
-            }
-
-            return selection;
         }
 
         /**

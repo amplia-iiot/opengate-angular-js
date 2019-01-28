@@ -63,13 +63,25 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
                 var filter = {
                     or: []
                 };
+
                 fields.forEach(function(field) {
-                    var _like = {
-                        like: {}
-                    };
-                    _like.like[field] = search;
-                    filter.or.push(_like);
+                    var _condition;
+
+                    if (ctrl.exactSearch) {
+                        _condition = {
+                            eq: {}
+                        };
+                        _condition.eq[field] = search;
+                    } else {
+                        _condition = {
+                            like: {}
+                        };
+                        _condition.like[field] = search;
+                    }
+
+                    filter.or.push(_condition);
                 });
+
                 return filter;
             }
 
@@ -149,7 +161,8 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
                 customSelectors: $api().devicesSearchBuilder(),
                 specificType: ctrl.specificType,
                 oql: ctrl.oql,
-                quickSearchFields: ctrl.quickSearchFields
+                quickSearchFields: ctrl.quickSearchFields,
+                forceFilter: ctrl.forceFilter
             };
 
             ctrl.deviceSelected = function($item, $model) {
@@ -439,10 +452,12 @@ angular.module('opengate-angular-js').component('customUiSelectDevice', {
         uiSelectMatchClass: '@?',
         oql: '@',
         quickSearchFields: '@',
+        exactSearch: '<',
         specificTypeSearchFields: '@',
         fullInfo: '=?',
         disableDefaultSorted: '=?',
-        disableCaseSensitive: '=?'
+        disableCaseSensitive: '=?',
+        forceFilter: '=?'
     }
 
 });

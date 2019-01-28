@@ -24,13 +24,25 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
                 var filter = {
                     or: []
                 };
+
                 fields.forEach(function(field) {
-                    var _like = {
-                        like: {}
-                    };
-                    _like.like[field] = search;
-                    filter.or.push(_like);
+                    var _condition;
+
+                    if (ctrl.exactSearch) {
+                        _condition = {
+                            eq: {}
+                        };
+                        _condition.eq[field] = search;
+                    } else {
+                        _condition = {
+                            like: {}
+                        };
+                        _condition.like[field] = search;
+                    }
+
+                    filter.or.push(_condition);
                 });
+
                 return filter;
             }
 
@@ -134,7 +146,8 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
                 rootKey: 'assets',
                 collection: [],
                 customSelectors: $api().assetsSearchBuilder(),
-                specificType: ctrl.specificType
+                specificType: ctrl.specificType,
+                forceFilter: ctrl.forceFilter
             };
 
             ctrl.assetSelected = function($item, $model) {
@@ -372,10 +385,11 @@ angular.module('opengate-angular-js').component('customUiSelectAsset', {
         uiSelectMatchClass: '@?',
         oql: '@',
         quickSearchFields: '@',
+        exactSearch: '<',
         specificTypeSearchFields: '@',
         disableDefaultSorted: '=?',
-        disableCaseSensitive: '=?'
-
+        disableCaseSensitive: '=?',
+        forceFilter: '=?'
     }
 
 });
