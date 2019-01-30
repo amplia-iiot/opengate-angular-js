@@ -40,7 +40,7 @@ angular.module('opengate-angular-js')
 
                 return selection;
             } catch (ignoreError) {
-                return null;
+                return '';
             }
 
         }
