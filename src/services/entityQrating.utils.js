@@ -49,18 +49,28 @@ angular.module('opengate-angular-js')
                 qPerformance = 0,
                 avgPerformance = 0;
 
-            angular.forEach(entityData, function(dp, key) {
-                if (dp._value && dp._value._current && dp._value._current.scoring && dp._value._current.scoring.qrating && dp._value._current.scoring.performance) {
-                    var scoring = dp._value._current.scoring;
-                    sumPerformances += scoring.performance;
-                    var curMaxScore = scoring.qrating.max_score;
-                    if (curMaxScore > 0) {
-                        score += (curMaxScore * scoring.performance) / 100;
+            angular.forEach(entityData, function(objectData, key) {
+                if (objectData) {
+                    var dp;
 
-                        maxScore += curMaxScore;
+                    if (objectData._value && objectData._value && objectData._value._current && objectData._value._current.scoring && objectData._value._current.scoring.qrating && objectData._value._current.scoring.performance) {
+                        dp = objectData;
+                    } else if (objectData[0] && objectData[0]._value && objectData[0]._value && objectData[0]._value._current && objectData[0]._value._current.scoring && objectData[0]._value._current.scoring.qrating && objectData[0]._value._current.scoring.performance) {
+                        dp = objectData[0];
                     }
 
-                    totalMedidas++;
+                    if (dp) {
+                        var scoring = dp._value._current.scoring;
+                        sumPerformances += scoring.performance;
+                        var curMaxScore = scoring.qrating.max_score;
+                        if (curMaxScore > 0) {
+                            score += (curMaxScore * scoring.performance) / 100;
+
+                            maxScore += curMaxScore;
+                        }
+
+                        totalMedidas++;
+                    }
                 }
             });
 

@@ -2148,510 +2148,6 @@ angular.module('ui-leaflet')
     };
 }]);
 
-angular.module('opengate-angular-js')
-
-.directive('windowTimeSelect', function() { // ['$scope', '$compile'], function($scope, $compile) {
-    return {
-        restrict: 'AE',
-        templateUrl: 'window-time-select/views/window-time.select.view.html',
-        scope: {
-            event: '@',
-            rawdate: '@'
-        },
-        controller: ["$scope", "$element", "$attrs", "$translate", function($scope, $element, $attrs, $translate) {
-            $scope.fromCalendarOpen = false;
-            $scope.toCalendarOpen = false;
-
-            // General config
-            $scope.customButtonBar = {
-                show: true,
-                now: {
-                    show: false
-                },
-                today: {
-                    show: false
-                },
-                clear: {
-                    show: false
-                },
-                date: {
-                    show: true,
-                    text: ' ',
-                    cls: 'btn-sm btn-info oux-button-margin fa fa-calendar'
-                },
-                time: {
-                    show: true,
-                    text: ' ',
-                    cls: 'btn-sm btn-info oux-button-margin fa fa-clock-o'
-                },
-                close: {
-                    show: true,
-                    text: ' ',
-                    cls: 'btn-sm btn-success oux-button-margin fa fa-check'
-                },
-                cancel: {
-                    show: false
-                }
-            };
-
-            function toLimit() {
-                return window.moment($scope.date.from).add(1, 'minutes')._d;
-            }
-
-            function fromLimit() {
-                return window.moment($scope.date.to).subtract(1, 'minutes')._d;
-            }
-
-            function fromDate() {
-                return window.moment($scope.date.to).subtract(1, 'months')._d;
-            }
-
-            function setTo(toDate) {
-                if (!$scope.date) $scope.date = {};
-                $scope.date.to = toDate;
-                $scope.toMax = toDate;
-
-                $scope.toOptions = {
-                    datePicker: {
-                        startingDay: 1,
-                        showWeeks: false,
-                        minDate: $scope.toMin,
-                        minMode: 'day',
-                        closed: $scope.toChange
-                    },
-                    timePicker: {
-                        //min: $scope.toMin,
-                        showMeridian: false
-                    }
-                }
-            }
-
-            function setFrom() {
-                $scope.date.from = fromDate($scope.date.to);
-
-                $scope.toOptions.datePicker.minDate = toLimit();
-                //$scope.toOptions.timePicker.min = toLimit();
-
-                $scope.toMin = toLimit();
-                $scope.fromMax = fromLimit($scope.date.to);
-
-                $scope.fromOptions = {
-                    datePicker: {
-                        startingDay: 1,
-                        showWeeks: false,
-                        maxDate: $scope.fromMax,
-                        maxMode: 'day',
-                        closed: $scope.fromChange
-                    },
-                    timePicker: {
-                        //max: $scope.fromMax,
-                        showMeridian: false
-                    }
-                };
-            }
-
-            $scope.oneDayClass = $scope.oneWeekClass = $scope.oneMonthClass = $scope.customClass = 'btn-info';
-            $scope.filterApplied = false;
-            $scope.format = 'dd MMMM yyyy HH:mm';
-            $scope.clear = function() {
-
-                $scope.oneDayClass = $scope.oneWeekClass = $scope.oneMonthClass = $scope.customClass = 'btn-info';
-                $scope.filterApplied = false;
-                $scope.customEnabled = false;
-                $scope.$emit('onWindowTimeChanged', {});
-            };
-            $scope.fromOpen = function() {
-                $scope.fromPopup.opened = true;
-            };
-            $scope.fromPopup = {
-                opened: false
-            };
-            $scope.toOpen = function() {
-                $scope.toPopup.opened = true;
-            };
-            $scope.toPopup = {
-                opened: false
-            };
-
-            $scope.openCalendarFrom = function() {
-                $scope.fromCalendarOpen = true;
-            };
-
-            $scope.openCalendarTo = function() {
-                $scope.toCalendarOpen = true;
-            };
-
-            $scope.custom = function() {
-                if (!$scope.customEnabled || (!$scope.fromCalendarOpen && !$scope.toCalendarOpen)) {
-                    $scope.customEnabled = !$scope.customEnabled;
-                }
-
-            };
-            $scope.apply = function(winTime, fire_event) {
-                $scope.filterApplied = true;
-                $scope.customEnabled = false;
-                /* jshint ignore:start */
-                if (!window.eval($scope.rawdate)) {
-                    for (var key in winTime) {
-                        if (key !== 'type' && key !== 'rawdate')
-                            winTime[key] = window.moment(winTime[key]).format();
-                    }
-                    //TODO: enganche con widgets, habría que ver como resolver este problema o hacer que esto sea una directiva propia del angular-dashboard-framework
-                    winTime.rawdate = false;
-                }
-                /* jshint ignore:end */
-                if (fire_event) {
-                    $scope.$emit('onWindowTimeChanged', winTime);
-                }
-            };
-            $scope.oneDay = function(no_fire_event) {
-                $scope.oneDayClass = 'btn-success';
-                $scope.oneWeekClass = $scope.oneMonthClass = $scope.customClass = 'btn-info';
-                $scope.apply(genWindowTime('days'), !no_fire_event);
-            };
-            $scope.oneWeek = function(no_fire_event) {
-                $scope.oneWeekClass = 'btn-success';
-                $scope.oneDayClass = $scope.oneMonthClass = $scope.customClass = 'btn-info';
-                $scope.apply(genWindowTime('weeks'), !no_fire_event);
-            };
-            $scope.oneMonth = function(no_fire_event) {
-                $scope.oneMonthClass = 'btn-success';
-                $scope.oneWeekClass = $scope.oneDayClass = $scope.customClass = 'btn-info';
-                $scope.apply(genWindowTime('months'), !no_fire_event);
-            };
-
-            $scope.applyCustom = function(no_fire_event) {
-                if ($scope.fromCalendarOpen) {
-                    $scope.fromChange();
-                } else if ($scope.toCalendarOpen) {
-                    $scope.toChange()
-                } else {
-                    $scope.fromCalendarOpen = false;
-                    $scope.toCalendarOpen = false;
-
-                    $scope.customClass = 'btn-success';
-                    $scope.oneWeekClass = $scope.oneDayClass = $scope.oneMonthClass = 'btn-info';
-                    $scope.apply({
-                        type: 'custom',
-                        to: $scope.date.to,
-                        from: $scope.date.from
-                    }, !no_fire_event);
-                }
-            };
-
-            // Config custom window
-            $scope.init = function() {
-
-                setTo(new Date());
-                setFrom();
-
-                $scope.toChange = function() {
-                    validateCustomWindow();
-                    $scope.fromMax = fromLimit($scope.date.to);
-                    $scope.fromOptions.datePicker.maxDate = $scope.fromMax;
-                    //$scope.fromOptions.timePicker.max = $scope.fromMax;
-                    $scope.toCalendarOpen = false;
-                };
-                $scope.fromChange = function() {
-                    validateCustomWindow();
-                    $scope.toOptions.datePicker.minDate = toLimit();
-                    //$scope.toOptions.timePicker.min = toLimit();
-
-                    $scope.toMin = toLimit();
-                    $scope.fromCalendarOpen = false;
-                };
-
-                function validateCustomWindow() {
-                    if (window.moment($scope.date.to).diff($scope.date.from) <= 0) {
-                        $scope.errorCustomWindow = 'From date(' + $scope.date.from.toISOString() + ') is bigger than to date(' + $scope.date.to.toISOString() + ')';
-                    } else {
-                        $scope.errorCustomWindow = undefined;
-                    }
-                }
-
-
-                //TODO: enganche con widgets, habría que ver como resolver este problema o hacer que esto sea una directiva propia del angular-dashboard-framework
-                if ($scope.$parent.config && $scope.$parent.config.windowFilter) {
-                    var configWindowFilter = $scope.$parent.config.windowFilter;
-                    /* jshint ignore:start */
-                    if (!window.eval($scope.rawdate)) {
-                        $scope.$parent.config.windowFilter.rawdate = false;
-                    }
-                    /* jshint ignore:end */
-                    switch (configWindowFilter.type) {
-                        case 'days':
-                            $scope.oneDay(true);
-                            break;
-                        case 'weeks':
-                            $scope.oneWeek(true);
-                            break;
-                        case 'months':
-                            $scope.oneMonth(true);
-                            break;
-                        case 'custom':
-                            if (configWindowFilter.to && configWindowFilter.from) {
-                                $scope.date.to = new Date(configWindowFilter.to);
-                                $scope.date.from = new Date(configWindowFilter.from);
-                            }
-                            $scope.applyCustom(true);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            };
-
-            $scope.init();
-
-            function genWindowTime(type) {
-                var from = window.moment().subtract(1, type);
-                return {
-                    from: from._d,
-                    type: type
-                };
-            }
-        }],
-        link: function(scope) {
-            var widgetWindowTimeChangedEvt = scope.$on('widgetWindowTimeChanged', function(event, windowFilter) {
-                var configWindowFilter = windowFilter;
-
-                switch (configWindowFilter.type) {
-                    case 'days':
-                        scope.oneDay(true);
-                        break;
-                    case 'weeks':
-                        scope.oneWeek(true);
-                        break;
-                    case 'months':
-                        scope.oneMonth(true);
-                        break;
-                    case 'custom':
-                        if (configWindowFilter.to && configWindowFilter.from) {
-                            scope.date.to = new Date(configWindowFilter.to);
-                            scope.date.from = new Date(configWindowFilter.from);
-                        }
-                        scope.applyCustom(true);
-                        break;
-                    default:
-                        break;
-                }
-            });
-
-            scope.$on('$destroy', function() {
-                widgetWindowTimeChangedEvt();
-
-                scope.fromCalendarOpen = false;
-                scope.toCalendarOpen = false;
-
-                // manual destroy
-                var pickers = angular.element('ul[class*="datetime-picker-dropdown"]')
-
-                if (pickers && pickers.length) {
-                    angular.forEach(pickers, function(element) {
-                        element.remove();
-                    });
-                }
-            });
-        }
-    };
-});
-
-angular.module('opengate-angular-js')
-
-.directive('datetimeSelect', function() { // ['$scope', '$compile'], function($scope, $compile) {
-    return {
-        restrict: 'AE',
-        templateUrl: 'window-time-select/views/datetime.select.view.html',
-        scope: {
-            ngModel: '=',
-            ngValue: '=',
-            ngRequired: '<',
-            placeholder: '@',
-            format: '@',
-            mode: '@',
-            ngChange: '<',
-            dateOptions: '=',
-            timeOptions: '=',
-            min: '=',
-            max: '='
-        },
-        controller: ["$scope", "$element", "$attrs", "$translate", "uibDateParser", function($scope, $element, $attrs, $translate, uibDateParser) {
-            if (!$scope.mode || $scope.mode === 'date-time') {
-                $scope.inputMode = 'datetime';
-            } else {
-                $scope.inputMode = $scope.mode;
-            }
-
-            $scope.required = !$scope.ngRequired ? false : !!$scope.ngRequired;
-
-            $scope.calendarOpen = false;
-            $scope.enableDate = !$scope.inputMode || $scope.inputMode === 'datetime' || $scope.inputMode === 'date';
-            $scope.enableTime = $scope.inputMode && ($scope.inputMode === 'datetime' || $scope.inputMode === 'time');
-
-            if (!$scope.format) {
-                if ($scope.enableDate && !$scope.enableTime) {
-                    $scope.format = 'yyyy-MM-dd';
-                    $scope.visibleFormat = 'dd MMMM yyyy';
-                } else if (!$scope.enableDate && $scope.enableTime) {
-                    $scope.format = 'HH:mm:ss';
-                    $scope.visibleFormat = 'HH:mm';
-                } else {
-                    $scope.format = 'yyyy-MM-ddTHH:mm:ss.sssZ';
-                    $scope.visibleFormat = 'dd MMMM yyyy HH:mm';
-                }
-            } else {
-                $scope.visibleFormat = $scope.format;
-            }
-
-            $scope.outputFormat = $scope.format;
-
-            // Control del valor de entrada
-            if (!angular.isUndefined($scope.ngModel) || !angular.isUndefined($scope.ngValue)) {
-                if ($scope.ngValue) {
-                    $scope.rawdata = $scope.ngValue;
-                } else if ($scope.ngModel) {
-                    $scope.rawdata = uibDateParser.parse($scope.ngModel, $scope.outputFormat);
-                }
-            }
-
-            // General config
-            $scope.customButtonBar = {
-                show: true,
-                now: {
-                    show: false
-                },
-                today: {
-                    show: true,
-                    text: ' ',
-                    cls: 'btn-sm btn-info oux-button-margin fa fa-calendar-o'
-                },
-                clear: {
-                    show: true,
-                    text: ' ',
-                    cls: 'btn-sm btn-success oux-button-margin fa fa-close'
-                },
-                date: {
-                    show: !$scope.inputMode || $scope.inputMode === 'datetime' || $scope.inputMode === 'date',
-                    text: ' ',
-                    cls: 'btn-sm btn-info oux-button-margin fa fa-calendar'
-                },
-                time: {
-                    show: $scope.inputMode && ($scope.inputMode === 'datetime' || $scope.inputMode === 'time'),
-                    text: ' ',
-                    cls: 'btn-sm btn-info oux-button-margin fa fa-clock-o'
-                },
-                close: {
-                    show: true,
-                    text: ' ',
-                    cls: 'btn-sm btn-success oux-button-margin fa fa-check'
-                },
-                cancel: {
-                    show: false
-                }
-            };
-
-            $scope.pickerOptions = {
-                datePicker: {
-                    startingDay: 1,
-                    showWeeks: false,
-                    appendToBody: true
-                },
-                timePicker: {
-                    //max: $scope.fromMax,
-                    showMeridian: false,
-                    appendToBody: true
-                }
-            };
-
-            if ($scope.dateOptions) {
-                angular.merge($scope.pickerOptions.datePicker, $scope.dateOptions);
-            }
-
-            if ($scope.timeOptions) {
-                angular.merge($scope.pickerOptions.timePicker, $scope.timeOptions);
-            }
-
-            $scope.openCalendar = function() {
-                $scope.calendarOpen = true;
-            };
-
-            //$scope.$watch('rawdata', function(newValue) {
-            $scope.changedRawdata = function() {
-                var newValue = $scope.rawdata;
-                if (newValue) {
-                    if (($scope.min && (newValue < $scope.min || newValue < uibDateParser.parse($scope.min, $scope.outputFormat))) ||
-                        ($scope.max && (newValue > $scope.max || newValue > uibDateParser.parse($scope.max, $scope.outputFormat)))) {
-                        $scope.rawdata = undefined;
-
-                        if ($scope.ngModel) {
-                            $scope.ngModel = undefined;
-                            if ($scope.ngChange) {
-                                $scope.ngChange($scope.ngModel);
-                            }
-                        }
-                    } else {
-                        var parsedNewValue;
-                        if ($scope.outputFormat !== 'yyyy-MM-ddTHH:mm:ss.sssZ') {
-                            parsedNewValue = uibDateParser.filter(newValue, $scope.outputFormat);
-                        } else {
-                            parsedNewValue = newValue.toISOString();
-                        }
-
-                        if (parsedNewValue !== $scope.ngModel) {
-                            $scope.ngModel = parsedNewValue;
-                            if ($scope.ngChange) {
-                                $scope.ngChange($scope.ngModel);
-                            }
-                        }
-                    }
-
-                } else {
-                    $scope.rawdata = undefined;
-
-                    if ($scope.ngModel) {
-                        $scope.ngModel = undefined;
-                        if ($scope.ngChange) {
-                            $scope.ngChange($scope.ngModel);
-                        }
-                    }
-
-                }
-                //$scope.ngValue = newValue;
-            };
-
-            $scope.$watch('ngModel', function(newValue) {
-                if (newValue) {
-                    if (uibDateParser.parse(newValue, $scope.outputFormat)) {
-                        $scope.rawdata = uibDateParser.parse(newValue, $scope.outputFormat);
-                    } else {
-                        $scope.rawdata = new Date(newValue);
-                    }
-                } else
-                    $scope.rawdata = undefined;
-
-                if ($scope.ngChange) {
-                    $scope.ngChange($scope.ngModel);
-                }
-            });
-
-            // Config custom window
-            $scope.init = function() {
-
-            };
-
-            $scope.init();
-
-
-        }],
-        link: function(scope) {
-            scope.$on('$destroy', function() {
-                //console.log("destroy");
-                scope.calendarOpen = false;
-            });
-        }
-    };
-});
-
 
 // Use Applicaion configuration module to register a new module
 //ApplicationConfiguration.registerModule('uxleaflet', ['opengate-angular-js']);
@@ -9408,6 +8904,510 @@ L.Util.saveAs = (function(view) {
     typeof window !== 'undefined' && window 
 ));
 
+
+angular.module('opengate-angular-js')
+
+.directive('windowTimeSelect', function() { // ['$scope', '$compile'], function($scope, $compile) {
+    return {
+        restrict: 'AE',
+        templateUrl: 'window-time-select/views/window-time.select.view.html',
+        scope: {
+            event: '@',
+            rawdate: '@'
+        },
+        controller: ["$scope", "$element", "$attrs", "$translate", function($scope, $element, $attrs, $translate) {
+            $scope.fromCalendarOpen = false;
+            $scope.toCalendarOpen = false;
+
+            // General config
+            $scope.customButtonBar = {
+                show: true,
+                now: {
+                    show: false
+                },
+                today: {
+                    show: false
+                },
+                clear: {
+                    show: false
+                },
+                date: {
+                    show: true,
+                    text: ' ',
+                    cls: 'btn-sm btn-info oux-button-margin fa fa-calendar'
+                },
+                time: {
+                    show: true,
+                    text: ' ',
+                    cls: 'btn-sm btn-info oux-button-margin fa fa-clock-o'
+                },
+                close: {
+                    show: true,
+                    text: ' ',
+                    cls: 'btn-sm btn-success oux-button-margin fa fa-check'
+                },
+                cancel: {
+                    show: false
+                }
+            };
+
+            function toLimit() {
+                return window.moment($scope.date.from).add(1, 'minutes')._d;
+            }
+
+            function fromLimit() {
+                return window.moment($scope.date.to).subtract(1, 'minutes')._d;
+            }
+
+            function fromDate() {
+                return window.moment($scope.date.to).subtract(1, 'months')._d;
+            }
+
+            function setTo(toDate) {
+                if (!$scope.date) $scope.date = {};
+                $scope.date.to = toDate;
+                $scope.toMax = toDate;
+
+                $scope.toOptions = {
+                    datePicker: {
+                        startingDay: 1,
+                        showWeeks: false,
+                        minDate: $scope.toMin,
+                        minMode: 'day',
+                        closed: $scope.toChange
+                    },
+                    timePicker: {
+                        //min: $scope.toMin,
+                        showMeridian: false
+                    }
+                }
+            }
+
+            function setFrom() {
+                $scope.date.from = fromDate($scope.date.to);
+
+                $scope.toOptions.datePicker.minDate = toLimit();
+                //$scope.toOptions.timePicker.min = toLimit();
+
+                $scope.toMin = toLimit();
+                $scope.fromMax = fromLimit($scope.date.to);
+
+                $scope.fromOptions = {
+                    datePicker: {
+                        startingDay: 1,
+                        showWeeks: false,
+                        maxDate: $scope.fromMax,
+                        maxMode: 'day',
+                        closed: $scope.fromChange
+                    },
+                    timePicker: {
+                        //max: $scope.fromMax,
+                        showMeridian: false
+                    }
+                };
+            }
+
+            $scope.oneDayClass = $scope.oneWeekClass = $scope.oneMonthClass = $scope.customClass = 'btn-info';
+            $scope.filterApplied = false;
+            $scope.format = 'dd MMMM yyyy HH:mm';
+            $scope.clear = function() {
+
+                $scope.oneDayClass = $scope.oneWeekClass = $scope.oneMonthClass = $scope.customClass = 'btn-info';
+                $scope.filterApplied = false;
+                $scope.customEnabled = false;
+                $scope.$emit('onWindowTimeChanged', {});
+            };
+            $scope.fromOpen = function() {
+                $scope.fromPopup.opened = true;
+            };
+            $scope.fromPopup = {
+                opened: false
+            };
+            $scope.toOpen = function() {
+                $scope.toPopup.opened = true;
+            };
+            $scope.toPopup = {
+                opened: false
+            };
+
+            $scope.openCalendarFrom = function() {
+                $scope.fromCalendarOpen = true;
+            };
+
+            $scope.openCalendarTo = function() {
+                $scope.toCalendarOpen = true;
+            };
+
+            $scope.custom = function() {
+                if (!$scope.customEnabled || (!$scope.fromCalendarOpen && !$scope.toCalendarOpen)) {
+                    $scope.customEnabled = !$scope.customEnabled;
+                }
+
+            };
+            $scope.apply = function(winTime, fire_event) {
+                $scope.filterApplied = true;
+                $scope.customEnabled = false;
+                /* jshint ignore:start */
+                if (!window.eval($scope.rawdate)) {
+                    for (var key in winTime) {
+                        if (key !== 'type' && key !== 'rawdate')
+                            winTime[key] = window.moment(winTime[key]).format();
+                    }
+                    //TODO: enganche con widgets, habría que ver como resolver este problema o hacer que esto sea una directiva propia del angular-dashboard-framework
+                    winTime.rawdate = false;
+                }
+                /* jshint ignore:end */
+                if (fire_event) {
+                    $scope.$emit('onWindowTimeChanged', winTime);
+                }
+            };
+            $scope.oneDay = function(no_fire_event) {
+                $scope.oneDayClass = 'btn-success';
+                $scope.oneWeekClass = $scope.oneMonthClass = $scope.customClass = 'btn-info';
+                $scope.apply(genWindowTime('days'), !no_fire_event);
+            };
+            $scope.oneWeek = function(no_fire_event) {
+                $scope.oneWeekClass = 'btn-success';
+                $scope.oneDayClass = $scope.oneMonthClass = $scope.customClass = 'btn-info';
+                $scope.apply(genWindowTime('weeks'), !no_fire_event);
+            };
+            $scope.oneMonth = function(no_fire_event) {
+                $scope.oneMonthClass = 'btn-success';
+                $scope.oneWeekClass = $scope.oneDayClass = $scope.customClass = 'btn-info';
+                $scope.apply(genWindowTime('months'), !no_fire_event);
+            };
+
+            $scope.applyCustom = function(no_fire_event) {
+                if ($scope.fromCalendarOpen) {
+                    $scope.fromChange();
+                } else if ($scope.toCalendarOpen) {
+                    $scope.toChange()
+                } else {
+                    $scope.fromCalendarOpen = false;
+                    $scope.toCalendarOpen = false;
+
+                    $scope.customClass = 'btn-success';
+                    $scope.oneWeekClass = $scope.oneDayClass = $scope.oneMonthClass = 'btn-info';
+                    $scope.apply({
+                        type: 'custom',
+                        to: $scope.date.to,
+                        from: $scope.date.from
+                    }, !no_fire_event);
+                }
+            };
+
+            // Config custom window
+            $scope.init = function() {
+
+                setTo(new Date());
+                setFrom();
+
+                $scope.toChange = function() {
+                    validateCustomWindow();
+                    $scope.fromMax = fromLimit($scope.date.to);
+                    $scope.fromOptions.datePicker.maxDate = $scope.fromMax;
+                    //$scope.fromOptions.timePicker.max = $scope.fromMax;
+                    $scope.toCalendarOpen = false;
+                };
+                $scope.fromChange = function() {
+                    validateCustomWindow();
+                    $scope.toOptions.datePicker.minDate = toLimit();
+                    //$scope.toOptions.timePicker.min = toLimit();
+
+                    $scope.toMin = toLimit();
+                    $scope.fromCalendarOpen = false;
+                };
+
+                function validateCustomWindow() {
+                    if (window.moment($scope.date.to).diff($scope.date.from) <= 0) {
+                        $scope.errorCustomWindow = 'From date(' + $scope.date.from.toISOString() + ') is bigger than to date(' + $scope.date.to.toISOString() + ')';
+                    } else {
+                        $scope.errorCustomWindow = undefined;
+                    }
+                }
+
+
+                //TODO: enganche con widgets, habría que ver como resolver este problema o hacer que esto sea una directiva propia del angular-dashboard-framework
+                if ($scope.$parent.config && $scope.$parent.config.windowFilter) {
+                    var configWindowFilter = $scope.$parent.config.windowFilter;
+                    /* jshint ignore:start */
+                    if (!window.eval($scope.rawdate)) {
+                        $scope.$parent.config.windowFilter.rawdate = false;
+                    }
+                    /* jshint ignore:end */
+                    switch (configWindowFilter.type) {
+                        case 'days':
+                            $scope.oneDay(true);
+                            break;
+                        case 'weeks':
+                            $scope.oneWeek(true);
+                            break;
+                        case 'months':
+                            $scope.oneMonth(true);
+                            break;
+                        case 'custom':
+                            if (configWindowFilter.to && configWindowFilter.from) {
+                                $scope.date.to = new Date(configWindowFilter.to);
+                                $scope.date.from = new Date(configWindowFilter.from);
+                            }
+                            $scope.applyCustom(true);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            };
+
+            $scope.init();
+
+            function genWindowTime(type) {
+                var from = window.moment().subtract(1, type);
+                return {
+                    from: from._d,
+                    type: type
+                };
+            }
+        }],
+        link: function(scope) {
+            var widgetWindowTimeChangedEvt = scope.$on('widgetWindowTimeChanged', function(event, windowFilter) {
+                var configWindowFilter = windowFilter;
+
+                switch (configWindowFilter.type) {
+                    case 'days':
+                        scope.oneDay(true);
+                        break;
+                    case 'weeks':
+                        scope.oneWeek(true);
+                        break;
+                    case 'months':
+                        scope.oneMonth(true);
+                        break;
+                    case 'custom':
+                        if (configWindowFilter.to && configWindowFilter.from) {
+                            scope.date.to = new Date(configWindowFilter.to);
+                            scope.date.from = new Date(configWindowFilter.from);
+                        }
+                        scope.applyCustom(true);
+                        break;
+                    default:
+                        break;
+                }
+            });
+
+            scope.$on('$destroy', function() {
+                widgetWindowTimeChangedEvt();
+
+                scope.fromCalendarOpen = false;
+                scope.toCalendarOpen = false;
+
+                // manual destroy
+                var pickers = angular.element('ul[class*="datetime-picker-dropdown"]')
+
+                if (pickers && pickers.length) {
+                    angular.forEach(pickers, function(element) {
+                        element.remove();
+                    });
+                }
+            });
+        }
+    };
+});
+
+angular.module('opengate-angular-js')
+
+.directive('datetimeSelect', function() { // ['$scope', '$compile'], function($scope, $compile) {
+    return {
+        restrict: 'AE',
+        templateUrl: 'window-time-select/views/datetime.select.view.html',
+        scope: {
+            ngModel: '=',
+            ngValue: '=',
+            ngRequired: '<',
+            placeholder: '@',
+            format: '@',
+            mode: '@',
+            ngChange: '<',
+            dateOptions: '=',
+            timeOptions: '=',
+            min: '=',
+            max: '='
+        },
+        controller: ["$scope", "$element", "$attrs", "$translate", "uibDateParser", function($scope, $element, $attrs, $translate, uibDateParser) {
+            if (!$scope.mode || $scope.mode === 'date-time') {
+                $scope.inputMode = 'datetime';
+            } else {
+                $scope.inputMode = $scope.mode;
+            }
+
+            $scope.required = !$scope.ngRequired ? false : !!$scope.ngRequired;
+
+            $scope.calendarOpen = false;
+            $scope.enableDate = !$scope.inputMode || $scope.inputMode === 'datetime' || $scope.inputMode === 'date';
+            $scope.enableTime = $scope.inputMode && ($scope.inputMode === 'datetime' || $scope.inputMode === 'time');
+
+            if (!$scope.format) {
+                if ($scope.enableDate && !$scope.enableTime) {
+                    $scope.format = 'yyyy-MM-dd';
+                    $scope.visibleFormat = 'dd MMMM yyyy';
+                } else if (!$scope.enableDate && $scope.enableTime) {
+                    $scope.format = 'HH:mm:ss';
+                    $scope.visibleFormat = 'HH:mm';
+                } else {
+                    $scope.format = 'yyyy-MM-ddTHH:mm:ss.sssZ';
+                    $scope.visibleFormat = 'dd MMMM yyyy HH:mm';
+                }
+            } else {
+                $scope.visibleFormat = $scope.format;
+            }
+
+            $scope.outputFormat = $scope.format;
+
+            // Control del valor de entrada
+            if (!angular.isUndefined($scope.ngModel) || !angular.isUndefined($scope.ngValue)) {
+                if ($scope.ngValue) {
+                    $scope.rawdata = $scope.ngValue;
+                } else if ($scope.ngModel) {
+                    $scope.rawdata = uibDateParser.parse($scope.ngModel, $scope.outputFormat);
+                }
+            }
+
+            // General config
+            $scope.customButtonBar = {
+                show: true,
+                now: {
+                    show: false
+                },
+                today: {
+                    show: true,
+                    text: ' ',
+                    cls: 'btn-sm btn-info oux-button-margin fa fa-calendar-o'
+                },
+                clear: {
+                    show: true,
+                    text: ' ',
+                    cls: 'btn-sm btn-success oux-button-margin fa fa-close'
+                },
+                date: {
+                    show: !$scope.inputMode || $scope.inputMode === 'datetime' || $scope.inputMode === 'date',
+                    text: ' ',
+                    cls: 'btn-sm btn-info oux-button-margin fa fa-calendar'
+                },
+                time: {
+                    show: $scope.inputMode && ($scope.inputMode === 'datetime' || $scope.inputMode === 'time'),
+                    text: ' ',
+                    cls: 'btn-sm btn-info oux-button-margin fa fa-clock-o'
+                },
+                close: {
+                    show: true,
+                    text: ' ',
+                    cls: 'btn-sm btn-success oux-button-margin fa fa-check'
+                },
+                cancel: {
+                    show: false
+                }
+            };
+
+            $scope.pickerOptions = {
+                datePicker: {
+                    startingDay: 1,
+                    showWeeks: false,
+                    appendToBody: true
+                },
+                timePicker: {
+                    //max: $scope.fromMax,
+                    showMeridian: false,
+                    appendToBody: true
+                }
+            };
+
+            if ($scope.dateOptions) {
+                angular.merge($scope.pickerOptions.datePicker, $scope.dateOptions);
+            }
+
+            if ($scope.timeOptions) {
+                angular.merge($scope.pickerOptions.timePicker, $scope.timeOptions);
+            }
+
+            $scope.openCalendar = function() {
+                $scope.calendarOpen = true;
+            };
+
+            //$scope.$watch('rawdata', function(newValue) {
+            $scope.changedRawdata = function() {
+                var newValue = $scope.rawdata;
+                if (newValue) {
+                    if (($scope.min && (newValue < $scope.min || newValue < uibDateParser.parse($scope.min, $scope.outputFormat))) ||
+                        ($scope.max && (newValue > $scope.max || newValue > uibDateParser.parse($scope.max, $scope.outputFormat)))) {
+                        $scope.rawdata = undefined;
+
+                        if ($scope.ngModel) {
+                            $scope.ngModel = undefined;
+                            if ($scope.ngChange) {
+                                $scope.ngChange($scope.ngModel);
+                            }
+                        }
+                    } else {
+                        var parsedNewValue;
+                        if ($scope.outputFormat !== 'yyyy-MM-ddTHH:mm:ss.sssZ') {
+                            parsedNewValue = uibDateParser.filter(newValue, $scope.outputFormat);
+                        } else {
+                            parsedNewValue = newValue.toISOString();
+                        }
+
+                        if (parsedNewValue !== $scope.ngModel) {
+                            $scope.ngModel = parsedNewValue;
+                            if ($scope.ngChange) {
+                                $scope.ngChange($scope.ngModel);
+                            }
+                        }
+                    }
+
+                } else {
+                    $scope.rawdata = undefined;
+
+                    if ($scope.ngModel) {
+                        $scope.ngModel = undefined;
+                        if ($scope.ngChange) {
+                            $scope.ngChange($scope.ngModel);
+                        }
+                    }
+
+                }
+                //$scope.ngValue = newValue;
+            };
+
+            $scope.$watch('ngModel', function(newValue) {
+                if (newValue) {
+                    if (uibDateParser.parse(newValue, $scope.outputFormat)) {
+                        $scope.rawdata = uibDateParser.parse(newValue, $scope.outputFormat);
+                    } else {
+                        $scope.rawdata = new Date(newValue);
+                    }
+                } else
+                    $scope.rawdata = undefined;
+
+                if ($scope.ngChange) {
+                    $scope.ngChange($scope.ngModel);
+                }
+            });
+
+            // Config custom window
+            $scope.init = function() {
+
+            };
+
+            $scope.init();
+
+
+        }],
+        link: function(scope) {
+            scope.$on('$destroy', function() {
+                //console.log("destroy");
+                scope.calendarOpen = false;
+            });
+        }
+    };
+});
 angular.module('opengate-angular-js')
     .service('$schemaFormUtils', ['$provisionDatastreamsUtils', '$api', '$q',
         function($provisionDatastreamsUtils, $api, $q) {
@@ -15909,18 +15909,28 @@ angular.module('opengate-angular-js')
                 qPerformance = 0,
                 avgPerformance = 0;
 
-            angular.forEach(entityData, function(dp, key) {
-                if (dp._value && dp._value._current && dp._value._current.scoring && dp._value._current.scoring.qrating && dp._value._current.scoring.performance) {
-                    var scoring = dp._value._current.scoring;
-                    sumPerformances += scoring.performance;
-                    var curMaxScore = scoring.qrating.max_score;
-                    if (curMaxScore > 0) {
-                        score += (curMaxScore * scoring.performance) / 100;
+            angular.forEach(entityData, function(objectData, key) {
+                if (objectData) {
+                    var dp;
 
-                        maxScore += curMaxScore;
+                    if (objectData._value && objectData._value && objectData._value._current && objectData._value._current.scoring && objectData._value._current.scoring.qrating && objectData._value._current.scoring.performance) {
+                        dp = objectData;
+                    } else if (objectData[0] && objectData[0]._value && objectData[0]._value && objectData[0]._value._current && objectData[0]._value._current.scoring && objectData[0]._value._current.scoring.qrating && objectData[0]._value._current.scoring.performance) {
+                        dp = objectData[0];
                     }
 
-                    totalMedidas++;
+                    if (dp) {
+                        var scoring = dp._value._current.scoring;
+                        sumPerformances += scoring.performance;
+                        var curMaxScore = scoring.qrating.max_score;
+                        if (curMaxScore > 0) {
+                            score += (curMaxScore * scoring.performance) / 100;
+
+                            maxScore += curMaxScore;
+                        }
+
+                        totalMedidas++;
+                    }
                 }
             });
 
