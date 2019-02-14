@@ -17,7 +17,7 @@ angular.module('opengate-angular-js').directive('onSelection', function(RangeSer
 
                 var selection = RangeService.process(options);
 
-                if (selection.getText() && selection.getText().trim() !== '') {
+                if (selection && selection.getText() && selection.getText().trim() !== '') {
                     scope.$eval(attrs.onSelection, {
                         selection: selection
                     });

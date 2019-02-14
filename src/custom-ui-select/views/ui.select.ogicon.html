@@ -1,0 +1,23 @@
+<div class="form-group no-margin">
+    <label ng-if="$ctrl.label" for="icon" translate>FORM.LABEL.ICON</label>
+    <div class="{{$ctrl.allowClear ? 'input-group' : ''}} {{ $ctrl.smallIcons?'small-icons':''}}">
+        <ui-select id="icon" name="icon" ng-model="$ctrl.icon" theme="bootstrap" ng-required="$ctrl.required" title="$ctrl.title" ng-disabled="$ctrl.disabled" on-remove="$ctrl.iconRemove($item, $model)" on-select="$ctrl.iconSelected($item, $model)" ng-required="$ctrl.required"
+            allow-clear="$ctrl.allowClear">
+            <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.ICON.CHOOSE' | translate }}" allow-clear="$ctrl.allowClear">
+                <i class="ogicon {{ $ctrl.smallIcons?'':'fa-2x'}} {{$select.selected.key}}"></i>
+                <span ng-if="!$ctrl.smallIcons">{{$select.selected.key}}</span>
+            </ui-select-match>
+            <ui-select-choices class="oux-icon-selector" repeat="icon.key as (key, icon) in $ctrl.availableIcons | filter: $select.search  | limitTo: $ctrl.maxIcons track by $index">
+                <i class="ogicon fa-3x" ng-class="icon.key" title="{{icon.key}}"></i>
+                <br />
+                <span ng-bind-html="icon.key| highlight: $select.search"></span>
+            </ui-select-choices>
+            <ui-select-no-choice>
+                {{ 'UX-ERROR.DATA_NOT_FOUND' | translate }}
+            </ui-select-no-choice>
+        </ui-select>
+        <span class="input-group-btn" ng-if="$ctrl.allowClear && $ctrl.icon">
+            <button ng-click="$ctrl.removeSelection()" type="button" class="btn btn-xs no-padding no-margin ux-txt-danger ogicon ogicon-close">&nbsp;</button>
+        </span>
+    </div>
+</div>
