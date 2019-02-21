@@ -45,10 +45,11 @@ angular.module('opengate-angular-js').controller('uiSelectOgiconsController', ['
                 ctrl.maxIcons = ctrl.maxIcons + 100;
 
                 if (ctrl.maxIcons > Object.keys(ctrl.availableIcons).length) {
+                    $scope.$apply();
                     $window.clearInterval(intervalIconsid);
                 }
-                $scope.$apply();
-            }, 50);
+
+            }, 100);
         };
     }
 ]);
