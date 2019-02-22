@@ -3,7 +3,7 @@
 // Filter service
 angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q',
 
-    function ($window, $sce, $q) {
+    function($window, $sce, $q) {
         //var customSelectors = [];
         var conditionSelectors = [];
         //var separators = [' ', '\n', '-', '!', '=', '~', '>', '<', '&', 'or', 'and', '(', ')', 'eq', 'neq', '==', 'like', 'gt', 'gte', 'lt', 'lte', '<=', '>='];
@@ -17,7 +17,7 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
                 for (i = 0; i < customSelectors.length && results.length < 8; i++) {
                     customSelector = customSelectors[i];
 
-                    var exists = results.find(function (data) {
+                    var exists = results.find(function(data) {
                         return data.value === customSelector;
                     });
 
@@ -43,7 +43,7 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
                 for (i = 0; i < customSelectors.length && results.length < 8; i++) {
                     customSelector = customSelectors[i];
                     if (customSelector.toLowerCase().indexOf(q) > -1) {
-                        var exists = results.find(function (data) {
+                        var exists = results.find(function(data) {
                             return data.value === customSelector;
                         });
 
@@ -72,7 +72,7 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
 
         function suggest_field_delimited(term, target_element, query) {
             var deferred = $q.defer();
-            query.findFields(term).then(function (fields) {
+            query.findFields(term).then(function(fields) {
                 var values = fields;
                 var idx = -1;
 
@@ -110,12 +110,12 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
                     suggestions = suggest_field();
                 }
 
-                suggestions.forEach(function (s) {
+                suggestions.forEach(function(s) {
                     s.value = s.value;
                 });
                 deferred.resolve(suggestions);
 
-            }).catch(function (err) {
+            }).catch(function(err) {
                 console.error(err);
                 deferred.reject(err);
             });
@@ -131,42 +131,48 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
                 '<span class="text-info">$1</span>');
         }
 
-
-
-        function parseQuery(string) {
-            var promises = '';
-            var defered = $q.defer();
-            var promise = defered.promise;
+        function queryParser(string) {
             var parse_tree = null;
             var query = {
                 text: [],
                 offsets: [],
                 filter: {}
             };
+
+            //job.id like "1e" or (job.id like 189 and job.status== FINISHED) and job.status== CANCELED
+            $window.jsep.addBinaryOp('and', 1);
+            $window.jsep.addBinaryOp('&&', 1);
+            $window.jsep.addBinaryOp('||', 2);
+            $window.jsep.addBinaryOp('or', 2);
+            $window.jsep.addBinaryOp('in', 2);
+            $window.jsep.addBinaryOp('within', 2);
+            $window.jsep.addBinaryOp('~', 6);
+            $window.jsep.addBinaryOp('=', 6);
+
+            $window.jsep.addBinaryOp('like', 6);
+            $window.jsep.addBinaryOp('gt', 6);
+            $window.jsep.addBinaryOp('lte', 6);
+            $window.jsep.addBinaryOp('gte', 6);
+            $window.jsep.addBinaryOp('eq', 6);
+            $window.jsep.addBinaryOp('neq', 6);
+            $window.jsep.addBinaryOp('exists', 6);
+            $window.jsep.addBinaryOp(',', 6);
+
+            parse_tree = $window.jsep(string);
+            query.filter[parse_tree.operator] = [];
+
+            query.filter = parseSimple(parse_tree);
+
+            return query;
+        }
+
+        function parseQuery(string) {
+            var defered = $q.defer();
+            var promise = defered.promise;
+
+            var query;
             try {
-                //job.id like "1e" or (job.id like 189 and job.status== FINISHED) and job.status== CANCELED
-                $window.jsep.addBinaryOp('and', 1);
-                $window.jsep.addBinaryOp('&&', 1);
-                $window.jsep.addBinaryOp('||', 2);
-                $window.jsep.addBinaryOp('or', 2);
-                $window.jsep.addBinaryOp('in', 2);
-                $window.jsep.addBinaryOp('within', 2);
-                $window.jsep.addBinaryOp('~', 6);
-                $window.jsep.addBinaryOp('=', 6);
-
-                $window.jsep.addBinaryOp('like', 6);
-                $window.jsep.addBinaryOp('gt', 6);
-                $window.jsep.addBinaryOp('lte', 6);
-                $window.jsep.addBinaryOp('gte', 6);
-                $window.jsep.addBinaryOp('eq', 6);
-                $window.jsep.addBinaryOp('neq', 6);
-                $window.jsep.addBinaryOp('exists', 6);
-                $window.jsep.addBinaryOp(',', 6);
-
-                parse_tree = $window.jsep(string);
-                query.filter[parse_tree.operator] = [];
-
-                query.filter = parseSimple(parse_tree);
+                query = queryParser(string);
                 defered.resolve(query);
             } catch (err) {
                 var error = err;
@@ -177,8 +183,6 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
             }
 
             return promise;
-
-
         }
         //job.id like "1e" or (job.id like 189 and job.status== FINISHED) and job.status== CANCELED
         // job.id like "1e" and job.status<= CANCELED
@@ -186,7 +190,7 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
         function parseSimple(parse_tree) {
             var id, value, newFilter = {};
             var op;
-            if (parse_tree.type === 'BinaryExpression' && /\eq|\neq|\exists|\like|\gt|\lt|\gte|\lte|\=|\'<'|\'>'|\~|\!/.test(parse_tree.operator)) {
+            if (parse_tree.type === 'BinaryExpression' && /\eq|\neq|\exists|\like|\gt|\lt|\gte|\lte|\=|\<|\>|\~|\!/.test(parse_tree.operator)) {
                 id = getId(parse_tree.left).split('.').reverse().join('.');
                 id = id.replace('.undefined', '[]');
                 var right = parse_tree.right;
@@ -275,14 +279,22 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
 
 
         return {
-            suggest_field_delimited: function (term, target_element, selectors) {
-                var customSelectors = selectors;
+            suggest_field_delimited: function(term, target_element, selectors) {
+                //var customSelectors = selectors;
                 var result = suggest_field_delimited(term, target_element, selectors);
                 return result;
             },
-            parseQuery: function (values) {
+            parseQuery: function(values) {
                 var result = parseQuery(values);
                 return result;
+            },
+            parseQueryNow: function(oql) {
+                try {
+                    return queryParser(oql);
+                } catch (err) {
+                    console.error(err);
+                    return null;
+                }
             }
         };
     }

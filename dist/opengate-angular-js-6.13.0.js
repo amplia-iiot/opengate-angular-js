@@ -15649,7 +15649,7 @@ function SubscriptionProvisionJsonFinderHelper() {
 // Filter service
 angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q',
 
-    function ($window, $sce, $q) {
+    function($window, $sce, $q) {
         //var customSelectors = [];
         var conditionSelectors = [];
         //var separators = [' ', '\n', '-', '!', '=', '~', '>', '<', '&', 'or', 'and', '(', ')', 'eq', 'neq', '==', 'like', 'gt', 'gte', 'lt', 'lte', '<=', '>='];
@@ -15663,7 +15663,7 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
                 for (i = 0; i < customSelectors.length && results.length < 8; i++) {
                     customSelector = customSelectors[i];
 
-                    var exists = results.find(function (data) {
+                    var exists = results.find(function(data) {
                         return data.value === customSelector;
                     });
 
@@ -15689,7 +15689,7 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
                 for (i = 0; i < customSelectors.length && results.length < 8; i++) {
                     customSelector = customSelectors[i];
                     if (customSelector.toLowerCase().indexOf(q) > -1) {
-                        var exists = results.find(function (data) {
+                        var exists = results.find(function(data) {
                             return data.value === customSelector;
                         });
 
@@ -15718,7 +15718,7 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
 
         function suggest_field_delimited(term, target_element, query) {
             var deferred = $q.defer();
-            query.findFields(term).then(function (fields) {
+            query.findFields(term).then(function(fields) {
                 var values = fields;
                 var idx = -1;
 
@@ -15756,12 +15756,12 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
                     suggestions = suggest_field();
                 }
 
-                suggestions.forEach(function (s) {
+                suggestions.forEach(function(s) {
                     s.value = s.value;
                 });
                 deferred.resolve(suggestions);
 
-            }).catch(function (err) {
+            }).catch(function(err) {
                 console.error(err);
                 deferred.reject(err);
             });
@@ -15777,42 +15777,48 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
                 '<span class="text-info">$1</span>');
         }
 
-
-
-        function parseQuery(string) {
-            var promises = '';
-            var defered = $q.defer();
-            var promise = defered.promise;
+        function queryParser(string) {
             var parse_tree = null;
             var query = {
                 text: [],
                 offsets: [],
                 filter: {}
             };
+
+            //job.id like "1e" or (job.id like 189 and job.status== FINISHED) and job.status== CANCELED
+            $window.jsep.addBinaryOp('and', 1);
+            $window.jsep.addBinaryOp('&&', 1);
+            $window.jsep.addBinaryOp('||', 2);
+            $window.jsep.addBinaryOp('or', 2);
+            $window.jsep.addBinaryOp('in', 2);
+            $window.jsep.addBinaryOp('within', 2);
+            $window.jsep.addBinaryOp('~', 6);
+            $window.jsep.addBinaryOp('=', 6);
+
+            $window.jsep.addBinaryOp('like', 6);
+            $window.jsep.addBinaryOp('gt', 6);
+            $window.jsep.addBinaryOp('lte', 6);
+            $window.jsep.addBinaryOp('gte', 6);
+            $window.jsep.addBinaryOp('eq', 6);
+            $window.jsep.addBinaryOp('neq', 6);
+            $window.jsep.addBinaryOp('exists', 6);
+            $window.jsep.addBinaryOp(',', 6);
+
+            parse_tree = $window.jsep(string);
+            query.filter[parse_tree.operator] = [];
+
+            query.filter = parseSimple(parse_tree);
+
+            return query;
+        }
+
+        function parseQuery(string) {
+            var defered = $q.defer();
+            var promise = defered.promise;
+
+            var query;
             try {
-                //job.id like "1e" or (job.id like 189 and job.status== FINISHED) and job.status== CANCELED
-                $window.jsep.addBinaryOp('and', 1);
-                $window.jsep.addBinaryOp('&&', 1);
-                $window.jsep.addBinaryOp('||', 2);
-                $window.jsep.addBinaryOp('or', 2);
-                $window.jsep.addBinaryOp('in', 2);
-                $window.jsep.addBinaryOp('within', 2);
-                $window.jsep.addBinaryOp('~', 6);
-                $window.jsep.addBinaryOp('=', 6);
-
-                $window.jsep.addBinaryOp('like', 6);
-                $window.jsep.addBinaryOp('gt', 6);
-                $window.jsep.addBinaryOp('lte', 6);
-                $window.jsep.addBinaryOp('gte', 6);
-                $window.jsep.addBinaryOp('eq', 6);
-                $window.jsep.addBinaryOp('neq', 6);
-                $window.jsep.addBinaryOp('exists', 6);
-                $window.jsep.addBinaryOp(',', 6);
-
-                parse_tree = $window.jsep(string);
-                query.filter[parse_tree.operator] = [];
-
-                query.filter = parseSimple(parse_tree);
+                query = queryParser(string);
                 defered.resolve(query);
             } catch (err) {
                 var error = err;
@@ -15823,8 +15829,6 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
             }
 
             return promise;
-
-
         }
         //job.id like "1e" or (job.id like 189 and job.status== FINISHED) and job.status== CANCELED
         // job.id like "1e" and job.status<= CANCELED
@@ -15832,7 +15836,7 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
         function parseSimple(parse_tree) {
             var id, value, newFilter = {};
             var op;
-            if (parse_tree.type === 'BinaryExpression' && /\eq|\neq|\exists|\like|\gt|\lt|\gte|\lte|\=|\'<'|\'>'|\~|\!/.test(parse_tree.operator)) {
+            if (parse_tree.type === 'BinaryExpression' && /\eq|\neq|\exists|\like|\gt|\lt|\gte|\lte|\=|\<|\>|\~|\!/.test(parse_tree.operator)) {
                 id = getId(parse_tree.left).split('.').reverse().join('.');
                 id = id.replace('.undefined', '[]');
                 var right = parse_tree.right;
@@ -15921,14 +15925,22 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
 
 
         return {
-            suggest_field_delimited: function (term, target_element, selectors) {
-                var customSelectors = selectors;
+            suggest_field_delimited: function(term, target_element, selectors) {
+                //var customSelectors = selectors;
                 var result = suggest_field_delimited(term, target_element, selectors);
                 return result;
             },
-            parseQuery: function (values) {
+            parseQuery: function(values) {
                 var result = parseQuery(values);
                 return result;
+            },
+            parseQueryNow: function(oql) {
+                try {
+                    return queryParser(oql);
+                } catch (err) {
+                    console.error(err);
+                    return null;
+                }
             }
         };
     }
@@ -16395,6 +16407,136 @@ DataUrlFormatter.prototype.format = function (value) {
 function DataUrlFormatter() {}
 
 
+/**
+ * Edits by Ryan Hutchison
+ * Credit: https://github.com/paulyoder/angular-bootstrap-show-errors */
+
+angular.module('opengate-angular-js')
+    .directive('showErrors', ['$timeout', '$interpolate', function($timeout, $interpolate) {
+        var linkFn = function(scope, el, attrs, formCtrl) {
+            var inputEl, inputName, inputNgEl, options, showSuccess, toggleClasses,
+                initCheck = false,
+                showValidationMessages = false,
+                blurred = false;
+
+            options = scope.$eval(attrs.showErrors) || {};
+            showSuccess = options.showSuccess || false;
+            inputEl = el[0].querySelector('.form-control[name]') || el[0].querySelector('[name]');
+            inputNgEl = angular.element(inputEl);
+            inputName = $interpolate(inputNgEl.attr('name') || '')(scope);
+
+            if (!inputName) {
+                throw 'show-errors element has no child input elements with a \'name\' attribute class';
+            }
+
+            var reset = function() {
+                return $timeout(function() {
+                    el.removeClass('has-error');
+                    el.removeClass('has-success');
+                    showValidationMessages = false;
+                }, 0, false);
+            };
+
+            scope.$watch(function() {
+                return formCtrl[inputName] && formCtrl[inputName].$invalid;
+            }, function(invalid) {
+                return toggleClasses(invalid);
+            });
+
+            scope.$on('show-errors-check-validity', function(event, name) {
+                if (angular.isUndefined(name) || formCtrl.$name === name) {
+                    initCheck = true;
+                    showValidationMessages = true;
+
+                    return toggleClasses(formCtrl[inputName].$invalid);
+                }
+            });
+
+            scope.$on('show-errors-reset', function(event, name) {
+                if (angular.isUndefined(name) || formCtrl.$name === name) {
+                    return reset();
+                }
+            });
+
+            toggleClasses = function(invalid) {
+                el.toggleClass('has-error', showValidationMessages && invalid);
+                if (showSuccess) {
+                    return el.toggleClass('has-success', showValidationMessages && !invalid);
+                }
+            };
+        };
+
+        return {
+            restrict: 'A',
+            require: '^form',
+            compile: function(elem, attrs) {
+                if (attrs.showErrors.indexOf('skipFormGroupCheck') === -1) {
+                    if (!(elem.hasClass('form-group') || elem.hasClass('input-group'))) {
+                        throw 'show-errors element does not have the \'form-group\' or \'input-group\' class';
+                    }
+                }
+                return linkFn;
+            }
+        };
+    }]);
+
+
+angular.module('opengate-angular-js')
+    .directive('elemReady', ["$parse", function($parse) {
+        return {
+            restrict: 'A',
+            link: function($scope, elem, attrs) {
+                elem.ready(function() {
+                    $scope.$apply(function() {
+                        var func = $parse(attrs.elemReady);
+                        func($scope);
+                    });
+                });
+            }
+        };
+    }]);
+
+
+angular.module('opengate-angular-js').directive('onSelection', ["RangeService", function(RangeService) {
+    return {
+        restrict: 'A',
+        scope: false,
+        link: function(scope, element, attrs) {
+            var options = {
+                snapToWord: ('snapToWord' in attrs),
+                highlight: ('autoHighlight' in attrs)
+            };
+
+            element.bind('mouseup', function() {
+                if (RangeService.disabled) {
+                    return;
+                }
+
+                var selection = RangeService.process(options);
+
+                if (selection && selection.getText() && selection.getText().trim() !== '') {
+                    scope.$eval(attrs.onSelection, {
+                        selection: selection
+                    });
+                }
+            });
+        }
+    };
+}]);
+
+
+angular.module('opengate-angular-js').directive('disallowSpaces', function() {
+    return {
+        restrict: 'A',
+        link: function($scope, $element) {
+            $element.bind('input', function() {
+                window.$(this).val(window.$(this).val().replace(/ /g, ''));
+            });
+        }
+    };
+});
+
+
 angular.module('opengate-angular-js')
 
 .filter('communicationsInterface', function() {
@@ -16529,136 +16671,6 @@ angular.module('opengate-angular-js')
             return input;
         };
     });
-
-
-/**
- * Edits by Ryan Hutchison
- * Credit: https://github.com/paulyoder/angular-bootstrap-show-errors */
-
-angular.module('opengate-angular-js')
-    .directive('showErrors', ['$timeout', '$interpolate', function($timeout, $interpolate) {
-        var linkFn = function(scope, el, attrs, formCtrl) {
-            var inputEl, inputName, inputNgEl, options, showSuccess, toggleClasses,
-                initCheck = false,
-                showValidationMessages = false,
-                blurred = false;
-
-            options = scope.$eval(attrs.showErrors) || {};
-            showSuccess = options.showSuccess || false;
-            inputEl = el[0].querySelector('.form-control[name]') || el[0].querySelector('[name]');
-            inputNgEl = angular.element(inputEl);
-            inputName = $interpolate(inputNgEl.attr('name') || '')(scope);
-
-            if (!inputName) {
-                throw 'show-errors element has no child input elements with a \'name\' attribute class';
-            }
-
-            var reset = function() {
-                return $timeout(function() {
-                    el.removeClass('has-error');
-                    el.removeClass('has-success');
-                    showValidationMessages = false;
-                }, 0, false);
-            };
-
-            scope.$watch(function() {
-                return formCtrl[inputName] && formCtrl[inputName].$invalid;
-            }, function(invalid) {
-                return toggleClasses(invalid);
-            });
-
-            scope.$on('show-errors-check-validity', function(event, name) {
-                if (angular.isUndefined(name) || formCtrl.$name === name) {
-                    initCheck = true;
-                    showValidationMessages = true;
-
-                    return toggleClasses(formCtrl[inputName].$invalid);
-                }
-            });
-
-            scope.$on('show-errors-reset', function(event, name) {
-                if (angular.isUndefined(name) || formCtrl.$name === name) {
-                    return reset();
-                }
-            });
-
-            toggleClasses = function(invalid) {
-                el.toggleClass('has-error', showValidationMessages && invalid);
-                if (showSuccess) {
-                    return el.toggleClass('has-success', showValidationMessages && !invalid);
-                }
-            };
-        };
-
-        return {
-            restrict: 'A',
-            require: '^form',
-            compile: function(elem, attrs) {
-                if (attrs.showErrors.indexOf('skipFormGroupCheck') === -1) {
-                    if (!(elem.hasClass('form-group') || elem.hasClass('input-group'))) {
-                        throw 'show-errors element does not have the \'form-group\' or \'input-group\' class';
-                    }
-                }
-                return linkFn;
-            }
-        };
-    }]);
-
-
-angular.module('opengate-angular-js')
-    .directive('elemReady', ["$parse", function($parse) {
-        return {
-            restrict: 'A',
-            link: function($scope, elem, attrs) {
-                elem.ready(function() {
-                    $scope.$apply(function() {
-                        var func = $parse(attrs.elemReady);
-                        func($scope);
-                    });
-                });
-            }
-        };
-    }]);
-
-
-angular.module('opengate-angular-js').directive('onSelection', ["RangeService", function(RangeService) {
-    return {
-        restrict: 'A',
-        scope: false,
-        link: function(scope, element, attrs) {
-            var options = {
-                snapToWord: ('snapToWord' in attrs),
-                highlight: ('autoHighlight' in attrs)
-            };
-
-            element.bind('mouseup', function() {
-                if (RangeService.disabled) {
-                    return;
-                }
-
-                var selection = RangeService.process(options);
-
-                if (selection && selection.getText() && selection.getText().trim() !== '') {
-                    scope.$eval(attrs.onSelection, {
-                        selection: selection
-                    });
-                }
-            });
-        }
-    };
-}]);
-
-
-angular.module('opengate-angular-js').directive('disallowSpaces', function() {
-    return {
-        restrict: 'A',
-        link: function($scope, $element) {
-            $element.bind('input', function() {
-                window.$(this).val(window.$(this).val().replace(/ /g, ''));
-            });
-        }
-    };
-});
 
 
 
