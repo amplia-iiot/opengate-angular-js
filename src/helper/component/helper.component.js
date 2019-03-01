@@ -109,8 +109,8 @@ _wizard.controller('helperDialogController', ['$scope', '$element', '$attrs', '$
 
 }]);
 
-_wizard.controller('helperDialogModalController', ['$scope', '$uibModalInstance', 'helper_id', 'helper_exclusive', 'specific_type', 'organization', 'channel', 'exclude_devices', 'helper_extra', 'helper_selected', 'helper_type', 'Upload', 'mapUxService', '$translate', 'fullCopy',
-    function($scope, $uibModalInstance, helper_id, helper_exclusive, specific_type, organization, channel, exclude_devices, helper_extra, helper_selected, helper_type, Upload, mapUxService, $translate, fullCopy) {
+_wizard.controller('helperDialogModalController', ['$scope', '$uibModalInstance', 'helper_id', 'helper_exclusive', 'specific_type', 'organization', 'channel', 'exclude_devices', 'helper_extra', 'helper_selected', 'helper_type', 'Upload', 'mapUxService', '$translate', 'fullCopy', 'geocodingService', 'Authentication',
+    function($scope, $uibModalInstance, helper_id, helper_exclusive, specific_type, organization, channel, exclude_devices, helper_extra, helper_selected, helper_type, Upload, mapUxService, $translate, fullCopy, geocodingService, Authentication) {
         this.$onInit = function() {
             var $ctrl = this;
             $ctrl.helper_extra = helper_extra;
@@ -207,6 +207,19 @@ _wizard.controller('helperDialogModalController', ['$scope', '$uibModalInstance'
                     longitude: lng,
                     zoom: zoom
                 };
+
+                geocodingService.reverseSearch(lat, lng, 18,
+                    function(err, data) {
+                        $ctrl.reloadingInfo = false;
+                        if (data && data.address) {
+                            $ctrl.helper_keys.map.country = data.address.country || undefined; // Pais
+                            $ctrl.helper_keys.map.region = data.address.state || undefined; // Comunidad
+                            $ctrl.helper_keys.map.province = data.address.county || undefined; // provincia
+                            $ctrl.helper_keys.map.town = data.address.city || data.address.village || data.address.town || undefined; // ciudad
+                            $ctrl.helper_keys.map.postal = data.address.postcode || undefined;
+                            $ctrl.helper_keys.map.address = data.address.road || data.address.pedestrian || undefined;
+                        }
+                    }, {}, Authentication.user.langCode);
             }
 
             events.push(
