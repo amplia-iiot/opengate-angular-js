@@ -5,8 +5,14 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriberContro
     function($scope, $element, $attrs, $api, $entityExtractor) {
         this.$onInit = function() {
             var ctrl = this;
+
+            var subscriberBuilder = $api().subscribersSearchBuilder().provisioned();
+
+            if (ctrl.disableDefaultSorted) {
+                subscriberBuilder = subscriberBuilder.disableDefaultSorted();
+            }
             ctrl.ownConfig = {
-                builder: $api().subscribersSearchBuilder().provisioned(),
+                builder: subscriberBuilder,
                 filter: function(search) {
                     var filter;
 
@@ -148,6 +154,7 @@ angular.module('opengate-angular-js').component('customUiSelectSubscriber', {
         ngRequired: '<',
         required: '<',
         excludeDevices: '=',
+        disableDefaultSorted: '=?',
         uiSelectMatchClass: '@?'
     }
 

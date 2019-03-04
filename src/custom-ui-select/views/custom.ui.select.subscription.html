@@ -2,7 +2,7 @@
     <label class="custom-ui-select-label">{{ $ctrl.title || 'FORM.LABEL.ENTITY_KEY' | translate }}
         <field-options required="$ctrl.ngRequired" multiple="$ctrl.multiple" /></label>
     <ui-select custom-ui-select-config="$ctrl.ownConfig" name="entity" ng-model="$ctrl.entity" theme="bootstrap" title="Choose a entity" custom-ui-select multiple="true" custom-mass-autocomplete-item="$ctrl.ownConfig" on-select="$ctrl.entitySelected($item, $model)"
-        on-remove="$ctrl.entityRemove($item, $model)" ng-required="$ctrl.ngRequired">
+        on-remove="$ctrl.entityRemove($item, $model)" ng-required="$ctrl.ngRequired" disable-default-sorted="form.disableDefaultSorted">
         <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ $ctrl.placeholder || 'FORM.PLACEHOLDER.SUBSCRIPTION'  | translate }}" allow-clear="true">
             {{$ctrl.getSelectMatch($item)}}
         </ui-select-match>
@@ -22,7 +22,7 @@
     <label class="custom-ui-select-label">{{ $ctrl.title || 'FORM.LABEL.ENTITY_KEY' | translate }}
         <field-options required="$ctrl.ngRequired" multiple="$ctrl.multiple" /></label>
     <ui-select custom-ui-select-config="$ctrl.ownConfig" name="entity" ng-model="$ctrl.entity" theme="bootstrap" title="Choose a entity" custom-ui-select multiple="false" custom-mass-autocomplete-item="$ctrl.ownConfig" on-select="$ctrl.entitySelected($item, $model)"
-        on-remove="$ctrl.entityRemove($item, $model)" ng-required="$ctrl.ngRequired">
+        on-remove="$ctrl.entityRemove($item, $model)" ng-required="$ctrl.ngRequired" disable-default-sorted="form.disableDefaultSorted">
         <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ $ctrl.placeholder || 'FORM.PLACEHOLDER.SUBSCRIPTION'  | translate }}" allow-clear="true">
             {{$ctrl.getSelectMatch($item)}}
         </ui-select-match>
