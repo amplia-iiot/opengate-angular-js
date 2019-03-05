@@ -148,9 +148,19 @@ angular.module('opengate-angular-js')
                 var ranges = shard();
                 selection._highlighter = [];
 
-                for (var r in ranges) {
-                    var subrange = ranges[r];
+                // for (var r in ranges) {
+                //     var subrange = ranges[r];
 
+                //     if (subrange.startContainer.nodeName === '#text') {
+                //         var scope = angular.element(range.startContainer).scope();
+                //         var highlighter = $compile(template)(scope)[0];
+                //         subrange.surroundContents(highlighter);
+                //         selection._highlighter.push(highlighter);
+                //     }
+                // }
+                var subrange = ranges[0];
+
+                if (subrange.startContainer.nodeName === '#text') {
                     var scope = angular.element(range.startContainer).scope();
                     var highlighter = $compile(template)(scope)[0];
                     subrange.surroundContents(highlighter);
