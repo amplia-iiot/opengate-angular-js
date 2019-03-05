@@ -1,7 +1,8 @@
 <div ng-class="{'has-error': hasError(), 'has-success': hasSuccess(), 'has-feedback': form.feedback !== false }" class="form-group {{form.htmlClass}}">
     <!-- Surrounding DIV for sfField builder to add a sfField directive to. -->
     <custom-ui-select-asset label="form.title" specific-type="{{form.specificType}}" on-select-item="evalExpr(form.onselectitem, {$item: $item, $model: $model})" on-remove="evalExpr(form.onremove, {$item: $item, $model: $model})" ng-model="$$value$$" placeholder="{{form.placeholder || 'FORM.PLACEHOLDER.ELEMENT' | translate }}"
-        identifier="$$value$$" multiple="form.multiple" sf-field-model="replaceAll" ui-select-match-class="form.uiSelectMatchClass" asset="form.dummy" ng-required="form.required" actions="form.actions" oql="{{form.oql}}" quick-search-fields="{{form.quickSearchFields}}"
-        specific-type-search-fields="{{form.specificTypeSearchFields}}" disabled='form.readonly || form.disabled' disable-default-sorted="form.disableDefaultSorted" disable-case-sensitive="form.disableCaseSensitive" exact-search="form.exactSearch" force-filter="form.forceFilter">
+        identifier="$$value$$" multiple="form.multiple" sf-field-model="replaceAll" ui-select-match-class="form.uiSelectMatchClass" ui-select-match-fields="form.uiSelectMatchFields" asset="form.dummy" ng-required="form.required" actions="form.actions" oql="{{form.oql}}"
+        quick-search-fields="{{form.quickSearchFields}}" specific-type-search-fields="{{form.specificTypeSearchFields}}" disabled='form.readonly || form.disabled' disable-default-sorted="form.disableDefaultSorted" disable-case-sensitive="form.disableCaseSensitive"
+        exact-search="form.exactSearch" force-filter="form.forceFilter" full-info="form.fullInfo">
     </custom-ui-select-asset>
 </div>

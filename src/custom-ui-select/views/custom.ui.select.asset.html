@@ -4,15 +4,14 @@
     <ui-select custom-ui-select-config="$ctrl.ownConfig" ng-disabled="$ctrl.disabled" name="asset" ng-model="$ctrl.asset" theme="bootstrap" title="Choose an asset" custom-ui-select custom-ui-select-action="$ctrl.action" multiple="true" custom-mass-autocomplete-item="$ctrl.ownConfig"
         on-select="$ctrl.assetSelected($item, $model)" on-remove="$ctrl.assetRemove($item, $model)" ng-required="$ctrl.ngRequired" disable-default-sorted="form.disableDefaultSorted">
         <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ $ctrl.placeholder || 'FORM.PLACEHOLDER.ENTITY'  | translate }}" allow-clear="true">
-            {{$item.provision.administration.identifier._current.value || $item.identifier}}
+            {{ $ctrl.showFieldInfo($ctrl.matchFields.principal, $item) || $item.identifier }}
         </ui-select-match>
         <ui-select-choices repeat="assetData in $ctrl.ownConfig.collection track by $index">
-            <span ng-bind-html="assetData.provision.administration.identifier._current.value | highlight: $select.search"></span>
+            <span ng-bind-html="$ctrl.showFieldInfo($ctrl.matchFields.principal, assetData) | highlight: $select.search"></span>
             <small>
-                <div ng-if="assetData.provision.asset.specificType._current.value">{{ 'FORM.LABEL.SPECIFIC_TYPE' | translate }}:
-                    <span ng-bind-html="assetData.provision.asset.specificType._current.value | highlight: $select.search"></span></div>
-                <div ng-if="assetData.provision.asset.name._current.value">{{ 'FORM.LABEL.NAME' | translate }}: <span
-                        ng-bind-html="''+assetData.provision.asset.name._current.value | highlight: $select.search"></span></div>
+                <div ng-repeat="(field, path) in $ctrl.matchFields.extra track by $index" ng-if="$ctrl.showFieldInfo(path, assetData)">
+                    {{ field | translate }}: <span ng-bind-html="$ctrl.showFieldInfo(path, assetData) | highlight: $select.search"></span>
+                </div>
             </small>
         </ui-select-choices>
         <ui-select-no-choice>
@@ -26,15 +25,14 @@
     <ui-select custom-ui-select-config="$ctrl.ownConfig" ng-disabled="$ctrl.disabled" name="asset" ng-model="$ctrl.asset" theme="bootstrap" title="Choose an asset" custom-ui-select multiple="false" custom-mass-autocomplete-item="$ctrl.ownConfig" on-select="$ctrl.assetSelected($item, $model)"
         on-remove="$ctrl.assetRemove($item, $model)" ng-required="$ctrl.ngRequired" disable-default-sorted="form.disableDefaultSorted">
         <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ $ctrl.placeholder || 'FORM.PLACEHOLDER.ENTITY'  | translate }}" allow-clear="true">
-            {{$item.provision.administration.identifier._current.value || $item.identifier}}
+            {{ $ctrl.showFieldInfo($ctrl.matchFields.principal, $item) || $item.identifier }}
         </ui-select-match>
         <ui-select-choices repeat="assetData in $ctrl.ownConfig.collection track by $index">
-            <span ng-bind-html="assetData.provision.administration.identifier._current.value | highlight: $select.search"></span>
+            <span ng-bind-html="$ctrl.showFieldInfo($ctrl.matchFields.principal, assetData) | highlight: $select.search"></span>
             <small>
-                <div ng-if="assetData.provision.asset.specificType._current.value">{{ 'FORM.LABEL.SPECIFIC_TYPE' | translate }}:
-                    <span ng-bind-html="assetData.provision.asset.specificType._current.value | highlight: $select.search"></span></div>
-                <div ng-if="assetData.provision.asset.name._current.value">{{ 'FORM.LABEL.NAME' | translate }}: <span
-                        ng-bind-html="''+assetData.provision.asset.name._current.value | highlight: $select.search"></span></div>
+                <div ng-repeat="(field, path) in $ctrl.matchFields.extra track by $index" ng-if="$ctrl.showFieldInfo(path, assetData)">
+                    {{ field | translate }}: <span ng-bind-html="$ctrl.showFieldInfo(path, assetData) | highlight: $select.search"></span>
+                </div>
             </small>
         </ui-select-choices>
         <ui-select-no-choice>

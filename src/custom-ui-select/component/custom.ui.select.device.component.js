@@ -15,6 +15,40 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
                 deviceBuilder = deviceBuilder.disableCaseSensitive();
             }
 
+            ctrl.matchFields = {
+                principal: 'provision.administration.identifier',
+                extra: {
+                    'FORM.LABEL.SPECIFIC_TYPE': 'provision.device.specificType',
+                    'FORM.LABEL.OP_STATUS': 'provision.device.operationalStatus',
+                    'FORM.LABEL.ENTITY.COMMUNICATIONS_INTERFACE': 'provision.device.communicationModules[*]..specificType'
+                }
+            };
+
+            if (ctrl.uiSelectMatchFields) {
+                if (ctrl.uiSelectMatchFields.principal) {
+                    ctrl.fullInfo = true;
+                    ctrl.matchFields.principal = ctrl.uiSelectMatchFields.principal;
+                }
+
+                if (ctrl.uiSelectMatchFields.extra) {
+                    ctrl.fullInfo = true;
+                    ctrl.matchFields.extra = ctrl.uiSelectMatchFields.extra;
+                }
+            }
+
+            ctrl.showFieldInfo = function(path, data) {
+                var match = jsonPath(data, '$..' + path + '._current.value');
+                if (!match) {
+                    return null;
+                } else {
+                    //return match.toString();
+                    return match.filter(function(item, pos, self) {
+                        return self.indexOf(item) == pos;
+                    }).toString();
+                }
+            };
+
+
             if (!ctrl.fullInfo) {
                 var selectBuilder = $api().newSelectBuilder();
                 var SE = $api().SE;
@@ -450,6 +484,7 @@ angular.module('opengate-angular-js').component('customUiSelectDevice', {
         disabled: '<?',
         ngModel: '=?',
         uiSelectMatchClass: '@?',
+        uiSelectMatchFields: '=?',
         oql: '@',
         quickSearchFields: '@',
         exactSearch: '<',

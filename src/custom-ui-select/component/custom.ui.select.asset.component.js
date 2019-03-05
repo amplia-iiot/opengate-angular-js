@@ -75,34 +75,69 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
                 return _filter.and || ([_filter] || []);
             }
 
-            var selectBuilder = $api().newSelectBuilder();
-            var SE = $api().SE;
+            ctrl.matchFields = {
+                principal: 'provision.administration.identifier',
+                extra: {
+                    'FORM.LABEL.NAME': 'provision.asset.name',
+                    'FORM.LABEL.SPECIFIC_TYPE': 'provision.asset.specificType'
+                }
+            };
 
-            selectBuilder.add(SE.element('provision.administration.identifier', [{
-                field: 'value'
-            }]));
-            selectBuilder.add(SE.element('provision.administration.organization', [{
-                field: 'value'
-            }]));
-            selectBuilder.add(SE.element('provision.administration.channel', [{
-                field: 'value'
-            }]));
-            selectBuilder.add(SE.element('resourceType', [{
-                field: 'value'
-            }]));
-            selectBuilder.add(SE.element('provision.asset.identifier', [{
-                field: 'value'
-            }]));
-            selectBuilder.add(SE.element('provision.asset.name', [{
-                field: 'value'
-            }]));
-            selectBuilder.add(SE.element('provision.asset.specificType', [{
-                field: 'value'
-            }]));
+            if (ctrl.uiSelectMatchFields) {
+                if (ctrl.uiSelectMatchFields.principal) {
+                    ctrl.fullInfo = true;
+                    ctrl.matchFields.principal = ctrl.uiSelectMatchFields.principal;
+                }
 
+                if (ctrl.uiSelectMatchFields.extra) {
+                    ctrl.fullInfo = true;
+                    ctrl.matchFields.extra = ctrl.uiSelectMatchFields.extra;
+                }
+            }
+
+            ctrl.showFieldInfo = function(path, data) {
+                var match = jsonPath(data, '$..' + path + '._current.value');
+                if (!match) {
+                    return null;
+                } else {
+                    //return match.toString();
+                    return match.filter(function(item, pos, self) {
+                        return self.indexOf(item) == pos;
+                    }).toString();
+                }
+            };
+
+            if (!ctrl.fullInfo) {
+                var selectBuilder = $api().newSelectBuilder();
+                var SE = $api().SE;
+
+                selectBuilder.add(SE.element('provision.administration.identifier', [{
+                    field: 'value'
+                }]));
+                selectBuilder.add(SE.element('provision.administration.organization', [{
+                    field: 'value'
+                }]));
+                selectBuilder.add(SE.element('provision.administration.channel', [{
+                    field: 'value'
+                }]));
+                selectBuilder.add(SE.element('resourceType', [{
+                    field: 'value'
+                }]));
+                selectBuilder.add(SE.element('provision.asset.identifier', [{
+                    field: 'value'
+                }]));
+                selectBuilder.add(SE.element('provision.asset.name', [{
+                    field: 'value'
+                }]));
+                selectBuilder.add(SE.element('provision.asset.specificType', [{
+                    field: 'value'
+                }]));
+
+                assetsBuilder.select(selectBuilder);
+            }
 
             ctrl.ownConfig = {
-                builder: assetsBuilder.select(selectBuilder),
+                builder: assetsBuilder,
                 filter: function(search) {
                     var filter;
 
@@ -383,6 +418,8 @@ angular.module('opengate-angular-js').component('customUiSelectAsset', {
         disabled: '<?',
         ngModel: '=?',
         uiSelectMatchClass: '@?',
+        uiSelectMatchFields: '=?',
+        fullInfo: '=?',
         oql: '@',
         quickSearchFields: '@',
         exactSearch: '<',
