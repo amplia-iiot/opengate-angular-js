@@ -8,9 +8,10 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
 
             var deviceBuilder = $api().devicesSearchBuilder();
 
-            if (ctrl.disableDefaultSorted) {
+            if (ctrl.disableDefaultSorted !== false) {
                 deviceBuilder = deviceBuilder.disableDefaultSorted();
             }
+
             if (ctrl.disableCaseSensitive) {
                 deviceBuilder = deviceBuilder.disableCaseSensitive();
             }

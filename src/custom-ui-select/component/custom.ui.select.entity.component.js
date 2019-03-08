@@ -8,9 +8,10 @@ angular.module('opengate-angular-js').controller('customUiSelectEntityController
 
             var entitiesBuilder = $api().entitiesSearchBuilder();
 
-            if (ctrl.disableDefaultSorted) {
+            if (ctrl.disableDefaultSorted !== false) {
                 entitiesBuilder = entitiesBuilder.disableDefaultSorted();
             }
+
             if (ctrl.disableCaseSensitive) {
                 entitiesBuilder = entitiesBuilder.disableCaseSensitive();
             }

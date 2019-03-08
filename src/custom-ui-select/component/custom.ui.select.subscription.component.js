@@ -8,7 +8,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
 
             var subscriptionsBuilder = $api().subscriptionsSearchBuilder();
 
-            if (ctrl.disableDefaultSorted) {
+            if (ctrl.disableDefaultSorted !== false) {
                 subscriptionsBuilder = subscriptionsBuilder.disableDefaultSorted();
             }
             if (ctrl.disableCaseSensitive) {

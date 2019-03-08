@@ -8,9 +8,10 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
 
             var assetsBuilder = $api().assetsSearchBuilder();
 
-            if (ctrl.disableDefaultSorted) {
+            if (ctrl.disableDefaultSorted !== false) {
                 assetsBuilder = assetsBuilder.disableDefaultSorted();
             }
+
             if (ctrl.disableCaseSensitive) {
                 assetsBuilder = assetsBuilder.disableCaseSensitive();
             }

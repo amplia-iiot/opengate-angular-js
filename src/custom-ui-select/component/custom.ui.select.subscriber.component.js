@@ -8,9 +8,10 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriberContro
 
             var subscriberBuilder = $api().subscribersSearchBuilder().provisioned();
 
-            if (ctrl.disableDefaultSorted) {
+            if (ctrl.disableDefaultSorted !== false) {
                 subscriberBuilder = subscriberBuilder.disableDefaultSorted();
             }
+
             ctrl.ownConfig = {
                 builder: subscriberBuilder,
                 filter: function(search) {

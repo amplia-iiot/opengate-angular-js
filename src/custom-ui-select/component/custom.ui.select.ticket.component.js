@@ -7,8 +7,8 @@ angular.module('opengate-angular-js').controller('customUiSelectTicketController
 
         var ticketsBuilder = $api().ticketsSearchBuilder();
 
-        if (ctrl.disableDefaultSorted) {
-            ticketsBuilder = ticketsBuilder.disableDefaultSorted();
+        if (ctrl.disableDefaultSorted !== false) {
+            ticketsBuilder.disableDefaultSorted();
         }
 
         ctrl.ownConfig = {

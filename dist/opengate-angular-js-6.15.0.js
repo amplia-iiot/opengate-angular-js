@@ -10813,8 +10813,8 @@ angular.module('opengate-angular-js').controller('customUiSelectTicketController
 
         var ticketsBuilder = $api().ticketsSearchBuilder();
 
-        if (ctrl.disableDefaultSorted) {
-            ticketsBuilder = ticketsBuilder.disableDefaultSorted();
+        if (ctrl.disableDefaultSorted !== false) {
+            ticketsBuilder.disableDefaultSorted();
         }
 
         ctrl.ownConfig = {
@@ -10899,7 +10899,7 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
 
             var subscriptionsBuilder = $api().subscriptionsSearchBuilder();
 
-            if (ctrl.disableDefaultSorted) {
+            if (ctrl.disableDefaultSorted !== false) {
                 subscriptionsBuilder = subscriptionsBuilder.disableDefaultSorted();
             }
             if (ctrl.disableCaseSensitive) {
@@ -11315,9 +11315,10 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriberContro
 
             var subscriberBuilder = $api().subscribersSearchBuilder().provisioned();
 
-            if (ctrl.disableDefaultSorted) {
+            if (ctrl.disableDefaultSorted !== false) {
                 subscriberBuilder = subscriberBuilder.disableDefaultSorted();
             }
+
             ctrl.ownConfig = {
                 builder: subscriberBuilder,
                 filter: function(search) {
@@ -12198,9 +12199,10 @@ angular.module('opengate-angular-js').controller('customUiSelectEntityController
 
             var entitiesBuilder = $api().entitiesSearchBuilder();
 
-            if (ctrl.disableDefaultSorted) {
+            if (ctrl.disableDefaultSorted !== false) {
                 entitiesBuilder = entitiesBuilder.disableDefaultSorted();
             }
+
             if (ctrl.disableCaseSensitive) {
                 entitiesBuilder = entitiesBuilder.disableCaseSensitive();
             }
@@ -12496,9 +12498,10 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
 
             var deviceBuilder = $api().devicesSearchBuilder();
 
-            if (ctrl.disableDefaultSorted) {
+            if (ctrl.disableDefaultSorted !== false) {
                 deviceBuilder = deviceBuilder.disableDefaultSorted();
             }
+
             if (ctrl.disableCaseSensitive) {
                 deviceBuilder = deviceBuilder.disableCaseSensitive();
             }
@@ -13673,9 +13676,10 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
 
             var assetsBuilder = $api().assetsSearchBuilder();
 
-            if (ctrl.disableDefaultSorted) {
+            if (ctrl.disableDefaultSorted !== false) {
                 assetsBuilder = assetsBuilder.disableDefaultSorted();
             }
+
             if (ctrl.disableCaseSensitive) {
                 assetsBuilder = assetsBuilder.disableCaseSensitive();
             }
