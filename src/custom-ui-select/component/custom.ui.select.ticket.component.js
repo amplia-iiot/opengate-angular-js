@@ -11,6 +11,9 @@ angular.module('opengate-angular-js').controller('customUiSelectTicketController
             ticketsBuilder.disableDefaultSorted();
         }
 
+
+
+
         ctrl.ownConfig = {
             builder: ticketsBuilder,
             filter: function(search) {
@@ -65,6 +68,12 @@ angular.module('opengate-angular-js').controller('customUiSelectTicketController
             returnObj.$model = $model;
             ctrl.onRemove(returnObj);
         };
+        if (ctrl.required !== undefined) {
+            ctrl.ngRequired = ctrl.required;
+        }
+        if (ctrl.disabled !== undefined) {
+            ctrl.ngDisabled = ctrl.disabled;
+        }
     };
 }]);
 
@@ -77,7 +86,10 @@ angular.module('opengate-angular-js').component('customUiSelectTicket', {
         onRemove: '&',
         ticket: '=',
         multiple: '<',
-        required: '=',
+        ngRequired: '<',
+        ngDisabled: '<',
+        required: '<',
+        disabled: '<',
         uiSelectMatchClass: '@?',
         disableDefaultSorted: '=?'
     }

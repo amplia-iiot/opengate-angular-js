@@ -402,6 +402,9 @@ angular.module('opengate-angular-js').controller('customUiSelectDeviceController
             if (ctrl.required !== undefined) {
                 ctrl.ngRequired = ctrl.required;
             }
+            if (ctrl.disabled !== undefined) {
+                ctrl.ngDisabled = ctrl.disabled;
+            }
 
             if (ctrl.identifier) {
                 mapIdentifier(ctrl.identifier);
@@ -478,6 +481,7 @@ angular.module('opengate-angular-js').component('customUiSelectDevice', {
         identifier: '<?',
         multiple: '<',
         ngRequired: '<',
+        ngDisabled: '<',
         required: '<',
         label: '=',
         actions: '=?',

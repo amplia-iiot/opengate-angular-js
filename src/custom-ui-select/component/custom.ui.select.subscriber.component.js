@@ -136,6 +136,9 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriberContro
             if (ctrl.required !== undefined) {
                 ctrl.ngRequired = ctrl.required;
             }
+            if (ctrl.disabled !== undefined) {
+                ctrl.ngDisabled = ctrl.disabled;
+            }
         };
     }
 ]);
@@ -154,6 +157,8 @@ angular.module('opengate-angular-js').component('customUiSelectSubscriber', {
         multiple: '<',
         ngRequired: '<',
         required: '<',
+        ngDisabled: '<',
+        disabled: '<',
         excludeDevices: '=',
         disableDefaultSorted: '=?',
         uiSelectMatchClass: '@?'

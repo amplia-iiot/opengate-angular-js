@@ -311,6 +311,10 @@ angular.module('opengate-angular-js').controller('customUiSelectSubscriptionCont
             if (ctrl.required !== undefined) {
                 ctrl.ngRequired = ctrl.required;
             }
+            if (ctrl.disabled !== undefined) {
+                ctrl.ngDisabled = ctrl.disabled;
+            }
+
 
             ctrl.$onChanges = function(changesObj) {
                 if (changesObj && changesObj.identifier) {
@@ -399,9 +403,11 @@ angular.module('opengate-angular-js').component('customUiSelectSubscription', {
         exactSearch: '<',
         multiple: '<',
         ngRequired: '<',
+        ngDisabled: '<',
         placeholder: '@',
         title: '@',
         required: '<',
+        disabled: '<',
         excludeDevices: '=',
         actions: '=?',
         uiSelectMatchClass: '@?',
