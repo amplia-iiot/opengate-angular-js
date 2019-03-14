@@ -1,6 +1,6 @@
 <div class="form-group no-margin">
     <label ng-if="$ctrl.label" for="icon" translate>FORM.LABEL.ICON</label>
-    <div class="{{$ctrl.allowClear ? 'input-group' : ''}} {{ $ctrl.smallIcons?'small-icons':''}}">
+    <div class="{{$ctrl.allowClear ? 'input-group' : ''}} {{ $ctrl.smallIcons?'small-icons':''}}" ng-style="{ 'width' : $ctrl.allowClear?'100%':null }">
         <ui-select id="icon" name="icon" ng-model="$ctrl.icon" theme="bootstrap" ng-required="$ctrl.required" title="$ctrl.title" ng-disabled="$ctrl.disabled" on-remove="$ctrl.iconRemove($item, $model)" on-select="$ctrl.iconSelected($item, $model)" ng-required="$ctrl.required"
             allow-clear="$ctrl.allowClear">
             <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.ICON.CHOOSE' | translate }}" allow-clear="$ctrl.allowClear">

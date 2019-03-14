@@ -8,15 +8,21 @@ angular.module('opengate-angular-js')
     ]);
 
 DataFormatter.prototype.format = function(value, symbol) {
+    var finalValue = '';
+
     if (this.isDataUrl(value)) {
         return (new DataUrlFormatter()).format(value);
-    }
-    if (symbol) {
-        return value + '<small>' + symbol + '</small>';
+    } else if (angular.isObject(value)) {
+        return (new DataObjectFormatter()).format(value);
     } else {
-        return value;
+        if (symbol) {
+            finalValue = '<span class="last-value">' + value + '</span><small>' + symbol + '</small>';
+        } else {
+            finalValue = value;
+        }
     }
 
+    return finalValue;
 };
 
 function DataFormatter() {
@@ -26,6 +32,31 @@ function DataFormatter() {
         return !!value.match(this.dataurl_regex);
     };
 }
+
+DataObjectFormatter.prototype = new DataFormatter();
+DataObjectFormatter.prototype.format = function(value) {
+    function objectIterator(value, parent) {
+        var partialObject = '';
+
+        angular.forEach(value, function(objValue, key) {
+            if (partialObject) {
+                partialObject += '<br>';
+            }
+
+            if (angular.isObject(objValue)) {
+                partialObject += objectIterator(objValue, key);
+            } else {
+                partialObject += '<span class="capitalize-text bold-font">' + (parent ? parent + ' ' + key + ':' : (angular.isString(key) ? key + ':' : '')) + '</span> ' + objValue;
+            }
+        });
+
+        return partialObject;
+    }
+
+    return objectIterator(value);
+};
+
+function DataObjectFormatter() {}
 
 DataUrlFormatter.prototype = new DataFormatter();
 DataUrlFormatter.prototype.format = function(value) {
