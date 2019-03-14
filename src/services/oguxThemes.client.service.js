@@ -338,6 +338,16 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 scheme.variation('light');
 
                 return scheme.colors();
+            },
+            getColorsCombinationFromColor: function(color) {
+                var scheme = new ColorScheme;
+                scheme.from_hex(color.substring(1));
+                scheme.scheme('analogic');
+                scheme.distance(1.0);
+                scheme.add_complement(true);
+                scheme.variation('light');
+
+                return scheme.colors();
             }
         };
     }
