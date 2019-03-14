@@ -133,6 +133,9 @@ angular.module('opengate-angular-js').controller('customUiSelectHardwareControll
                     ctrl.hardware = [];
                 }
             }
+            if (ctrl.disabled !== undefined) {
+                ctrl.ngDisabled = ctrl.disabled;
+            }
         };
     }
 ]);
@@ -150,6 +153,7 @@ angular.module('opengate-angular-js').component('customUiSelectHardware', {
         ngRequired: '<',
         label: '<',
         disabled: '<?',
+        ngDisabled: '<?',
         ngModel: '=?',
         title: '@',
         uiSelectMatchClass: '@?',

@@ -1,8 +1,8 @@
 <div class="form-group no-margin" mass-autocomplete ng-if="$ctrl.multiple">
     <label ng-if="$ctrl.label || $ctrl.title" class="custom-ui-select-label">{{ $ctrl.label || $ctrl.title | translate }}
         <field-options required="$ctrl.ngRequired" multiple="$ctrl.multiple" /></label>
-    <ui-select name="hardware" custom-ui-select-config="$ctrl.ownConfig" ng-model="$ctrl.hardware" theme="bootstrap" title="{{ 'FORM.PLACEHOLDER.HARDWARE' | translate }}" custom-ui-select multiple="true" custom-mass-autocomplete-item="$ctrl.ownConfig" on-select="$ctrl.hardwareSelected($item, $model)"
-        on-remove="$ctrl.hardwareRemove($item, $model)" ng-required="$ctrl.required">
+    <ui-select name="hardware" custom-ui-select-config="$ctrl.ownConfig" ng-model="$ctrl.hardware" ng-disabled="$ctrl.disabled" theme="bootstrap" title="{{ 'FORM.PLACEHOLDER.HARDWARE' | translate }}" custom-ui-select multiple="true" custom-mass-autocomplete-item="$ctrl.ownConfig"
+        on-select="$ctrl.hardwareSelected($item, $model)" on-remove="$ctrl.hardwareRemove($item, $model)" ng-required="$ctrl.required">
         <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.HARDWARE' | translate }}" allow-clear="true">
             {{$item.manufacturer}} ({{ $item.name || $item.id }}
             <span ng-if="$item.version">{{ FORM.VER | translate }} </span>{{$item.version}})</ui-select-match>
@@ -30,8 +30,8 @@
     <label ng-if="$ctrl.label || $ctrl.title" class="custom-ui-select-label">{{ $ctrl.label || $ctrl.title | translate }}
         <field-options required="$ctrl.ngRequired" multiple="$ctrl.multiple" />
     </label>
-    <ui-select custom-ui-select-config="$ctrl.ownConfig" name="hardware" ng-model="$ctrl.hardware" theme="bootstrap" title="{{ 'FORM.PLACEHOLDER.HARDWARE' | translate }}" custom-ui-select multiple="false" custom-mass-autocomplete-item="$ctrl.ownConfig" on-select="$ctrl.hardwareSelected($item, $model)"
-        on-remove="$ctrl.hardwareRemove($item, $model)" ng-required="$ctrl.ngRequired">
+    <ui-select custom-ui-select-config="$ctrl.ownConfig" name="hardware" ng-model="$ctrl.hardware" ng-disabled="$ctrl.disabled" theme="bootstrap" title="{{ 'FORM.PLACEHOLDER.HARDWARE' | translate }}" custom-ui-select multiple="false" custom-mass-autocomplete-item="$ctrl.ownConfig"
+        on-select="$ctrl.hardwareSelected($item, $model)" on-remove="$ctrl.hardwareRemove($item, $model)" ng-required="$ctrl.ngRequired">
         <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ 'FORM.PLACEHOLDER.HARDWARE' | translate }}" allow-clear="true">
             {{$item.manufacturer}} ({{ $item.name || $item.id}}
             <span ng-if="$item.version">{{ FORM.VER | translate }} </span>{{$item.version}}) </ui-select-match>
