@@ -78,7 +78,7 @@ angular.module('opengate-angular-js')
                         var obj = schema[key];
                         if (!withoutHelper) {
                             if (obj === 'string' && typeof schema.format === 'undefined' && typeof schema.enum === 'undefined') {
-                                schema.format = 'helperdialog';
+                                schema.format = 'string';
                             }
                         }
                         if (angular.isObject(obj)) {
