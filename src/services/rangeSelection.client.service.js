@@ -113,16 +113,30 @@ angular.module('opengate-angular-js')
                     start++;
                 }
 
-                var end = selection.range.endOffset;
-                var endNode = selection.range.endContainer;
-                while (endNode.textContent.charAt(end) != ' ' && end < endNode.length) {
-                    end++;
+                if (selection.range.startContainer !== selection.range.endContainer) {
+                    var end = selection.range.endOffset;
+                    var endNode = selection.range.endContainer;
+                    while (endNode.textContent.charAt(end) != ' ' && end < endNode.length) {
+                        end++;
+                    }
+
+                    selection.range.setStart(startNode, start);
+                    selection.range.setEnd(endNode, end);
+
+                    selection.text = selection.range.toString();
+                    return false;
+                } else {
+                    var end = start + 1;
+                    while (startNode.textContent.charAt(end) != ' ' && end < startNode.textContent.length) {
+                        end++;
+                    }
+
+                    selection.range.setStart(startNode, start);
+                    selection.range.setEnd(startNode, end);
+                    selection.text = startNode.textContent.trim();
+
+                    return true;
                 }
-
-                selection.range.setStart(startNode, start);
-                selection.range.setEnd(endNode, end);
-
-                selection.text = selection.range.toString();
             }
 
             /**
@@ -161,8 +175,9 @@ angular.module('opengate-angular-js')
                 var subrange = ranges[0];
 
                 if (subrange.startContainer.nodeName === '#text') {
+                    var finalTemplate = template.replace('$text$', subrange.startContainer.nodeValue);
                     var scope = angular.element(range.startContainer).scope();
-                    var highlighter = $compile(template)(scope)[0];
+                    var highlighter = $compile(finalTemplate)(scope)[0];
                     subrange.surroundContents(highlighter);
                     selection._highlighter.push(highlighter);
                 }
