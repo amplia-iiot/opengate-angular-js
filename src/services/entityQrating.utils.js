@@ -53,9 +53,9 @@ angular.module('opengate-angular-js')
                 if (objectData) {
                     var dp;
 
-                    if (objectData._value && objectData._value && objectData._value._current && objectData._value._current.scoring && objectData._value._current.scoring.qrating && objectData._value._current.scoring.performance) {
+                    if (objectData._value && objectData._value && objectData._value._current && objectData._value._current.scoring && objectData._value._current.scoring.qrating && angular.isNumber(objectData._value._current.scoring.performance)) {
                         dp = objectData;
-                    } else if (objectData[0] && objectData[0]._value && objectData[0]._value && objectData[0]._value._current && objectData[0]._value._current.scoring && objectData[0]._value._current.scoring.qrating && objectData[0]._value._current.scoring.performance) {
+                    } else if (objectData[0] && objectData[0]._value && objectData[0]._value && objectData[0]._value._current && objectData[0]._value._current.scoring && objectData[0]._value._current.scoring.qrating && angular.isNumber(objectData[0]._value._current.scoring.performance)) {
                         dp = objectData[0];
                     }
 
