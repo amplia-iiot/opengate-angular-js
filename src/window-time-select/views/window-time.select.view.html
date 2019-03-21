@@ -1,4 +1,5 @@
 <div permission permission-only=" 'dateFilter' " class="window-time-container">
+    <button type="button" class="btn btn-xs no-margin" ng-class="todayClass" ng-click="today()" translate>BUTTON.TITLE.TODAY</button>
     <button type="button" class="btn btn-xs no-margin" ng-class="oneDayClass" ng-click="oneDay()" translate>BUTTON.TITLE.LAST_DAY</button>
     <button type="button" class="btn btn-xs no-margin" ng-class="oneWeekClass" ng-click="oneWeek()" translate="BUTTON.TITLE.LAST_NUMBER_DAY" translate-values="{ number: '7' }"></button>
     <button type="button" class="btn btn-xs no-margin" ng-class="oneMonthClass" ng-click="oneMonth()" translate="BUTTON.TITLE.LAST_NUMBER_DAY" translate-values="{ number: '30' }"></button>

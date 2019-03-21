@@ -155,19 +155,24 @@ angular.module('opengate-angular-js')
                     $scope.$emit('onWindowTimeChanged', winTime);
                 }
             };
+            $scope.today = function(no_fire_event) {
+                $scope.todayClass = 'btn-success';
+                $scope.oneDayClass = $scope.oneWeekClass = $scope.oneMonthClass = $scope.customClass = 'btn-info';
+                $scope.apply(genWindowTime('today'), !no_fire_event);
+            };
             $scope.oneDay = function(no_fire_event) {
                 $scope.oneDayClass = 'btn-success';
-                $scope.oneWeekClass = $scope.oneMonthClass = $scope.customClass = 'btn-info';
+                $scope.oneWeekClass = $scope.oneMonthClass = $scope.customClass = $scope.todayClass = 'btn-info';
                 $scope.apply(genWindowTime('days'), !no_fire_event);
             };
             $scope.oneWeek = function(no_fire_event) {
                 $scope.oneWeekClass = 'btn-success';
-                $scope.oneDayClass = $scope.oneMonthClass = $scope.customClass = 'btn-info';
+                $scope.oneDayClass = $scope.oneMonthClass = $scope.customClass = $scope.todayClass = 'btn-info';
                 $scope.apply(genWindowTime('weeks'), !no_fire_event);
             };
             $scope.oneMonth = function(no_fire_event) {
                 $scope.oneMonthClass = 'btn-success';
-                $scope.oneWeekClass = $scope.oneDayClass = $scope.customClass = 'btn-info';
+                $scope.oneWeekClass = $scope.oneDayClass = $scope.customClass = $scope.todayClass = 'btn-info';
                 $scope.apply(genWindowTime('months'), !no_fire_event);
             };
 
@@ -230,6 +235,9 @@ angular.module('opengate-angular-js')
                     }
                     /* jshint ignore:end */
                     switch (configWindowFilter.type) {
+                        case 'today':
+                            $scope.today(true);
+                            break;
                         case 'days':
                             $scope.oneDay(true);
                             break;
@@ -267,6 +275,9 @@ angular.module('opengate-angular-js')
                 var configWindowFilter = windowFilter;
 
                 switch (configWindowFilter.type) {
+                    case 'today':
+                        scope.today(true);
+                        break;
                     case 'days':
                         scope.oneDay(true);
                         break;
