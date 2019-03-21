@@ -2251,12 +2251,12 @@ angular.module('opengate-angular-js')
                 };
             }
 
-            $scope.oneDayClass = $scope.oneWeekClass = $scope.oneMonthClass = $scope.customClass = 'btn-info';
+            $scope.todayClass = $scope.oneDayClass = $scope.oneWeekClass = $scope.oneMonthClass = $scope.customClass = 'btn-info';
             $scope.filterApplied = false;
             $scope.format = 'dd MMMM yyyy HH:mm';
             $scope.clear = function() {
 
-                $scope.oneDayClass = $scope.oneWeekClass = $scope.oneMonthClass = $scope.customClass = 'btn-info';
+                $scope.todayClass = $scope.oneDayClass = $scope.oneWeekClass = $scope.oneMonthClass = $scope.customClass = 'btn-info';
                 $scope.filterApplied = false;
                 $scope.customEnabled = false;
                 $scope.$emit('onWindowTimeChanged', {});
@@ -2336,7 +2336,7 @@ angular.module('opengate-angular-js')
                     $scope.toCalendarOpen = false;
 
                     $scope.customClass = 'btn-success';
-                    $scope.oneWeekClass = $scope.oneDayClass = $scope.oneMonthClass = 'btn-info';
+                    $scope.todayClass = $scope.oneWeekClass = $scope.oneDayClass = $scope.oneMonthClass = 'btn-info';
                     $scope.apply({
                         type: 'custom',
                         to: $scope.date.to,
