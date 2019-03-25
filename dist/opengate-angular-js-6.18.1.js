@@ -15523,6 +15523,8 @@ function CollectedJsonFinderHelper() {
     Object.defineProperty(this, 'fields', {
         value: {
             'specificType': 'device.specificType',
+            'assetSpecificType': 'asset.specificType',
+
             'location': 'device.location',
             'entityLocation': 'entity.location',
             'name': 'device.name',
@@ -15604,7 +15606,7 @@ ProvisionJsonFinderHelper.prototype.getOriginalPath = function(field) {
 };
 
 
-function ProvisionJsonFinderHelper() {
+{
     Object.defineProperty(this, 'fields', {
         value: Object.assign({},
             this.fields, {
