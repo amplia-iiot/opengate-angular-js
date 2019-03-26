@@ -125,15 +125,18 @@ angular.module('opengate-angular-js').controller('customUiSelectDatastreamContro
                                         var _datastream = angular.copy(datastream);
                                         _datastream.datamodel = _datamodel;
                                         _datastream.category = _category;
-
+                                        var exist = _datastreams.find(function(element) {
+                                            return element.identifier === _datastream.identifier
+                                        });
                                         if (ctrl.postFilter) {
                                             var filter = ctrl.postFilter(_datastream);
-
-                                            if (!filter) {
+                                            if (!filter && !exist) {
                                                 _datastreams.push(_datastream);
                                             }
                                         } else {
-                                            _datastreams.push(_datastream);
+                                            if (!exist) {
+                                                _datastreams.push(_datastream);
+                                            }
                                         }
                                     });
                             }

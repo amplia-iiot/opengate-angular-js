@@ -82,7 +82,12 @@ angular.module('opengate-angular-js').controller('customUiSelectProvisionDatastr
                                             var _datastream = angular.copy(datastream);
                                             _datastream.datamodel = _datamodel;
                                             _datastream.category = _category;
-                                            _datastreams.push(_datastream);
+                                            var exist = _datastreams.find(function(element) {
+                                                return element.identifier === _datastream.identifier
+                                            });
+                                            if (!exist) {
+                                                _datastreams.push(_datastream);
+                                            }
                                         });
                                 }
                             });
