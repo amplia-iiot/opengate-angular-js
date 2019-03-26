@@ -157,7 +157,8 @@ ProvisionJsonFinderHelper.prototype.getOriginalPath = function(field) {
 };
 
 
-{
+
+function ProvisionJsonFinderHelper() {
     Object.defineProperty(this, 'fields', {
         value: Object.assign({},
             this.fields, {
