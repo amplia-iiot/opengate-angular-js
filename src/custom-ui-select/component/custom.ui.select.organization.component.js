@@ -95,6 +95,10 @@ angular.module('opengate-angular-js').controller('customUiSelectOrganizationCont
             if (ctrl.identifier) {
                 mapIdentifier(ctrl.identifier);
             }
+            if (ctrl.disabled !== undefined) {
+                ctrl.ngDisabled = ctrl.disabled;
+            }
+
 
             function mapIdentifier(identifierSrc) {
                 var identifier = identifierSrc;
@@ -137,8 +141,9 @@ angular.module('opengate-angular-js').component('customUiSelectOrganization', {
         organization: '=',
         identifier: '<?',
         multiple: '<',
+        ngDisabled: '<',
         ngRequired: '<',
-        required: '<',
+        required: '<?',
         label: '<',
         disabled: '<?',
         ngModel: '=?',

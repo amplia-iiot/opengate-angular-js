@@ -57,6 +57,10 @@ angular.module('opengate-angular-js').controller('customUiSelectDomainController
             returnObj.$model = $model;
             ctrl.onRemove(returnObj);
         };
+        if (ctrl.disabled !== undefined) {
+            ctrl.ngDisabled = ctrl.disabled;
+        }
+
     };
 }]);
 
@@ -70,6 +74,8 @@ angular.module('opengate-angular-js').component('customUiSelectDomain', {
         domain: '=',
         multiple: '<',
         required: '=',
+        ngDisabled: '<',
+        disabled: '<?',
         label: '=',
         uiSelectMatchClass: '@?'
     }
