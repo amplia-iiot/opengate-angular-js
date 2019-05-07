@@ -123,9 +123,12 @@ function CollectedJsonFinderHelper() {
             'subscriptionRegisteredOperator': 'device.communicationModules[].subscription.mobile.registeredOperator',
             'registereOperator': 'device.communicationModules[].subscription.mobile.registeredOperator',
             'sigfoxDeviceType': 'device.communicationModules[].subscription.sigfox.deviceType',
+            'sigfoxOperator': 'provision.device.communicationModules[].subscription.sigfox.operator',
 
             'radiusUserName': 'provision.device.communicationModules[].subscription.mobile.radius.userName',
             'radiusUserPassword': 'provision.device.communicationModules[].subscription.mobile.radius.userPassword',
+            'ticketId': 'provision.device.communicationModules[].subscription.ticketId',
+
             'radiusFramedIpNetmask': 'provision.device.communicationModules[].subscription.mobile.radius.framedIpNetmask'
         },
         writable: false
