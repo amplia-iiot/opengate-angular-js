@@ -150,7 +150,12 @@ angular.module('opengate-angular-js')
                                             _processingData(datas);
                                         }
                                     } else {
-                                        uiConfig.collection.splice(0, uiConfig.collection.length);
+                                        if (angular.isArray(data)) {
+                                            _processingData(data);
+                                        } else {
+                                            uiConfig.collection.splice(0, uiConfig.collection.length);
+
+                                        }
                                     }
                                     $scope.$apply();
                                 }

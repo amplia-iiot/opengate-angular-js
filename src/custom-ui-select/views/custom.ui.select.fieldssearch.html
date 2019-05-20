@@ -1,0 +1,30 @@
+<div class="form-group no-margin" ng-if="$ctrl.multiple">
+    <label ng-if="$ctrl.label" class="custom-ui-select-label">{{ $ctrl.label | translate }}
+        <field-options required="$ctrl.ngRequired" multiple="$ctrl.multiple" /></label>
+    <ui-select name="element" custom-ui-select-config="$ctrl.ownConfig" ng-model="$ctrl.element" theme="bootstrap" title="{{ $ctrl.placeholder | translate }}" custom-ui-select multiple="true" builder="$ctrl.builder()" on-select="$ctrl.elementSelected($item, $model)"
+        on-remove="$ctrl.elementRemove($item, $model)" ng-required="$ctrl.required" ng-disabled="$ctrl.disabled">
+        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ $ctrl.placeholder | translate }}" allow-clear="true"> {{$item}} </ui-select-match>
+        <ui-select-choices repeat="element in $ctrl.ownConfig.collection | filter:$select.search track by $index">
+            <span ng-bind-html="element | highlight: $select.search">
+        </ui-select-choices> 
+        <ui-select-no-choice>
+            {{ 'UX-ERROR.DATA_NOT_FOUND' | translate }}
+        </ui-select-no-choice>
+    </ui-select>
+</div>
+<div class="form-group no-margin" ng-if="!$ctrl.multiple">
+    <label ng-if="$ctrl.label" class="custom-ui-select-label">{{ $ctrl.label | translate }}
+        <field-options required="$ctrl.ngRequired" multiple="$ctrl.multiple" /></label>
+   
+    <ui-select custom-ui-select-config="$ctrl.ownConfig" name="element" ng-model="$ctrl.element" theme="bootstrap"
+        title="{{ $ctrl.placeholder | translate }}" custom-ui-select multiple="false" on-select="$ctrl.elementSelected($item, $model)" builder="$ctrl.builder" on-remove="$ctrl.elementRemove($item, $model)"
+      ng-required="$ctrl.required" ng-disabled="$ctrl.disabled">
+        <ui-select-match class="{{$ctrl.uiSelectMatchClass}}" placeholder="{{ $ctrl.placeholder | translate }}" allow-clear="true"><span> {{$item}}</span> </ui-select-match>
+            <ui-select-choices repeat="element in $ctrl.ownConfig.collection | filter:$select.search track by $index">
+                <span ng-bind-html="element | highlight: $select.search">
+        </ui-select-choices> 
+        <ui-select-no-choice>
+            {{ 'UX-ERROR.DATA_NOT_FOUND' | translate }}
+        </ui-select-no-choice>
+    </ui-select>
+</div>
