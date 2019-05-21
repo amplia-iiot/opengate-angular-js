@@ -19,7 +19,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(244, 67, 54, 0.5)',
                 'name': 'COLOR.RED',
                 'theme': ['light', 'default', 'fresh', 'freshdark', 'traversed', 'traversed-dark'],
-                'url': ['css/themes/bootstrap-material-design_red.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_red.css']
             },
             'neon-red': {
                 'id': 'neon-red',
@@ -28,7 +28,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(244, 67, 54, 0.5)',
                 'name': 'COLOR.NEON_RED',
                 'theme': ['light', 'fresh', 'traversed'],
-                'url': ['css/themes/bootstrap-material-design_neon-red.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_neon-red.css']
             },
             'darkneon-red': {
                 'id': 'darkneon-red',
@@ -37,7 +37,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(244, 67, 54, 0.5)',
                 'name': 'COLOR.DARK_NEON_RED',
                 'theme': ['default', 'freshdark', 'traversed-dark'],
-                'url': ['css/themes/bootstrap-material-design_darkneon-red.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_darkneon-red.css']
             },
             'pink': {
                 'id': 'pink',
@@ -45,7 +45,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(233, 30, 99, 0.5)',
                 'name': 'COLOR.PINK',
                 'theme': ['light', 'default', 'fresh', 'freshdark', 'traversed', 'traversed-dark'],
-                'url': ['css/themes/bootstrap-material-design_pink.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_pink.css']
             },
             'purple': {
                 'id': 'purple',
@@ -53,7 +53,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(156, 39, 176, 0.5)',
                 'name': 'COLOR.PURPLE',
                 'theme': ['light', 'fresh', 'traversed'],
-                'url': ['css/themes/bootstrap-material-design_purple.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_purple.css']
             },
             'deeppurple': {
                 'id': 'deeppurple',
@@ -61,7 +61,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(103, 10, 183, 0.5)',
                 'name': 'COLOR.DEEP_PURPLE',
                 'theme': ['light', 'fresh', 'traversed'],
-                'url': ['css/themes/bootstrap-material-design_deeppurple.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_deeppurple.css']
             },
             'indigo': {
                 'id': 'indigo',
@@ -69,7 +69,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(63, 81, 181, 0.5)',
                 'name': 'COLOR.INDIGO',
                 'theme': ['light', 'fresh', 'traversed'],
-                'url': ['css/themes/bootstrap-material-design_indigo.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_indigo.css']
             },
             'blue': {
                 'id': 'blue',
@@ -77,7 +77,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(33, 150, 243, 0.5)',
                 'name': 'COLOR.BLUE',
                 'theme': ['light', 'default', 'fresh', 'freshdark', 'traversed', 'traversed-dark'],
-                'url': ['css/themes/bootstrap-material-design_blue.min.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_blue.min.css']
             },
             'neon-blue': {
                 'id': 'neon-blue',
@@ -86,7 +86,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(33, 150, 243, 0.5)',
                 'name': 'COLOR.NEON_BLUE',
                 'theme': ['light', 'fresh', 'traversed'],
-                'url': ['css/themes/bootstrap-material-design_neon-blue.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_neon-blue.css']
             },
             'darkneon-blue': {
                 'id': 'darkneon-blue',
@@ -95,7 +95,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(33, 150, 243, 0.5)',
                 'name': 'COLOR.DARK_NEON_BLUE',
                 'theme': ['default', 'freshdark', 'traversed-dark'],
-                'url': ['css/themes/bootstrap-material-design_darkneon-blue.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_darkneon-blue.css']
             },
             'lightblue': {
                 'id': 'lightblue',
@@ -103,7 +103,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(3, 169, 244, 0.5)',
                 'name': 'COLOR.LIGTH_BLUE',
                 'theme': ['light', 'default', 'fresh', 'freshdark', 'traversed', 'traversed-dark'],
-                'url': ['css/themes/bootstrap-material-design_lightblue.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_lightblue.css']
             },
             'cyan': {
                 'id': 'cyan',
@@ -111,7 +111,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(0, 188, 212, 0.5)',
                 'name': 'COLOR.CYAN',
                 'theme': ['light', 'default', 'fresh', 'freshdark', 'traversed', 'traversed-dark'],
-                'url': ['css/themes/bootstrap-material-design_cyan.min.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_cyan.min.css']
             },
             'teal': {
                 'id': 'teal',
@@ -119,7 +119,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(0, 150, 136, 0.5)',
                 'name': 'COLOR.TEAL',
                 'theme': ['light', 'default', 'fresh', 'freshdark', 'traversed', 'traversed-dark'],
-                'url': ['css/themes/bootstrap-material-design_teal.min.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_teal.min.css']
             },
             'neon-teal': {
                 'id': 'neon-teal',
@@ -128,7 +128,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(0, 150, 136, 0.5)',
                 'name': 'COLOR.NEON_TEAL',
                 'theme': ['light', 'fresh', 'traversed'],
-                'url': ['css/themes/bootstrap-material-design_neon-teal.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_neon-teal.css']
             },
             'darkneon-teal': {
                 'id': 'darkneon-teal',
@@ -137,7 +137,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(0, 150, 136, 0.5)',
                 'name': 'COLOR.DARK_NEON_TEAL',
                 'theme': ['default', 'freshdark', 'traversed-dark'],
-                'url': ['css/themes/bootstrap-material-design_darkneon-teal.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_darkneon-teal.css']
             },
             'green': {
                 'id': 'green',
@@ -145,7 +145,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(76, 175, 80, 0.5)',
                 'name': 'COLOR.GREEN',
                 'theme': ['light', 'default', 'fresh', 'freshdark', 'traversed', 'traversed-dark'],
-                'url': ['css/themes/bootstrap-material-design_green.min.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_green.min.css']
             },
             'neon-green': {
                 'id': 'neon-green',
@@ -154,7 +154,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(76, 175, 80, 0.5)',
                 'name': 'COLOR.NEON_GREEN',
                 'theme': ['light', 'fresh', 'traversed'],
-                'url': ['css/themes/bootstrap-material-design_neon-green.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_neon-green.css']
             },
             'darkneon-green': {
                 'id': 'darkneon-green',
@@ -163,7 +163,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(76, 175, 80, 0.5)',
                 'name': 'COLOR.DARK_NEON_GREEN',
                 'theme': ['default', 'freshdark', 'traversed-dark'],
-                'url': ['css/themes/bootstrap-material-design_darkneon-green.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_darkneon-green.css']
             },
             'lightgreen': {
                 'id': 'lightgreen',
@@ -171,7 +171,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(139, 195, 74, 0.5)',
                 'name': 'COLOR.LIGHT_GREEN',
                 'theme': ['light', 'default', 'fresh', 'freshdark', 'traversed', 'traversed-dark'],
-                'url': ['css/themes/bootstrap-material-design_lightgreen.min.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_lightgreen.min.css']
             },
             'lime': {
                 'id': 'lime',
@@ -179,7 +179,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(205, 220, 57, 0.5)',
                 'name': 'COLOR.LIME',
                 'theme': ['default', 'freshdark', 'traversed-dark'],
-                'url': ['css/themes/bootstrap-material-design_lime.min.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_lime.min.css']
             },
             'yellow': {
                 'id': 'yellow',
@@ -187,7 +187,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(255, 235, 59, 0.5)',
                 'name': 'COLOR.YELLOW',
                 'theme': ['default', 'freshdark', 'traversed-dark'],
-                'url': ['css/themes/bootstrap-material-design_yellow.min.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_yellow.min.css']
             },
             'amber': {
                 'id': 'amber',
@@ -195,7 +195,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(255, 193, 7, 0.5)',
                 'name': 'COLOR.AMBER',
                 'theme': ['default', 'freshdark', 'traversed-dark'],
-                'url': ['css/themes/bootstrap-material-design_amber.min.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_amber.min.css']
             },
             'neon-orange': {
                 'id': 'neon-orange',
@@ -204,7 +204,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(255, 152, 0, 0.5)',
                 'name': 'COLOR.NEON_ORANGE',
                 'theme': ['light', 'fresh', 'traversed'],
-                'url': ['css/themes/bootstrap-material-design_neon-orange.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_neon-orange.css']
             },
             'darkneon-orange': {
                 'id': 'darkneon-orange',
@@ -213,7 +213,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(255, 152, 0, 0.5)',
                 'name': 'COLOR.DARK_NEON_ORANGE',
                 'theme': ['default', 'freshdark', 'traversed-dark'],
-                'url': ['css/themes/bootstrap-material-design_darkneon-orange.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_darkneon-orange.css']
             },
             'orange': {
                 'id': 'orange',
@@ -228,7 +228,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(255, 87, 34, 0.5)',
                 'name': 'COLOR.DEEP_ORANGE',
                 'theme': ['light', 'default', 'fresh', 'freshdark', 'traversed', 'traversed-dark'],
-                'url': ['css/themes/bootstrap-material-design_deeporange.min.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_deeporange.min.css']
             },
             'brown': {
                 'id': 'brown',
@@ -236,7 +236,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(121, 85, 72, 0.5)',
                 'name': 'COLOR.BROWN',
                 'theme': ['light', 'fresh', 'traversed'],
-                'url': ['css/themes/bootstrap-material-design_brown.min.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_brown.min.css']
             },
             'grey': {
                 'id': 'grey',
@@ -244,7 +244,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(33, 150, 243, 1)',
                 'name': 'COLOR.GREY',
                 'theme': ['light', 'default', 'fresh', 'freshdark', 'traversed', 'traversed-dark'],
-                'url': ['css/themes/bootstrap-material-design_grey.min.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_grey.min.css']
             },
             'neon-grey': {
                 'id': 'neon-grey',
@@ -253,7 +253,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(33, 150, 243, 1)',
                 'name': 'COLOR.NEON_GREY',
                 'theme': ['light', 'fresh', 'traversed'],
-                'url': ['css/themes/bootstrap-material-design_neon-grey.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_neon-grey.css']
             },
             'darkneon-grey': {
                 'id': 'darkneon-grey',
@@ -262,7 +262,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(33, 150, 243, 1)',
                 'name': 'COLOR.DARK_NEON_GREY',
                 'theme': ['default', 'freshdark', 'traversed-dark'],
-                'url': ['css/themes/bootstrap-material-design_darkneon-grey.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_darkneon-grey.css']
             },
             'bluegrey': {
                 'id': 'bluegrey',
@@ -270,7 +270,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(96, 125, 139, 0.5)',
                 'name': 'COLOR.BLUE_GREY',
                 'theme': ['light', 'default', 'fresh', 'freshdark', 'traversed', 'traversed-dark'],
-                'url': ['css/themes/bootstrap-material-design_bluegrey.min.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_bluegrey.min.css']
             },
             'darkgrey': {
                 'id': 'darkgrey',
@@ -278,7 +278,7 @@ angular.module('opengate-angular-js').service('$oguxThemes', [
                 'rgba': 'rgba(45, 45, 45, 0.5)',
                 'name': 'COLOR.DARK_GREY',
                 'theme': ['light', 'fresh', 'traversed'],
-                'url': ['css/themes/bootstrap-material-design_darkgrey.min.css']
+                'url': ['node_modules/opengate-themes/opengate-themes/themes/bootstrap-material-design_darkgrey.min.css']
             }
         };
 
