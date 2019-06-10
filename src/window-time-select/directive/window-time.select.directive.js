@@ -263,7 +263,8 @@ angular.module('opengate-angular-js')
             $scope.init();
 
             function genWindowTime(type) {
-                var from = window.moment().subtract(1, type);
+                var from = window.moment().startOf('day').subtract(1, type);
+
                 return {
                     from: from._d,
                     type: type
