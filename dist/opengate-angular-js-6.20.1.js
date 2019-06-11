@@ -15518,7 +15518,11 @@ JsonFinderHelper.prototype.findOne = function(data, field) {
     return this.findAll(data, field)[0];
 };
 JsonFinderHelper.prototype.findAll = function(data, field) {
-    return this.jsonPath(data, this.getPath(field) + '.._current.value') || [];
+    if (data[this.getPath(field)]) {
+        return this.jsonPath(data[this.getPath(field)], '$.._current.value') || [];
+    } else {
+        return this.jsonPath(data, this.getPath(field) + '.._current.value') || [];
+    }
 };
 
 function JsonFinderHelper() {
