@@ -2414,7 +2414,8 @@ angular.module('opengate-angular-js')
             $scope.init();
 
             function genWindowTime(type) {
-                var from = window.moment().subtract(1, type);
+                var from = window.moment().startOf('day').subtract(1, type);
+
                 return {
                     from: from._d,
                     type: type
@@ -15609,7 +15610,11 @@ JsonFinderHelper.prototype.findOne = function(data, field) {
     return this.findAll(data, field)[0];
 };
 JsonFinderHelper.prototype.findAll = function(data, field) {
-    return this.jsonPath(data, this.getPath(field) + '.._current.value') || [];
+    if (data[this.getPath(field)]) {
+        return this.jsonPath(data[this.getPath(field)], '$.._current.value') || [];
+    } else {
+        return this.jsonPath(data, this.getPath(field) + '.._current.value') || [];
+    }
 };
 
 function JsonFinderHelper() {
