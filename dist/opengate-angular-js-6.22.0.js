@@ -15610,7 +15610,7 @@ JsonFinderHelper.prototype.findOne = function(data, field) {
     return this.findAll(data, field)[0];
 };
 JsonFinderHelper.prototype.findAll = function(data, field) {
-    if (data[this.getPath(field)]) {
+    if (data && data[this.getPath(field)]) {
         return this.jsonPath(data[this.getPath(field)], '$.._current.value') || [];
     } else {
         return this.jsonPath(data, this.getPath(field) + '.._current.value') || [];
