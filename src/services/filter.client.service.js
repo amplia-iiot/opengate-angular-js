@@ -144,8 +144,10 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
             $window.jsep.addBinaryOp('&&', 1);
             $window.jsep.addBinaryOp('||', 2);
             $window.jsep.addBinaryOp('or', 2);
-            $window.jsep.addBinaryOp('in', 2);
-            $window.jsep.addBinaryOp('within', 2);
+
+            $window.jsep.addBinaryOp('in', 6);
+            $window.jsep.addBinaryOp('nin', 6);
+            $window.jsep.addBinaryOp('within', 6);
             $window.jsep.addBinaryOp('~', 6);
             $window.jsep.addBinaryOp('=', 6);
 
@@ -187,7 +189,7 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
         //job.id like "1e" or (job.id like 189 and job.status== FINISHED) and job.status== CANCELED
         // job.id like "1e" and job.status<= CANCELED
 
-        function parseSimple(parse_tree) {
+        function parseSimple(parse_tree, parent) {
             var id, value, newFilter = {};
             var op;
             if (parse_tree.type === 'BinaryExpression' && /\eq|\neq|\exists|\like|\gt|\lt|\gte|\lte|\=|\<|\>|\~|\!/.test(parse_tree.operator)) {
@@ -205,9 +207,32 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
                 newFilter[op] = {};
                 newFilter[op][id] = value;
             } else if (parse_tree.type === 'BinaryExpression' && /or|and/.test(parse_tree.operator)) {
-                newFilter[parse_tree.operator] = [];
-                newFilter[parse_tree.operator].push(parseSimple(parse_tree.left));
-                newFilter[parse_tree.operator].push(parseSimple(parse_tree.right));
+                if (!newFilter[parse_tree.operator]) {
+                    newFilter[parse_tree.operator] = [];
+                }
+
+                // newFilter[parse_tree.operator].push(parseSimple(parse_tree.left));
+                // newFilter[parse_tree.operator].push(parseSimple(parse_tree.right));
+
+                if (parse_tree.left.operator === parse_tree.operator) {
+                    if (parent) {
+                        parseSimple(parse_tree.left, parent);
+                    } else {
+                        parseSimple(parse_tree.left, newFilter)
+                    }
+                } else {
+                    if (parent) {
+                        parent[parse_tree.operator].push(parseSimple(parse_tree.left));
+                    } else {
+                        newFilter[parse_tree.operator].push(parseSimple(parse_tree.left));
+                    }
+                }
+
+                if (parent) {
+                    parent[parse_tree.operator].push(parseSimple(parse_tree.right));
+                } else {
+                    newFilter[parse_tree.operator].push(parseSimple(parse_tree.right));
+                }
 
             } else if (parse_tree.type === 'BinaryExpression' && /\within/.test(parse_tree.operator)) {
                 if (parse_tree.right.type === 'ArrayExpression' && parse_tree.right.elements[0].left && parse_tree.right.elements[0].right) {
@@ -219,7 +244,7 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
 
                     newFilter[op][id] = [parse_tree.right.elements[0].left.value, parse_tree.right.elements[0].right.value];
                 }
-            } else if (parse_tree.type === 'BinaryExpression' && /\in/.test(parse_tree.operator)) {
+            } else if (parse_tree.type === 'BinaryExpression' && /\in|\nin/.test(parse_tree.operator)) {
                 id = getId(parse_tree.left).split('.').reverse().join('.');
                 id = id.replace('.undefined', '[]');
                 op = getSimpleOperator(parse_tree.operator);
@@ -277,6 +302,70 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
                 operator === '<=' ? 'lte' : operator;
         }
 
+        function convertJsonOperator(operator) {
+            return operator === 'eq' ? '=' :
+                operator === 'neq' ? '!=' :
+                operator === 'like' ? '~' :
+                operator === 'gt' ? '>' :
+                operator === 'lt' ? '<' :
+                operator === 'gte' ? '>=' :
+                operator === 'lte' ? '<=' : operator;
+        }
+
+        function parseJsonFilter(jsonFilter, isLeaf) {
+            var sqlResult = '';
+
+            // validar el tipo de filtro
+            if (jsonFilter) {
+                if (angular.isArray(jsonFilter)) {
+                    angular.forEach(jsonFilter, function(curElement, idx) {
+                        if (idx && !curElement.and && !curElement.or) {
+                            sqlResult += ' and ';
+                        }
+                        sqlResult += parseJsonFilter(curElement, true);
+                    });
+                } else {
+                    if (jsonFilter.and) {
+                        if (!isLeaf) {
+                            sqlResult += parseJsonFilter(jsonFilter.and);
+                        } else {
+                            sqlResult += ' and (' + parseJsonFilter(jsonFilter.and) + ')';
+                        }
+                    } else if (jsonFilter.or) {
+                        if (!isLeaf) {
+                            sqlResult += parseJsonFilter(jsonFilter.or);
+                        } else {
+                            sqlResult += ' or (' + parseJsonFilter(jsonFilter.or) + ')';
+                        }
+                    } else {
+                        var sqlResultTmp;
+
+                        angular.forEach(jsonFilter, function(complexValue, operator) {
+                            angular.forEach(complexValue, function(value, field) {
+                                if (!sqlResultTmp) {
+                                    sqlResultTmp = '';
+                                } else {
+                                    sqlResultTmp += ' and ';
+                                }
+
+                                var finalValue = angular.isString(value) ? '"' + value + '"' : value;
+
+                                if (angular.isArray(finalValue)) {
+                                    sqlResultTmp += field.trim() + ' ' + convertJsonOperator(operator) + ' [' + finalValue + ']';
+                                } else {
+                                    sqlResultTmp += field.trim() + ' ' + convertJsonOperator(operator) + ' ' + finalValue;
+                                }
+
+                            });
+                        });
+                        sqlResult += sqlResultTmp;
+                    }
+                }
+            }
+
+            return sqlResult;
+        }
+
 
         return {
             suggest_field_delimited: function(term, target_element, selectors) {
@@ -291,6 +380,14 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
             parseQueryNow: function(oql) {
                 try {
                     return queryParser(oql);
+                } catch (err) {
+                    console.error(err);
+                    return null;
+                }
+            },
+            parseJsonFilter: function(jsonFilter) {
+                try {
+                    return parseJsonFilter(jsonFilter);
                 } catch (err) {
                     console.error(err);
                     return null;

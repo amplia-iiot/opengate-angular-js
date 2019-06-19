@@ -36,7 +36,8 @@ angular.module('opengate-angular-js')
                     $scope.format = 'yyyy-MM-dd';
                     $scope.visibleFormat = 'dd MMMM yyyy';
                 } else if (!$scope.enableDate && $scope.enableTime) {
-                    $scope.format = 'HH:mm:ss';
+                    //$scope.format = 'HH:mm:ss';
+                    $scope.format = 'HH:mm:ss.sssZ';
                     $scope.visibleFormat = 'HH:mm';
                 } else {
                     $scope.format = 'yyyy-MM-ddTHH:mm:ss.sssZ';
@@ -135,7 +136,11 @@ angular.module('opengate-angular-js')
                     } else {
                         var parsedNewValue;
                         if ($scope.outputFormat !== 'yyyy-MM-ddTHH:mm:ss.sssZ') {
-                            parsedNewValue = uibDateParser.filter(newValue, $scope.outputFormat);
+                            if ($scope.enableDate && !$scope.enableTime) {
+                                parsedNewValue = uibDateParser.filter(newValue, $scope.outputFormat);
+                            } else if (!$scope.enableDate && $scope.enableTime) {
+                                parsedNewValue = newValue.toISOString().split('T')[1];
+                            }
                         } else {
                             parsedNewValue = newValue.toISOString();
                         }
@@ -167,7 +172,12 @@ angular.module('opengate-angular-js')
                     if (uibDateParser.parse(newValue, $scope.outputFormat)) {
                         $scope.rawdata = uibDateParser.parse(newValue, $scope.outputFormat);
                     } else {
-                        $scope.rawdata = new Date(newValue);
+                        if (!$scope.enableDate && $scope.enableTime) {
+                            var dateTmp = new Date().toISOString().split('T')[0] + 'T' + newValue;
+                            $scope.rawdata = new Date(dateTmp);
+                        } else {
+                            $scope.rawdata = new Date(newValue);
+                        }
                     }
                 } else
                     $scope.rawdata = undefined;
