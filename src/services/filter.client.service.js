@@ -1,9 +1,9 @@
 'use strict';
 
 // Filter service
-angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q',
+angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q', 'jsonPath',
 
-    function($window, $sce, $q) {
+    function($window, $sce, $q, jsonPath) {
         //var customSelectors = [];
         var conditionSelectors = [];
         //var separators = [' ', '\n', '-', '!', '=', '~', '>', '<', '&', 'or', 'and', '(', ')', 'eq', 'neq', '==', 'like', 'gt', 'gte', 'lt', 'lte', '<=', '>='];
@@ -366,6 +366,79 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
             return sqlResult;
         }
 
+        var filterKeyForTemplates = {
+            'ENTITIES': {
+                key: 'provision.administration.identifier',
+                schema: {
+                    type: "string",
+                    public: true,
+                    pattern: "^[a-zA-Z0-9_@.-]*$"
+                },
+                schemaName: "ogIdentifier"
+            },
+            'ENTITIES_VALUES': {
+                key: 'provision.administration.identifier',
+                schema: {
+                    type: "string",
+                    public: true,
+                    pattern: "^[a-zA-Z0-9_@.-]*$"
+                },
+                schemaName: "ogIdentifier"
+            },
+            'OPERATIONS': { key: 'entityId' },
+            'ALARMS': { key: 'entityId' },
+            'DATAPOINTS': { key: 'datapoints.entityIdentifie' },
+            'TICKET': {
+                key: 'provision.ticket.entity',
+                schema: {
+                    type: "string",
+                    public: true,
+                    pattern: "^[a-zA-Z0-9_@.-]*$"
+                },
+                schemaName: "ogIdentifier",
+            },
+
+        }
+
+
+        function buildFilterForTemplates(config, type, value) {
+            var id = Math.floor((Math.random() * 1000) + 1);
+            var previousFilterOQL = jsonPath(config, '$..oql')[0] || undefined;
+            var previousQueryFields = jsonPath(config, '$..queryFields')[0] || undefined;
+            var previousQueryAsString = jsonPath(config, '$..queryAsString')[0] || undefined;
+            previousQueryAsString = previousQueryAsString && previousQueryAsString.length > 1 ? previousQueryAsString.substr(0, previousQueryAsString.lastIndexOf(')')) : undefined;
+            var oql = filterKeyForTemplates[type].key + ' eq \'' + value + '\'';
+            var finalOql = previousFilterOQL ? oql + ' and ' + previousFilterOQL : oql;
+
+            var json = this.parseQueryNow(finalOql);
+            var queryAsString = +id + '=\"' + value + '\")';
+            var finalQueryAsString = previousQueryAsString ? previousQueryAsString + '&&' + queryAsString : '(' + queryAsString
+            var queryfield = {
+                id: id,
+                name: filterKeyForTemplates[type].key,
+                disabledComparators: [
+                    8
+                ],
+                schema: filterKeyForTemplates[type].schema || undefined,
+                schemaName: filterKeyForTemplates[type].schemaName || undefined
+            }
+            if (previousQueryFields) {
+                previousQueryFields.push(queryfield)
+            }
+            var queryFields = previousQueryFields ? previousQueryFields : [queryfield];
+
+            var finalFilter = json && json.filter ? json.filter : undefined;
+            var filter = {
+                type: 'advanced',
+                oql: finalOql,
+                queryAsString: finalQueryAsString,
+                value: finalFilter ? JSON.stringify(finalFilter) : '{"eq": {"' + filterKeyForTemplates[type] + '": "' + value + '"}}',
+                json: finalFilter ? JSON.stringify(finalFilter) : '{"eq": {"' + filterKeyForTemplates[type] + '": "' + value + '"}}',
+                queryFields: queryFields
+            };
+            return filter;
+        }
+
 
         return {
             suggest_field_delimited: function(term, target_element, selectors) {
@@ -392,7 +465,8 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
                     console.error(err);
                     return null;
                 }
-            }
+            },
+            buildFilterForTemplates: buildFilterForTemplates
         };
     }
 ]);
