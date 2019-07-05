@@ -54,8 +54,15 @@
                             <leaflet id="map-marker" lf-center="$ctrl.map.center" layers="$ctrl.map.layers" controls="$ctrl.map.controls" event-broadcast="$ctrl.map.events" markers="$ctrl.map.markers" width="100% " height="300px"></leaflet>
                         </div>
                     </div>
+                    <div class="col-xs-12" ng-if="$ctrl.mapDataOptions && $ctrl.mapIsExclusive">
+                        <ui-select multiple tagging tagging-label="false" ng-model="$ctrl.mapDataOptions" theme="bootstrap" sortable="false" on-select="$ctrl.onQuitMapItem()" on-remove="$ctrl.onQuitMapItem()" search-enabled="false">
+                            <ui-select-match placeholder="{{ 'FORM.PLACEHOLDER.MAP_HELPER' | translate }}">{{$item.item + ': ' + $item.value}}</ui-select-match>
+                            <ui-select-choices repeat="locationData in $ctrl.mapDataOptions | highlight: $select.search">
+                                {{locationData.item | translate}}: {{locationData.value}}</ui-select-choices>
+                        </ui-select>
+                    </div>
                     <div class="col-xs-12 text-right" ng-if="$ctrl.helper_exclusive">
-                        <a class="top-buffer btn btn-default ux-txt-success pointer" ng-class="{'disabled': !$ctrl.helper_keys.map}" ng-click="$ctrl.ok('map')" ng-disabled="!$ctrl.helper_keys.map">
+                        <a class="top-buffer btn btn-default ux-txt-success pointer" ng-class="{'disabled': !$ctrl.helper_keys.map || $ctrl.mapDataOptions.length === 0}" ng-click="$ctrl.ok('map')" ng-disabled="!$ctrl.helper_keys.map">
                             <i class="fa fa-lg fa-files-o" aria-hidden="true"></i>
                         </a>
                     </div>

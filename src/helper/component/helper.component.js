@@ -208,6 +208,8 @@ _wizard.controller('helperDialogModalController', ['$scope', '$uibModalInstance'
                     zoom: zoom
                 };
 
+                delete $ctrl.mapDataOptions;
+
                 geocodingService.reverseSearch(lat, lng, 18,
                     function(err, data) {
                         $ctrl.reloadingInfo = false;
@@ -218,6 +220,18 @@ _wizard.controller('helperDialogModalController', ['$scope', '$uibModalInstance'
                             $ctrl.helper_keys.map.town = data.address.city || data.address.village || data.address.town || undefined; // ciudad
                             $ctrl.helper_keys.map.postal = data.address.postcode || undefined;
                             $ctrl.helper_keys.map.address = data.address.road || data.address.pedestrian || undefined;
+
+                            $ctrl.mapDataOptions = []
+
+                            angular.forEach($ctrl.helper_keys.map, function(value, key) {
+                                if (angular.isString(value) || angular.isNumber(value)) {
+                                    var dataTmp = {
+                                        item: key,
+                                        value: value
+                                    };
+                                    $ctrl.mapDataOptions.push(dataTmp);
+                                }
+                            });
                         }
                     }, {}, Authentication.user.langCode);
             }
@@ -225,6 +239,7 @@ _wizard.controller('helperDialogModalController', ['$scope', '$uibModalInstance'
             events.push(
                 $scope.$on('leafletDirectiveMarker.map-marker.click', function(event, args) {
                     delete $ctrl.helper_keys.map;
+                    delete $ctrl.mapDataOptions;
                     $ctrl.map.markers = {};
                 }),
                 $scope.$on('leafletDirectiveMap.map-marker.click', function(event, args) {
@@ -245,6 +260,13 @@ _wizard.controller('helperDialogModalController', ['$scope', '$uibModalInstance'
                     setPosition(point.lat, point.lng, args.leafletObject._zoom);
                 })
             );
+
+            $ctrl.onQuitMapItem = function($item) {
+                $ctrl.helper_keys.map = {};
+                angular.forEach($ctrl.mapDataOptions, function(value) {
+                    $ctrl.helper_keys.map[value.item] = value.value;
+                });
+            };
 
             //config domain
             $ctrl.domain = {};
