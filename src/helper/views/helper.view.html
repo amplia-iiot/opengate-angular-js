@@ -54,7 +54,7 @@
                             <leaflet id="map-marker" lf-center="$ctrl.map.center" layers="$ctrl.map.layers" controls="$ctrl.map.controls" event-broadcast="$ctrl.map.events" markers="$ctrl.map.markers" width="100% " height="300px"></leaflet>
                         </div>
                     </div>
-                    <div class="col-xs-12" ng-if="$ctrl.mapDataOptions && $ctrl.mapIsExclusive">
+                    <div class="col-xs-12" ng-if="$ctrl.mapIsExclusive">
                         <ui-select multiple tagging tagging-label="false" ng-model="$ctrl.mapDataOptions" theme="bootstrap" sortable="false" on-select="$ctrl.onQuitMapItem()" on-remove="$ctrl.onQuitMapItem()" search-enabled="false">
                             <ui-select-match placeholder="{{ 'FORM.PLACEHOLDER.MAP_HELPER' | translate }}">{{$item.item + ': ' + $item.value}}</ui-select-match>
                             <ui-select-choices repeat="locationData in $ctrl.mapDataOptions | highlight: $select.search">

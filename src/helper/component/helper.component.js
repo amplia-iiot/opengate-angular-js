@@ -263,9 +263,16 @@ _wizard.controller('helperDialogModalController', ['$scope', '$uibModalInstance'
 
             $ctrl.onQuitMapItem = function($item) {
                 $ctrl.helper_keys.map = {};
-                angular.forEach($ctrl.mapDataOptions, function(value) {
-                    $ctrl.helper_keys.map[value.item] = value.value;
-                });
+
+                if (!$ctrl.mapDataOptions || $ctrl.mapDataOptions.length === 0) {
+                    delete $ctrl.helper_keys.map;
+                    delete $ctrl.mapDataOptions;
+                    $ctrl.map.markers = {};
+                } else {
+                    angular.forEach($ctrl.mapDataOptions, function(value) {
+                        $ctrl.helper_keys.map[value.item] = value.value;
+                    });
+                }
             };
 
             //config domain
