@@ -145,9 +145,9 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
             $window.jsep.addBinaryOp('||', 2);
             $window.jsep.addBinaryOp('or', 2);
 
-            $window.jsep.addBinaryOp('in', 6);
-            $window.jsep.addBinaryOp('nin', 6);
-            $window.jsep.addBinaryOp('within', 6);
+            $window.jsep.addBinaryOp('in', 2);
+            $window.jsep.addBinaryOp('nin', 2);
+            $window.jsep.addBinaryOp('within', 2);
             $window.jsep.addBinaryOp('~', 6);
             $window.jsep.addBinaryOp('=', 6);
 
@@ -211,8 +211,8 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
                     newFilter[parse_tree.operator] = [];
                 }
 
-                // newFilter[parse_tree.operator].push(parseSimple(parse_tree.left));
-                // newFilter[parse_tree.operator].push(parseSimple(parse_tree.right));
+                //newFilter[parse_tree.operator].push(parseSimple(parse_tree.left));
+                //newFilter[parse_tree.operator].push(parseSimple(parse_tree.right));
 
                 if (parse_tree.left.operator === parse_tree.operator) {
                     if (parent) {
