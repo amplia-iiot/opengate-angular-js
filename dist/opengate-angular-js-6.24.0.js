@@ -16187,12 +16187,11 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
                     error = err.description;
                 }
                 defered.reject(error);
-                filter.par
             }
 
             return promise;
         }
-        //job.id like "1e" or (job.id filter.par job.status== FINISHED) and job.status== CANCELED
+        //job.id like "1e" or (job.id like 189 and job.status== FINISHED) and job.status== CANCELED
         // job.id like "1e" and job.status<= CANCELED
 
         function parseSimple(parse_tree, parent) {
@@ -16263,51 +16262,6 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
             return newFilter;
 
         }
-        // function parseSimple(parse_tree) {
-        //     var id, value, newFilter = {};
-        //     var op;
-        //     if (parse_tree.type === 'BinaryExpression' && /\eq|\neq|\exists|\like|\gt|\lt|\gte|\lte|\=|\<|\>|\~|\!/.test(parse_tree.operator)) {
-        //         id = getId(parse_tree.left).split('.').reverse().join('.');
-        //         id = id.replace('.undefined', '[]');
-        //         var right = parse_tree.right;
-        //         if (right.type === 'UnaryExpression' && right.prefix) {
-        //             var ue = right.operator + right.argument.value;
-        //             value = isNaN(ue) ? ue : (ue * 1);
-        //         } else {
-        //             value = right.name || right.value;
-        //         }
-        //         op = getSimpleOperator(parse_tree.operator);
-
-        //         newFilter[op] = {};
-        //         newFilter[op][id] = value;
-        //     } else if (parse_tree.type === 'BinaryExpression' && /or|and/.test(parse_tree.operator)) {
-        //         newFilter[parse_tree.operator] = [];
-        //         newFilter[parse_tree.operator].push(parseSimple(parse_tree.left));
-        //         newFilter[parse_tree.operator].push(parseSimple(parse_tree.right));
-
-        //     } else if (parse_tree.type === 'BinaryExpression' && /\within/.test(parse_tree.operator)) {
-        //         if (parse_tree.right.type === 'ArrayExpression' && parse_tree.right.elements[0].left && parse_tree.right.elements[0].right) {
-        //             id = getId(parse_tree.left).split('.').reverse().join('.');
-        //             id = id.replace('.undefined', '[]');
-        //             op = getSimpleOperator(parse_tree.operator);
-
-        //             newFilter[op] = {};
-
-        //             newFilter[op][id] = [parse_tree.right.elements[0].left.value, parse_tree.right.elements[0].right.value];
-        //         }
-        //     } else if (parse_tree.type === 'BinaryExpression' && /\in|\nin/.test(parse_tree.operator)) {
-        //         id = getId(parse_tree.left).split('.').reverse().join('.');
-        //         id = id.replace('.undefined', '[]');
-        //         op = getSimpleOperator(parse_tree.operator);
-
-        //         newFilter[op] = {};
-        //         var ids = getSimpleValuesFromArray(parse_tree.right);
-        //         newFilter[op][id] = ids;
-        //     }
-
-        //     return newFilter;
-
-        // }
 
         function getSimpleValuesFromArray(parser_tree) {
             var identifiers = [];
