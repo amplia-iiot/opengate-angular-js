@@ -298,7 +298,8 @@ angular.module('opengate-angular-js').controller('customUiSelectAssetController'
                                         });
                                     });
                             }
-                        });
+                        },function(result) { console.log(result)}
+                        );
                     },
                     permissions: 'manageEntity'
                 }
