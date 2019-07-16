@@ -16393,7 +16393,7 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
             },
             'OPERATIONS': { key: 'entityId' },
             'ALARMS': { key: 'entityId' },
-            'DATAPOINTS': { key: 'datapoints.entityIdentifie' },
+            'DATAPOINTS': { key: 'datapoints.entityIdentifier' },
             'TICKET': {
                 key: 'provision.ticket.entity',
                 schema: {
