@@ -2,10 +2,7 @@
 
 angular.module('uxleaflet', []);
 angular.module('opengate-angular-js', ['schemaForm', 'uxleaflet', 'ui-leaflet']);
-angular.module("opengate-angular-js").run(["$templateCache", function($templateCache) {$templateCache.put("components/views/action.button.html","<div class=form-group><div ng-repeat=\"action in $ctrl.actions\" permission permission-only=action.permissions><a title={{action.title}} style=cursor:pointer ng-click=$ctrl.onAction(action) class=\"custom-ui-select-button btn btn-xs no-margin {{(action.disable && action.disable()) ? \'disabled\' : \'\'}}\"><i class=\"text-primary {{action.icon}}\"></i>&nbsp;<small>{{action.title}}</small></a></div></div>");
-$templateCache.put("components/views/custom.ui.map.html","<div class=no-margin><div class=\"col-xs-12 no-padding\"><label class=custom-ui-select-label>{{ ($ctrl.label?$ctrl.label:\'FORM.LABEL.ENTITY_KEY\') | translate }}<field-options required=$ctrl.required multiple=$ctrl.multiple loading=$ctrl.reloadingInfo></field-options></label></div><div class=row ng-if=!$ctrl.disabled><div class=\"col-xs-3 form-group no-margin\"><input ng-required=$ctrl.required type=number class=form-control title=\"{{ \'FORM.TITLE.LATITUDE\' | translate }}\" placeholder=\"{{ \'FORM.TITLE.LATITUDE\' | translate }}\" ng-model=$ctrl.coordsObj.new.lat></div><div class=\"col-xs-3 form-group no-margin\"><input ng-required=$ctrl.required type=number class=form-control title=\"{{ \'FORM.TITLE.LONGITUDE\' | translate }}\" placeholder=\"{{ \'FORM.TITLE.LONGITUDE\' | translate }}\" ng-model=$ctrl.coordsObj.new.lng></div><div class=\"col-xs-2 form-group no-margin\"><button type=button ng-disabled=\"$ctrl.coordsObj.current.lat === $ctrl.coordsObj.new.lat && $ctrl.coordsObj.current.lng === $ctrl.coordsObj.new.lng\" class=\"btn btn-info no-margin\" ng-click=$ctrl.searchCoords()><i class=\"fa fa-search\"></i></button> <button type=button ng-if=!$ctrl.disabled class=\"btn btn-default no-margin\" ng-click=$ctrl.applyCoords()><i class=\"fa fa-map-marker\"></i></button></div></div><div class=col-xs-12><small>{{ $ctrl.display_name }}&nbsp;</small></div><leaflet ng-if=$ctrl.showMap id=\"{{ $ctrl.map.id }}\" lf-center=$ctrl.map.center layers=$ctrl.map.layers controls=$ctrl.map.controls event-broadcast=$ctrl.map.events markers=$ctrl.map.markers width=100% height=150px></leaflet><div class=row ng-if=\"!$ctrl.disabled && !$ctrl.onlyMap\"><div class=\"col-xs-12 col-md-5 form-group no-margin\"><input ng-required=$ctrl.required type=text class=form-control title=\"{{ \'FORM.TITLE.ADDRESS\' | translate }}\" placeholder=\"{{ \'FORM.TITLE.ADDRESS\' | translate }}\" ng-model=$ctrl.location.address></div><div class=\"col-xs-12 col-md-5 form-group no-margin\"><input ng-required=$ctrl.required type=text class=form-control title=\"{{ \'FORM.TITLE.TOWN\' | translate }}\" placeholder=\"{{ \'FORM.TITLE.TOWN\' | translate }}\" ng-model=$ctrl.location.town></div><div class=\"col-xs-12 col-md-2 form-group no-margin\"><input ng-required=$ctrl.required type=text class=form-control title=\"{{ \'FORM.TITLE.POSTAL_CODE\' | translate }}\" placeholder=\"{{ \'FORM.TITLE.POSTAL_CODE\' | translate }}\" ng-model=$ctrl.location.postal></div></div><div class=row ng-if=\"!$ctrl.disabled && !$ctrl.onlyMap\"><div class=\"col-xs-12 col-md-5 form-group no-margin\"><input ng-required=$ctrl.required type=text class=form-control title=\"{{ \'FORM.TITLE.PROVINCE\' | translate }}\" placeholder=\"{{ \'FORM.TITLE.PROVINCE\' | translate }}\" ng-model=$ctrl.location.province></div><div class=\"col-xs-12 col-md-5 form-group no-margin\"><input ng-required=$ctrl.required type=text class=form-control title=\"{{ \'FORM.TITLE.REGION\' | translate }}\" placeholder=\"{{ \'FORM.TITLE.REGION\' | translate }}\" ng-model=$ctrl.location.region></div><div class=\"col-xs-12 col-md-2 form-group no-margin\"><input ng-required=$ctrl.required type=text class=form-control title=\"{{ \'FORM.TITLE.COUNTRY.NAME\' | translate }}\" placeholder=\"{{ \'FORM.TITLE.COUNTRY.NAME\' | translate }}\" ng-model=$ctrl.location.country></div></div></div>");
-$templateCache.put("components/views/fieldOptions.html","<small class=ux-txt-danger ng-if=$ctrl.required title=\"{{ \'FORM.FIELD.REQUIRED\' | translate }}\">*</small> <small class=ux-txt-warning ng-if=$ctrl.optional title=\"{{ \'FORM.FIELD.OPTIONAL\' | translate }}\">(-)</small> <small class=ux-txt-info ng-if=$ctrl.multiple title=\"{{ \'FORM.FIELD.MULTIPLE\' | translate }}\"><span class=fa-stack style=font-size:0.5em;><i class=\"fa fa-clone fa-stack-2x\"></i> <i class=\"fa fa-check fa-stack-1x\"></i></span></small> <small class=ux-txt-info ng-if=$ctrl.loading><span class=\"fa fa-spinner fa-spin\" style=font-size:1.2em;></span></small>");
-$templateCache.put("custom-ui-select/views/custom.ui.select.area.html","<div class=\"form-group no-margin\" mass-autocomplete ng-if=$ctrl.multiple><label class=custom-ui-select-label>{{ \'FORM.LABEL.AREA\' | translate }}<field-options required=$ctrl.required multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=area ng-model=$ctrl.area theme=bootstrap title=\"{{ \'FORM.PLACEHOLDER.AREA_MULTI\' | translate }}\" custom-ui-select multiple=true custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.areaSelected($item, $model)\" on-remove=\"$ctrl.areaRemove($item, $model)\" ng-required=$ctrl.required><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.AREA_MULTI\' | translate }}\" allow-clear=true>{{$item.identifier}}</ui-select-match><ui-select-choices repeat=\"area in $ctrl.ownConfig.collection | filter:$select.search track by $index\"><div><span ng-bind-html=\"area.identifier | highlight: $select.search\"></span> - <span ng-bind-html=\"area.name | highlight: $select.search\"></span><br><span ng-bind-html=\"area.organization | highlight: $select.search\"></span></div></ui-select-choices><ui-select-no-choice>{{ \'UX-ERROR.DATA_NOT_FOUND\' | translate }}</ui-select-no-choice></ui-select></div><div class=\"form-group no-margin\" mass-autocomplete ng-if=!$ctrl.multiple><label class=custom-ui-select-label>{{ \'FORM.LABEL.AREA\' | translate }}<field-options required=$ctrl.required multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=area ng-model=$ctrl.area theme=bootstrap title=\"Choose an area\" custom-ui-select multiple=false custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.areaSelected($item, $model)\" on-remove=\"$ctrl.areaRemove($item, $model)\" ng-required=$ctrl.required><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.AREA\' | translate }}\" allow-clear=true>{{$item.identifier}}</ui-select-match><ui-select-choices repeat=\"area in $ctrl.ownConfig.collection | filter:$select.search track by $index\"><div><span ng-bind-html=\"area.identifier | highlight: $select.search\"></span> - <span ng-bind-html=\"area.name | highlight: $select.search\"></span><br><span ng-bind-html=\"area.organization | highlight: $select.search\"></span></div></ui-select-choices><ui-select-no-choice>{{ \'UX-ERROR.DATA_NOT_FOUND\' | translate }}</ui-select-no-choice></ui-select></div>");
+angular.module("opengate-angular-js").run(["$templateCache", function($templateCache) {$templateCache.put("custom-ui-select/views/custom.ui.select.area.html","<div class=\"form-group no-margin\" mass-autocomplete ng-if=$ctrl.multiple><label class=custom-ui-select-label>{{ \'FORM.LABEL.AREA\' | translate }}<field-options required=$ctrl.required multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=area ng-model=$ctrl.area theme=bootstrap title=\"{{ \'FORM.PLACEHOLDER.AREA_MULTI\' | translate }}\" custom-ui-select multiple=true custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.areaSelected($item, $model)\" on-remove=\"$ctrl.areaRemove($item, $model)\" ng-required=$ctrl.required><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.AREA_MULTI\' | translate }}\" allow-clear=true>{{$item.identifier}}</ui-select-match><ui-select-choices repeat=\"area in $ctrl.ownConfig.collection | filter:$select.search track by $index\"><div><span ng-bind-html=\"area.identifier | highlight: $select.search\"></span> - <span ng-bind-html=\"area.name | highlight: $select.search\"></span><br><span ng-bind-html=\"area.organization | highlight: $select.search\"></span></div></ui-select-choices><ui-select-no-choice>{{ \'UX-ERROR.DATA_NOT_FOUND\' | translate }}</ui-select-no-choice></ui-select></div><div class=\"form-group no-margin\" mass-autocomplete ng-if=!$ctrl.multiple><label class=custom-ui-select-label>{{ \'FORM.LABEL.AREA\' | translate }}<field-options required=$ctrl.required multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=area ng-model=$ctrl.area theme=bootstrap title=\"Choose an area\" custom-ui-select multiple=false custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.areaSelected($item, $model)\" on-remove=\"$ctrl.areaRemove($item, $model)\" ng-required=$ctrl.required><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.AREA\' | translate }}\" allow-clear=true>{{$item.identifier}}</ui-select-match><ui-select-choices repeat=\"area in $ctrl.ownConfig.collection | filter:$select.search track by $index\"><div><span ng-bind-html=\"area.identifier | highlight: $select.search\"></span> - <span ng-bind-html=\"area.name | highlight: $select.search\"></span><br><span ng-bind-html=\"area.organization | highlight: $select.search\"></span></div></ui-select-choices><ui-select-no-choice>{{ \'UX-ERROR.DATA_NOT_FOUND\' | translate }}</ui-select-no-choice></ui-select></div>");
 $templateCache.put("custom-ui-select/views/custom.ui.select.asset.html","<div class=\"form-group no-margin\" mass-autocomplete ng-if=$ctrl.multiple><label ng-if=$ctrl.label class=custom-ui-select-label>{{ $ctrl.label | translate }}<field-options required=$ctrl.ngRequired multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig ng-disabled=$ctrl.disabled name=asset ng-model=$ctrl.asset theme=bootstrap title=\"Choose an asset\" custom-ui-select custom-ui-select-action=$ctrl.action multiple=true custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.assetSelected($item, $model)\" on-remove=\"$ctrl.assetRemove($item, $model)\" ng-required=$ctrl.ngRequired disable-default-sorted=form.disableDefaultSorted><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ $ctrl.placeholder || \'FORM.PLACEHOLDER.ENTITY\' | translate }}\" allow-clear=true>{{$item.provision.administration.identifier._current.value || $item.identifier}}</ui-select-match><ui-select-choices repeat=\"assetData in $ctrl.ownConfig.collection track by $index\"><span ng-bind-html=\"$ctrl.showFieldInfo($ctrl.matchFields.principal, assetData) | highlight: $select.search\"></span> <small><div ng-repeat=\"(field, path) in $ctrl.matchFields.extra track by $index\" ng-if=\"$ctrl.showFieldInfo(path, assetData)\">{{ field | translate }}: <span ng-bind-html=\"$ctrl.showFieldInfo(path, assetData) | highlight: $select.search\"></span></div></small></ui-select-choices><ui-select-no-choice>{{ \'UX-ERROR.DATA_NOT_FOUND\' | translate }}</ui-select-no-choice></ui-select></div><div class=\"form-group no-margin\" mass-autocomplete ng-if=!$ctrl.multiple><label ng-if=$ctrl.label class=custom-ui-select-label>{{ $ctrl.label | translate }}<field-options required=$ctrl.ngRequired multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig ng-disabled=$ctrl.disabled name=asset ng-model=$ctrl.asset theme=bootstrap title=\"Choose an asset\" custom-ui-select multiple=false custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.assetSelected($item, $model)\" on-remove=\"$ctrl.assetRemove($item, $model)\" ng-required=$ctrl.ngRequired disable-default-sorted=form.disableDefaultSorted><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ $ctrl.placeholder || \'FORM.PLACEHOLDER.ENTITY\' | translate }}\" allow-clear=true>{{$item.provision.administration.identifier._current.value || $item.identifier}}</ui-select-match><ui-select-choices repeat=\"assetData in $ctrl.ownConfig.collection track by $index\"><span ng-bind-html=\"$ctrl.showFieldInfo($ctrl.matchFields.principal, assetData) | highlight: $select.search\"></span> <small><div ng-repeat=\"(field, path) in $ctrl.matchFields.extra track by $index\" ng-if=\"$ctrl.showFieldInfo(path, assetData)\">{{ field | translate }}: <span ng-bind-html=\"$ctrl.showFieldInfo(path, assetData) | highlight: $select.search\"></span></div></small></ui-select-choices><ui-select-no-choice>{{ \'UX-ERROR.DATA_NOT_FOUND\' | translate }}</ui-select-no-choice></ui-select></div><action-button ng-if=!$ctrl.disabled actions=$ctrl.uiSelectActions></action-button>");
 $templateCache.put("custom-ui-select/views/custom.ui.select.bundle.html","<div class=\"form-group no-margin\" mass-autocomplete ng-if=$ctrl.multiple><label class=custom-ui-select-label>{{ \'FORM.LABEL.BUNDLE_NAME\' | translate }}<field-options required=$ctrl.required multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=bundle ng-model=$ctrl.bundle theme=bootstrap title=\"{{ \'FORM.PLACEHOLDER.BUNDLE_MULTI\' | translate }}\" custom-ui-select multiple=true custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.bundleSelected($item, $model)\" on-remove=\"$ctrl.bundleRemove($item, $model)\" ng-required=$ctrl.required><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.BUNDLE_MULTI\' | translate }}\" allow-clear=true>{{$item.name}} (v{{$item.version}})</ui-select-match><ui-select-choices repeat=\"bundle in $ctrl.ownConfig.collection | filter:$select.search track by $index\"><div><span ng-bind-html=\"bundle.name | highlight: $select.search\"></span> - <span ng-bind-html=\"bundle.version | highlight: $select.search\"></span><br><span ng-bind-html=\"bundle.description | highlight: $select.search\"></span></div></ui-select-choices><ui-select-no-choice>{{ \'UX-ERROR.DATA_NOT_FOUND\' | translate }}</ui-select-no-choice></ui-select></div><div class=\"form-group no-margin\" mass-autocomplete ng-if=!$ctrl.multiple><label class=custom-ui-select-label>{{ \'FORM.LABEL.BUNDLE_NAME\' | translate }}<field-options required=$ctrl.required multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=bundle ng-model=$ctrl.bundle theme=bootstrap title=\"Choose an bundle\" custom-ui-select multiple=false custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.bundleSelected($item, $model)\" on-remove=\"$ctrl.bundleRemove($item, $model)\" ng-required=$ctrl.required><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.BUNDLE\' | translate }}\" allow-clear=true>{{$item.name}} (v{{$item.version}})</ui-select-match><ui-select-choices repeat=\"bundle in $ctrl.ownConfig.collection | filter:$select.search track by $index\"><div><span ng-bind-html=\"bundle.name | highlight: $select.search\"></span> (v<span ng-bind-html=\"bundle.version | highlight: $select.search\"></span>)<br><span ng-bind-html=\"bundle.description | highlight: $select.search\"></span></div></ui-select-choices><ui-select-no-choice>{{ \'UX-ERROR.DATA_NOT_FOUND\' | translate }}</ui-select-no-choice></ui-select></div>");
 $templateCache.put("custom-ui-select/views/custom.ui.select.certificate.html","<div class=\"form-group no-margin\" mass-autocomplete ng-if=$ctrl.multiple><label ng-if=$ctrl.label class=custom-ui-select-label>{{ $ctrl.label | translate }}<field-options required=$ctrl.ngRequired multiple=$ctrl.multiple></field-options></label><ui-select name=certificate custom-ui-select-config=$ctrl.ownConfig ng-model=$ctrl.certificate theme=bootstrap title=\"{{ \'FORM.PLACEHOLDER.CERTIFICATE\' | translate }}\" custom-ui-select multiple=true custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.certificateSelected($item, $model)\" on-remove=\"$ctrl.certificateRemove($item, $model)\" ng-required=$ctrl.required><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.CERTIFICATE\' | translate }}\" allow-clear=true>{{ $item.id || $item }}</ui-select-match><ui-select-choices repeat=\"certificate in $ctrl.ownConfig.collection track by $index\"><div><span ng-bind-html=\"certificate.name | highlight: $select.search\"></span> - <span ng-bind-html=\"\'\'+certificate.version| highlight: $select.search\"></span></div><small>{{ FORM.LABEL.ENTITY.ID | translate }} <span ng-bind-html=\"certificate.id | highlight: $select.search\"></span><p></p>{{ FORM.LABEL.ENTITY.STATE | translate }} <span ng-bind-html=\"certificate.administrativeState | highlight: $select.search\"></span> {{ FORM.LABEL.SERIAL_NUMBER | translate:\'{ punctuationMark: \":\" }\' }} <span ng-bind-html=\"certificate.serialNumber | highlight: $select.search\"></span><p></p>{{ FORM.LABEL.ENTITY.VALID_FROM | translate }} <span ng-bind-html=\"certificate.valid.from | highlight: $select.search\"></span> {{ FORM.LABEL.ENTITY.UNTIL | translate }} <span ng-bind-html=\"certificate.valid.until | highlight: $select.search\"></span><p></p></small></ui-select-choices><ui-select-no-choice>{{ \'UX-ERROR.DATA_NOT_FOUND\' | translate }}</ui-select-no-choice></ui-select></div><div class=\"form-group no-margin\" mass-autocomplete ng-if=!$ctrl.multiple><label ng-if=$ctrl.label class=custom-ui-select-label>{{ $ctrl.label | translate }}<field-options required=$ctrl.ngRequired multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=certificate ng-model=$ctrl.certificate theme=bootstrap title=\"{{ \'FORM.PLACEHOLDER.CERTIFICATE\' | translate }}\" custom-ui-select multiple=false custom-mass-autocomplete-item=$ctrl.ownConfig on-select=\"$ctrl.certificateSelected($item, $model)\" on-remove=\"$ctrl.certificateRemove($item, $model)\" ng-required=$ctrl.ngRequired><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.CERTIFICATE\' | translate }}\" allow-clear=true>{{ $item.id || $item }}</ui-select-match><ui-select-choices repeat=\"certificate in $ctrl.ownConfig.collection track by $index\"><div><span ng-bind-html=\"certificate.name | highlight: $select.search\"></span> - <span ng-bind-html=\"\'\'+certificate.version| highlight: $select.search\"></span></div><small>{{ FORM.LABEL.ENTITY.ID | translate }} <span ng-bind-html=\"certificate.id | highlight: $select.search\"></span><p></p>{{ FORM.LABEL.ENTITY.STATE | translate }} <span ng-bind-html=\"certificate.administrativeState | highlight: $select.search\"></span> {{ FORM.LABEL.SERIAL_NUMBER | translate:\'{ punctuationMark: \":\" }\' }} <span ng-bind-html=\"certificate.serialNumber | highlight: $select.search\"></span><p></p>{{ FORM.LABEL.ENTITY.VALID_FROM | translate }} <span ng-bind-html=\"certificate.valid.from | highlight: $select.search\"></span> {{ FORM.LABEL.ENTITY.UNTIL | translate }} <span ng-bind-html=\"certificate.valid.until | highlight: $select.search\"></span><p></p></small></ui-select-choices><ui-select-no-choice>{{ \'UX-ERROR.DATA_NOT_FOUND\' | translate }}</ui-select-no-choice></ui-select></div>");
@@ -25,6 +22,9 @@ $templateCache.put("custom-ui-select/views/custom.ui.select.ticket.html","<div c
 $templateCache.put("custom-ui-select/views/ui.select.icon.html","<div class=\"form-group no-margin\"><label ng-if=$ctrl.label for=icon translate>FORM.LABEL.ICON</label><div class=\"{{$ctrl.allowClear ? \'input-group\' : \'\'}}\"><ui-select id=icon name=icon ng-model=$ctrl.icon theme=bootstrap ng-required=$ctrl.required title=$ctrl.title ng-disabled=$ctrl.disabled on-remove=\"$ctrl.iconRemove($item, $model)\" on-select=\"$ctrl.iconSelected($item, $model)\" allow-clear=$ctrl.allowClear uis-open-close=$ctrl.onOpenClose(isOpen)><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.ICON.CHOOSE\' | translate }}\" allow-clear=$ctrl.allowClear><i class=\"fa {{$select.selected.key}} fa-2x\"></i> <span>{{$select.selected.key}}</span></ui-select-match><ui-select-choices class=oux-icon-selector repeat=\"icon.key as (key, icon) in $ctrl.availableIcons | filter: $select.search | limitTo: $ctrl.maxIcons\"><i class=\"fa fa-4x\" ng-class=icon.key title={{icon.key}}></i><br><span ng-bind-html=\"icon.key| highlight: $select.search\"></span></ui-select-choices><ui-select-no-choice>{{ \'UX-ERROR.DATA_NOT_FOUND\' | translate }}</ui-select-no-choice></ui-select><span class=input-group-btn ng-if=$ctrl.allowClear><button type=button ng-click=\"$ctrl.icon = undefined\" class=\"btn btn-default\"><span class=\"glyphicon glyphicon-trash\"></span></button></span></div></div>");
 $templateCache.put("custom-ui-select/views/ui.select.ogicon.html","<div class=\"form-group no-margin\"><label ng-if=$ctrl.label for=icon translate>FORM.LABEL.ICON</label><div class=\"{{$ctrl.allowClear ? \'input-group\' : \'\'}} {{ $ctrl.smallIcons?\'small-icons\':\'\'}}\" ng-style=\"{ \'width\' : $ctrl.allowClear?\'100%\':null }\"><ui-select id=icon name=icon ng-model=$ctrl.icon theme=bootstrap ng-required=$ctrl.required title=$ctrl.title ng-disabled=$ctrl.disabled on-remove=\"$ctrl.iconRemove($item, $model)\" on-select=\"$ctrl.iconSelected($item, $model)\" allow-clear=$ctrl.allowClear><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.ICON.CHOOSE\' | translate }}\" allow-clear=$ctrl.allowClear><i class=\"ogicon {{ $ctrl.smallIcons?\'\':\'fa-2x\'}} {{$select.selected.key}}\"></i> <span ng-if=!$ctrl.smallIcons>{{$select.selected.key}}</span></ui-select-match><ui-select-choices class=oux-icon-selector repeat=\"icon.key as (key, icon) in $ctrl.availableIcons | filter: $select.search | limitTo: $ctrl.maxIcons track by $index\"><i class=\"ogicon fa-3x\" ng-class=icon.key title={{icon.key}}></i><br><span ng-bind-html=\"icon.key| highlight: $select.search\"></span></ui-select-choices><ui-select-no-choice>{{ \'UX-ERROR.DATA_NOT_FOUND\' | translate }}</ui-select-no-choice></ui-select><span class=input-group-btn ng-if=\"$ctrl.allowClear && $ctrl.icon\"><button ng-click=$ctrl.removeSelection() type=button class=\"btn btn-xs no-padding no-margin ux-txt-danger ogicon ogicon-close\">&nbsp;</button></span></div></div>");
 $templateCache.put("custom-ui-select/views/ui.select.resourceType.html","<div class=\"form-group no-margin\" ng-if=$ctrl.multiple><label class=custom-ui-select-label>{{\'FORM.LABEL.RESOURCE_TYPE\' | translate }}<field-options required=$ctrl.required multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=resourceType ng-model=$ctrl.resourceType theme=bootstrap title=\"{{ \'FORM.PLACEHOLDER.RESOURCE_TYPE_MULTI\' | translate }}\" custom-ui-select multiple=true on-select=\"$ctrl.resourceTypeSelected($item, $model)\" on-remove=\"$ctrl.resourceTypeRemove($item, $model)\" ng-required=$ctrl.required><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.RESOURCE_TYPE\' | translate }}\" allow-clear=true>{{$item.identifier | translate}}</ui-select-match><ui-select-choices repeat=\"resourceType in $ctrl.ownConfig.collection | filter:$select.search track by $index\"><div><span ng-bind-html=\"resourceType.identifier | translate | highlight: $select.search\"></span></div></ui-select-choices><ui-select-no-choice>{{ \'UX-ERROR.DATA_NOT_FOUND\' | translate }}</ui-select-no-choice></ui-select></div><div class=\"form-group no-margin\" ng-if=!$ctrl.multiple><label class=custom-ui-select-label>{{\'FORM.LABEL.RESOURCE_TYPE\' | translate }}<field-options required=$ctrl.required multiple=$ctrl.multiple></field-options></label><ui-select custom-ui-select-config=$ctrl.ownConfig name=resourceType ng-model=$ctrl.resourceType theme=bootstrap title=\"Choose an resourceType\" custom-ui-select multiple=false on-select=\"$ctrl.resourceTypeSelected($item, $model)\" on-remove=\"$ctrl.resourceTypeRemove($item, $model)\" ng-required=$ctrl.required><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"{{ \'FORM.PLACEHOLDER.RESOURCE_TYPE\' | translate }}\" allow-clear=true>{{$item.identifier | translate}}</ui-select-match><ui-select-choices repeat=\"resourceType in $ctrl.ownConfig.collection | filter:$select.search track by $index\"><div><span ng-bind-html=\"resourceType.identifier | translate | highlight: $select.search\"></span></div></ui-select-choices><ui-select-no-choice>{{ \'UX-ERROR.DATA_NOT_FOUND\' | translate }}</ui-select-no-choice></ui-select></div>");
+$templateCache.put("components/views/action.button.html","<div class=form-group><div ng-repeat=\"action in $ctrl.actions\" permission permission-only=action.permissions><a title={{action.title}} style=cursor:pointer ng-click=$ctrl.onAction(action) class=\"custom-ui-select-button btn btn-xs no-margin {{(action.disable && action.disable()) ? \'disabled\' : \'\'}}\"><i class=\"text-primary {{action.icon}}\"></i>&nbsp;<small>{{action.title}}</small></a></div></div>");
+$templateCache.put("components/views/custom.ui.map.html","<div class=no-margin><div class=\"col-xs-12 no-padding\"><label class=custom-ui-select-label>{{ ($ctrl.label?$ctrl.label:\'FORM.LABEL.ENTITY_KEY\') | translate }}<field-options required=$ctrl.required multiple=$ctrl.multiple loading=$ctrl.reloadingInfo></field-options></label></div><div class=row ng-if=!$ctrl.disabled><div class=\"col-xs-3 form-group no-margin\"><input ng-required=$ctrl.required type=number class=form-control title=\"{{ \'FORM.TITLE.LATITUDE\' | translate }}\" placeholder=\"{{ \'FORM.TITLE.LATITUDE\' | translate }}\" ng-model=$ctrl.coordsObj.new.lat></div><div class=\"col-xs-3 form-group no-margin\"><input ng-required=$ctrl.required type=number class=form-control title=\"{{ \'FORM.TITLE.LONGITUDE\' | translate }}\" placeholder=\"{{ \'FORM.TITLE.LONGITUDE\' | translate }}\" ng-model=$ctrl.coordsObj.new.lng></div><div class=\"col-xs-2 form-group no-margin\"><button type=button ng-disabled=\"$ctrl.coordsObj.current.lat === $ctrl.coordsObj.new.lat && $ctrl.coordsObj.current.lng === $ctrl.coordsObj.new.lng\" class=\"btn btn-info no-margin\" ng-click=$ctrl.searchCoords()><i class=\"fa fa-search\"></i></button> <button type=button ng-if=!$ctrl.disabled class=\"btn btn-default no-margin\" ng-click=$ctrl.applyCoords()><i class=\"fa fa-map-marker\"></i></button></div></div><div class=col-xs-12><small>{{ $ctrl.display_name }}&nbsp;</small></div><leaflet ng-if=$ctrl.showMap id=\"{{ $ctrl.map.id }}\" lf-center=$ctrl.map.center layers=$ctrl.map.layers controls=$ctrl.map.controls event-broadcast=$ctrl.map.events markers=$ctrl.map.markers width=100% height=150px></leaflet><div class=row ng-if=\"!$ctrl.disabled && !$ctrl.onlyMap\"><div class=\"col-xs-12 col-md-5 form-group no-margin\"><input ng-required=$ctrl.required type=text class=form-control title=\"{{ \'FORM.TITLE.ADDRESS\' | translate }}\" placeholder=\"{{ \'FORM.TITLE.ADDRESS\' | translate }}\" ng-model=$ctrl.location.address></div><div class=\"col-xs-12 col-md-5 form-group no-margin\"><input ng-required=$ctrl.required type=text class=form-control title=\"{{ \'FORM.TITLE.TOWN\' | translate }}\" placeholder=\"{{ \'FORM.TITLE.TOWN\' | translate }}\" ng-model=$ctrl.location.town></div><div class=\"col-xs-12 col-md-2 form-group no-margin\"><input ng-required=$ctrl.required type=text class=form-control title=\"{{ \'FORM.TITLE.POSTAL_CODE\' | translate }}\" placeholder=\"{{ \'FORM.TITLE.POSTAL_CODE\' | translate }}\" ng-model=$ctrl.location.postal></div></div><div class=row ng-if=\"!$ctrl.disabled && !$ctrl.onlyMap\"><div class=\"col-xs-12 col-md-5 form-group no-margin\"><input ng-required=$ctrl.required type=text class=form-control title=\"{{ \'FORM.TITLE.PROVINCE\' | translate }}\" placeholder=\"{{ \'FORM.TITLE.PROVINCE\' | translate }}\" ng-model=$ctrl.location.province></div><div class=\"col-xs-12 col-md-5 form-group no-margin\"><input ng-required=$ctrl.required type=text class=form-control title=\"{{ \'FORM.TITLE.REGION\' | translate }}\" placeholder=\"{{ \'FORM.TITLE.REGION\' | translate }}\" ng-model=$ctrl.location.region></div><div class=\"col-xs-12 col-md-2 form-group no-margin\"><input ng-required=$ctrl.required type=text class=form-control title=\"{{ \'FORM.TITLE.COUNTRY.NAME\' | translate }}\" placeholder=\"{{ \'FORM.TITLE.COUNTRY.NAME\' | translate }}\" ng-model=$ctrl.location.country></div></div></div>");
+$templateCache.put("components/views/fieldOptions.html","<small class=ux-txt-danger ng-if=$ctrl.required title=\"{{ \'FORM.FIELD.REQUIRED\' | translate }}\">*</small> <small class=ux-txt-warning ng-if=$ctrl.optional title=\"{{ \'FORM.FIELD.OPTIONAL\' | translate }}\">(-)</small> <small class=ux-txt-info ng-if=$ctrl.multiple title=\"{{ \'FORM.FIELD.MULTIPLE\' | translate }}\"><span class=fa-stack style=font-size:0.5em;><i class=\"fa fa-clone fa-stack-2x\"></i> <i class=\"fa fa-check fa-stack-1x\"></i></span></small> <small class=ux-txt-info ng-if=$ctrl.loading><span class=\"fa fa-spinner fa-spin\" style=font-size:1.2em;></span></small>");
 $templateCache.put("helper/views/custom.ui.select.helper.html","<div class=form-group ng-hide=$ctrl.have_helper_keys ng-transclude=input><label for={{$ctrl.id}}>{{$ctrl.labelText | translate }}<field-options required=$ctrl.required></field-options></label> <input class=form-control name={{$ctrl.name}} type=text id={{$ctrl.id}} ng-model=$ctrl.helperModel ng-required=$ctrl.required> <span class=help-inline ng-show=\"!$ctrl.helperModel && $ctrl.required\">{{$ctrl.labelError}}</span></div><div class=form-group ng-hide=!$ctrl.have_helper_keys><label for={{$ctrl.id}}>{{$ctrl.labelText | translate }}<field-options required=$ctrl.required></field-options></label><ui-select id={{$ctrl.id}} name={{$ctrl.name}} ng-model=$ctrl.helperModel theme=bootstrap title=\"Choose an option\" ng-required=$ctrl.required tagging=$ctrl.helperTagTransform tagging-label=false><ui-select-match class={{$ctrl.uiSelectMatchClass}} placeholder=\"Choose an option\"><span ng-if=\"$select.selected && $select.selected.key !== \'image\'\">{{$select.selected.value}}</span> <img ng-if=\"$select.selected && $select.selected.key === \'image\'\" src=\"{{ $select.selected.value }}\" style=max-height:30px;></ui-select-match><ui-select-choices repeat=\"parameter.value as (key, parameter) in $ctrl.$helper_keys | filter: $select.search\"><span ng-bind-html=\"parameter.key | highlight: $select.search\"></span>: <small ng-if=\"parameter.key !== \'image\'\" ng-bind-html=\"parameter.value | highlight: $select.search\"></small> <img ng-if=\"parameter.key === \'image\'\" src=\"{{ parameter.value }}\" style=max-height:30px;></ui-select-choices></ui-select></div>");
 $templateCache.put("helper/views/helper.view.html","<div class=\"container col-md-12 col-xs-12\" style=padding-left:0;padding-right:0 ng-transclude></div><div class=\"col-xs-12 col-md-12 text-right no-margin no-padding\"><a class=\"btn btn-default btn-xs ux-txt-info pointer oux-button-margin\" ng-href ng-click=$helper.open() ng-switch=$helper.mode><span ng-switch-when=button><i ng-class=$helper.helperButton aria-hidden=true></i></span> <span ng-switch-when=title>{{$helper.helperTitle}}</span> <span ng-switch-when=title_button><i ng-class=$helper.helperButton aria-hidden=true></i>{{$helper.helperTitle}}</span> <span ng-switch-default><i ng-if=\"!$helper.helperTitle && !$helper.helperButton\" class=\"fa fa-lg fa-search-plus\" title=\"{{ \'FORM.HELPER.TITLE\' | translate }}\" aria-hidden=true></i></span></a></div><script type=text/ng-template id=helper.view.modal.html><div class=\"modal-header\"> <h4 class=\"modal-title\">{{ \'FORM.HELPER.TITLE\' | translate }}</h4> </div> <div class=\"modal-body without-padding-top\"> <uib-accordion close-others=\"true\"> <div uib-accordion-group is-open=\"$ctrl.areaIsOpen\" class=\"area-option\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.areaIsExclusive: false\"> <div uib-accordion-heading>{{ \'FORM.AREAS\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-area on-select-item=\"$ctrl.onSelectAreaKey($item, $model)\" on-remove=\"$ctrl.onDeleteAreaKey()\" area=\"$ctrl.area.selected\" organization=\"$ctrl.area.organization\" multiple=\"false\"> </custom-ui-select-area> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.area}\" ng-click=\"$ctrl.ok(\'area\')\" ng-disabled=\"!$ctrl.helper_keys.area\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.assetIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? (!$ctrl.entityIsExclusive && !$ctrl.assetIsExclusive): false\" class=\"asset-option\"> <div uib-accordion-heading>{{ \'FORM.ASSETS\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-asset on-select-item=\"$ctrl.onSelectAssetKey($item, $model)\" on-remove=\"$ctrl.onDeleteAssetKey()\" asset=\"$ctrl.asset.selected\" multiple=\"false\" specific-type=\"{{$ctrl.specific_type}}\"></custom-ui-select-asset> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.asset}\" ng-click=\"$ctrl.ok(\'asset\')\" ng-disabled=\"!$ctrl.helper_keys.asset\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.mapIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.mapIsExclusive : false\" class=\"map-option\"> <div uib-accordion-heading>Map</div> <div class=\"row\" ng-if=\"$ctrl.mapIsOpen\"> <div class=\"col-xs-12\"> <div class=\"form-group leaflet-container\"> <leaflet id=\"map-marker\" lf-center=\"$ctrl.map.center\" layers=\"$ctrl.map.layers\" controls=\"$ctrl.map.controls\" event-broadcast=\"$ctrl.map.events\" markers=\"$ctrl.map.markers\" width=\"100% \" height=\"300px\"></leaflet> </div> </div> <div class=\"col-xs-12\" ng-if=\"$ctrl.mapIsExclusive\"> <ui-select multiple tagging tagging-label=\"false\" ng-model=\"$ctrl.mapDataOptions\" theme=\"bootstrap\" sortable=\"false\" on-select=\"$ctrl.onQuitMapItem()\" on-remove=\"$ctrl.onQuitMapItem()\" search-enabled=\"false\"> <ui-select-match placeholder=\"{{ \'FORM.PLACEHOLDER.MAP_HELPER\' | translate }}\">{{$item.item + \': \' + $item.value}}</ui-select-match> <ui-select-choices repeat=\"locationData in $ctrl.mapDataOptions | highlight: $select.search\"> {{locationData.item | translate}}: {{locationData.value}}</ui-select-choices> </ui-select> </div> <div class=\"col-xs-12 text-right\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.map || $ctrl.mapDataOptions.length === 0}\" ng-click=\"$ctrl.ok(\'map\')\" ng-disabled=\"!$ctrl.helper_keys.map\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.entityIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.entityIsExclusive: false\" class=\"entity-option\"> <div uib-accordion-heading>{{ \'FORM.ENTITY\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-entity on-select-item=\"$ctrl.onSelectEntityKey($item, $model)\" on-remove=\"$ctrl.onDeleteEntityKey()\" entity=\"$ctrl.entity.selected\" multiple=\"false\"> </custom-ui-select-entity> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.entity}\" ng-click=\"$ctrl.ok(\'entity\')\" ng-disabled=\"!$ctrl.helper_keys.entity\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.deviceIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? (!$ctrl.entityIsExclusive && !$ctrl.deviceIsExclusive): false\" class=\"device-option\"> <div uib-accordion-heading>{{ \'FORM.DEVICES\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-device on-select-item=\"$ctrl.onSelectDeviceKey($item, $model)\" on-remove=\"$ctrl.onDeleteDeviceKey()\" device=\"$ctrl.device.selected\" multiple=\"false\" specific-type=\"{{$ctrl.specific_type}}\"> </custom-ui-select-device> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.device}\" ng-click=\"$ctrl.ok(\'device\')\" ng-disabled=\"!$ctrl.helper_keys.device\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.subscriberIsOpen\" class=\"subscriber-option\" ng-hide=\"$ctrl.helper_exclusive ? (!$ctrl.entityIsExclusive && !$ctrl.subscriberIsExclusive): false\"> <div uib-accordion-heading>{{ \'FORM.SUBSCRIBERS\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-subscriber on-select-item=\"$ctrl.onSelectSubscriberKey($item, $model)\" specific-type=\"{{$ctrl.specific_type}}\" organization=\"{{$ctrl.organization}}\" channel=\"{{$ctrl.channel}}\" exclude-devices=\"$ctrl.exclude_devices\" on-remove=\"$ctrl.onDeleteSubscriberKey()\" entity=\"$ctrl.subscriber.selected\" multiple=\"false\"> </custom-ui-select-subscriber> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.subscriber}\" ng-click=\"$ctrl.ok(\'subscriber\')\" ng-disabled=\"!$ctrl.helper_keys.subscriber\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.subscriptionIsOpen\" class=\"subscription-option\" ng-hide=\"$ctrl.helper_exclusive ? (!$ctrl.entityIsExclusive && !$ctrl.subscriptionIsExclusive): false\"> <div uib-accordion-heading>{{ \'FORM.SUBSCRIPTIONS\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-subscription on-select-item=\"$ctrl.onSelectSubscriptionKey($item, $model)\" specific-type=\"{{$ctrl.specific_type}}\" organization=\"{{$ctrl.organization}}\" channel=\"{{$ctrl.channel}}\" exclude-devices=\"$ctrl.exclude_devices\" on-remove=\"$ctrl.onDeleteSubscriptionKey()\" entity=\"$ctrl.subscription.selected\" multiple=\"false\"> </custom-ui-select-subscription> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.subscription}\" ng-click=\"$ctrl.ok(\'subscription\')\" ng-disabled=\"!$ctrl.helper_keys.subscription\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.datastreamIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.datastreamIsExclusive: false\" class=\"datastream-option\"> <div uib-accordion-heading>{{ \'FORM.DATASTREAM\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-datastream on-select-item=\"$ctrl.onSelectDatastreamKey($item, $model)\" on-remove=\"$ctrl.onDeleteDatastreamKey()\" datastream=\"$ctrl.datastream.selected\" multiple=\"false\"> </custom-ui-select-datastream> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.datastream}\" ng-click=\"$ctrl.ok(\'datastream\')\" ng-disabled=\"!$ctrl.helper_keys.datastream\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.domainIsOpen\" class=\"domain-option\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.domainIsExclusive: false\"> <div uib-accordion-heading>{{ \'FORM.DOMAINS\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-domain on-select-item=\"$ctrl.onSelectDomainKey($item, $model)\" on-remove=\"$ctrl.onDeleteDomainKey()\" domain=\"$ctrl.domain.selected\" multiple=\"false\"> </custom-ui-select-domain> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.domain}\" ng-click=\"$ctrl.ok(\'domain\')\" ng-disabled=\"!$ctrl.helper_keys.domain\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.bundleIsOpen\" class=\"bundle-option\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.bundleIsExclusive: false\"> <div uib-accordion-heading>{{ \'FORM.BUNDLES\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-bundle on-select-item=\"$ctrl.onSelectBundleKey($item, $model)\" on-remove=\"$ctrl.onDeleteBundleKey()\" bundle=\"$ctrl.bundle.selected\" multiple=\"false\"> </custom-ui-select-bundle> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.bundle}\" ng-click=\"$ctrl.ok(\'bundle\')\" ng-disabled=\"!$ctrl.helper_keys.bundle\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.imageIsOpen\" class=\"image-option\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.imageIsExclusive: false\"> <div uib-accordion-heading>{{ \'FORM.IMAGE\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-12 col-md-8\"> <div name=\"image\" ng-if=\"!$ctrl.helper_keys.image && !$ctrl.helper_keys.image.image\" ngf-drop=\"$ctrl.imageSelected($file)\" ng-model=\"$ctrl.image\" ngf-max-size=\"1MB\" ngf-select=\"$ctrl.imageSelected($file)\" class=\"drop-box pointer\" ngf-drag-over-class=\"\'dragover\'\" ngf-multiple=\"false\" ng-required=\"$ctrl.helper_keys.image\" ngf-accept=\"\'image/*\'\" ngf-pattern=\"\'image/*\'\">{{ \'FORM.DRAG_DROP\' | translate }} <br>{{ \'FORM.MAX_SIZE\' | translate }}</div> <img ng-if=\"$ctrl.helper_keys.image && $ctrl.helper_keys.image.image\" src=\"{{ $ctrl.helper_keys.image.image }}\" style=\"max-height:200px;\" name=\"image\" /> </div> <div class=\"col-xs-12 col-md-4\"> <button id=\"idRemoveFileLink\" ng-if=\"$ctrl.helper_keys.image && $ctrl.helper_keys.image.image\" ng-click=\"$ctrl.removeDataFile()\" class=\"btn btn-warning ux-txt-warning pointer\"> <i class=\"fa fa-trash\" aria-hidden=\"true\"></i> {{ \'BUTTON.TITLE.REMOVE\' | translate }}</button> <a ng-if=\"$ctrl.helper_exclusive\" class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.bundle}\" ng-click=\"$ctrl.ok(\'bundle\')\" ng-disabled=\"!$ctrl.helper_keys.bundle\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.organizationIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.organizationIsExclusive: false\" class=\"organization-option\"> <div uib-accordion-heading>{{ \'FORM.ORGANIZATION\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-organization on-select-item=\"$ctrl.onSelectOrganization($item, $model)\" on-remove=\"$ctrl.onDeleteOrganization()\" organization=\"$ctrl.organizationC.selected\" multiple=\"false\"></custom-ui-select-organization> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.organization}\" ng-click=\"$ctrl.ok(\'organization\')\" ng-disabled=\"!$ctrl.helper_keys.organization\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.channelIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.channelIsExclusive: false\" class=\"channel-option\"> <div uib-accordion-heading>{{ \'FORM.CHANNEL\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-channel on-select-item=\"$ctrl.onSelectChannel($item, $model)\" on-remove=\"$ctrl.onDeleteChannel()\" channel=\"$ctrl.channelC.selected\" multiple=\"false\" organization=\"$ctrl.organization\"></custom-ui-select-channel> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.channel}\" ng-click=\"$ctrl.ok(\'channel\')\" ng-disabled=\"!$ctrl.helper_keys.channel\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> <div uib-accordion-group is-open=\"$ctrl.serviceGroupIsOpen\" ng-hide=\"$ctrl.helper_exclusive ? !$ctrl.serviceGroupIsExclusive: false\" class=\"serviceGroup-option\"> <div uib-accordion-heading>{{ \'FORM.SERVICE_GROUP\' | translate }}</div> <div class=\"row row-eq-height\"> <div class=\"col-xs-10\"> <custom-ui-select-service-group on-select-item=\"$ctrl.onSelectServiceGroup($item, $model)\" on-remove=\"$ctrl.onDeleteServiceGroup()\" service-group=\"$ctrl.serviceGroupC.selected\" multiple=\"false\"></custom-ui-select-service-group> </div> <div class=\"col-xs-2 vcenter no-padding\" ng-if=\"$ctrl.helper_exclusive\"> <a class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.helper_keys.serviceGroup}\" ng-click=\"$ctrl.ok(\'channel\')\" ng-disabled=\"!$ctrl.helper_keys.serviceGroup\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> </a> </div> </div> </div> </uib-accordion> </div> <div class=\"modal-footer\"> <a ng-if=\"!$ctrl.helper_exclusive\" class=\"top-buffer btn btn-default ux-txt-success pointer\" ng-class=\"{\'disabled\': !$ctrl.canApply()}\" ng-click=\"$ctrl.ok()\" ng-disabled=\"!$ctrl.canApply()\"> <i class=\"fa fa-lg fa-files-o\" aria-hidden=\"true\"></i> {{\'BUTTON.TITLE.ALL\' | translate }} </a> <button class=\"btn btn-warning\" type=\"button\" ng-click=\"$ctrl.cancel()\">{{\'BUTTON.TITLE.CANCEL\' | translate}}</button> </div></script>");
 $templateCache.put("schema-form/views/schema.form.asset.template.html","<div ng-class=\"{\'has-error\': hasError(), \'has-success\': hasSuccess(), \'has-feedback\': form.feedback !== false }\" class=\"form-group {{form.htmlClass}}\"><custom-ui-select-asset label=form.title specific-type={{form.specificType}} on-select-item=\"evalExpr(form.onselectitem, {$item: $item, $model: $model})\" on-remove=\"evalExpr(form.onremove, {$item: $item, $model: $model})\" ng-model=$$value$$ placeholder=\"{{form.placeholder || \'FORM.PLACEHOLDER.ELEMENT\' | translate }}\" identifier=$$value$$ multiple=form.multiple sf-field-model=replaceAll ui-select-match-class=form.uiSelectMatchClass ui-select-match-fields=form.uiSelectMatchFields asset=form.dummy ng-required=form.required actions=form.actions oql={{form.oql}} quick-search-fields={{form.quickSearchFields}} specific-type-search-fields={{form.specificTypeSearchFields}} disabled=\"form.readonly || form.disabled\" disable-default-sorted=form.disableDefaultSorted disable-case-sensitive=form.disableCaseSensitive exact-search=form.exactSearch force-filter=form.forceFilter full-info=form.fullInfo></custom-ui-select-asset></div>");
@@ -17110,136 +17110,6 @@ angular.module('opengate-angular-js')
     });
 
 
-/**
- * Edits by Ryan Hutchison
- * Credit: https://github.com/paulyoder/angular-bootstrap-show-errors */
-
-angular.module('opengate-angular-js')
-    .directive('showErrors', ['$timeout', '$interpolate', function($timeout, $interpolate) {
-        var linkFn = function(scope, el, attrs, formCtrl) {
-            var inputEl, inputName, inputNgEl, options, showSuccess, toggleClasses,
-                initCheck = false,
-                showValidationMessages = false,
-                blurred = false;
-
-            options = scope.$eval(attrs.showErrors) || {};
-            showSuccess = options.showSuccess || false;
-            inputEl = el[0].querySelector('.form-control[name]') || el[0].querySelector('[name]');
-            inputNgEl = angular.element(inputEl);
-            inputName = $interpolate(inputNgEl.attr('name') || '')(scope);
-
-            if (!inputName) {
-                throw 'show-errors element has no child input elements with a \'name\' attribute class';
-            }
-
-            var reset = function() {
-                return $timeout(function() {
-                    el.removeClass('has-error');
-                    el.removeClass('has-success');
-                    showValidationMessages = false;
-                }, 0, false);
-            };
-
-            scope.$watch(function() {
-                return formCtrl[inputName] && formCtrl[inputName].$invalid;
-            }, function(invalid) {
-                return toggleClasses(invalid);
-            });
-
-            scope.$on('show-errors-check-validity', function(event, name) {
-                if (angular.isUndefined(name) || formCtrl.$name === name) {
-                    initCheck = true;
-                    showValidationMessages = true;
-
-                    return toggleClasses(formCtrl[inputName].$invalid);
-                }
-            });
-
-            scope.$on('show-errors-reset', function(event, name) {
-                if (angular.isUndefined(name) || formCtrl.$name === name) {
-                    return reset();
-                }
-            });
-
-            toggleClasses = function(invalid) {
-                el.toggleClass('has-error', showValidationMessages && invalid);
-                if (showSuccess) {
-                    return el.toggleClass('has-success', showValidationMessages && !invalid);
-                }
-            };
-        };
-
-        return {
-            restrict: 'A',
-            require: '^form',
-            compile: function(elem, attrs) {
-                if (attrs.showErrors.indexOf('skipFormGroupCheck') === -1) {
-                    if (!(elem.hasClass('form-group') || elem.hasClass('input-group'))) {
-                        throw 'show-errors element does not have the \'form-group\' or \'input-group\' class';
-                    }
-                }
-                return linkFn;
-            }
-        };
-    }]);
-
-
-angular.module('opengate-angular-js')
-    .directive('elemReady', ["$parse", function($parse) {
-        return {
-            restrict: 'A',
-            link: function($scope, elem, attrs) {
-                elem.ready(function() {
-                    $scope.$apply(function() {
-                        var func = $parse(attrs.elemReady);
-                        func($scope);
-                    });
-                });
-            }
-        };
-    }]);
-
-
-angular.module('opengate-angular-js').directive('onSelection', ["RangeService", function(RangeService) {
-    return {
-        restrict: 'A',
-        scope: false,
-        link: function(scope, element, attrs) {
-            var options = {
-                snapToWord: ('snapToWord' in attrs),
-                highlight: ('autoHighlight' in attrs)
-            };
-
-            element.bind('mouseup', function() {
-                if (RangeService.disabled) {
-                    return;
-                }
-
-                var selection = RangeService.process(options);
-
-                if (selection && selection.getText() && selection.getText().trim() !== '') {
-                    scope.$eval(attrs.onSelection, {
-                        selection: selection
-                    });
-                }
-            });
-        }
-    };
-}]);
-
-
-angular.module('opengate-angular-js').directive('disallowSpaces', function() {
-    return {
-        restrict: 'A',
-        link: function($scope, $element) {
-            $element.bind('input', function() {
-                window.$(this).val(window.$(this).val().replace(/ /g, ''));
-            });
-        }
-    };
-});
-
-
 
 angular.module('opengate-angular-js').controller('fieldOptionsController', ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
     var ctrl = this;
@@ -17575,4 +17445,134 @@ angular.module('opengate-angular-js').component('actionButton', {
         actions: '<'
     }
 
+});
+
+
+/**
+ * Edits by Ryan Hutchison
+ * Credit: https://github.com/paulyoder/angular-bootstrap-show-errors */
+
+angular.module('opengate-angular-js')
+    .directive('showErrors', ['$timeout', '$interpolate', function($timeout, $interpolate) {
+        var linkFn = function(scope, el, attrs, formCtrl) {
+            var inputEl, inputName, inputNgEl, options, showSuccess, toggleClasses,
+                initCheck = false,
+                showValidationMessages = false,
+                blurred = false;
+
+            options = scope.$eval(attrs.showErrors) || {};
+            showSuccess = options.showSuccess || false;
+            inputEl = el[0].querySelector('.form-control[name]') || el[0].querySelector('[name]');
+            inputNgEl = angular.element(inputEl);
+            inputName = $interpolate(inputNgEl.attr('name') || '')(scope);
+
+            if (!inputName) {
+                throw 'show-errors element has no child input elements with a \'name\' attribute class';
+            }
+
+            var reset = function() {
+                return $timeout(function() {
+                    el.removeClass('has-error');
+                    el.removeClass('has-success');
+                    showValidationMessages = false;
+                }, 0, false);
+            };
+
+            scope.$watch(function() {
+                return formCtrl[inputName] && formCtrl[inputName].$invalid;
+            }, function(invalid) {
+                return toggleClasses(invalid);
+            });
+
+            scope.$on('show-errors-check-validity', function(event, name) {
+                if (angular.isUndefined(name) || formCtrl.$name === name) {
+                    initCheck = true;
+                    showValidationMessages = true;
+
+                    return toggleClasses(formCtrl[inputName].$invalid);
+                }
+            });
+
+            scope.$on('show-errors-reset', function(event, name) {
+                if (angular.isUndefined(name) || formCtrl.$name === name) {
+                    return reset();
+                }
+            });
+
+            toggleClasses = function(invalid) {
+                el.toggleClass('has-error', showValidationMessages && invalid);
+                if (showSuccess) {
+                    return el.toggleClass('has-success', showValidationMessages && !invalid);
+                }
+            };
+        };
+
+        return {
+            restrict: 'A',
+            require: '^form',
+            compile: function(elem, attrs) {
+                if (attrs.showErrors.indexOf('skipFormGroupCheck') === -1) {
+                    if (!(elem.hasClass('form-group') || elem.hasClass('input-group'))) {
+                        throw 'show-errors element does not have the \'form-group\' or \'input-group\' class';
+                    }
+                }
+                return linkFn;
+            }
+        };
+    }]);
+
+
+angular.module('opengate-angular-js')
+    .directive('elemReady', ["$parse", function($parse) {
+        return {
+            restrict: 'A',
+            link: function($scope, elem, attrs) {
+                elem.ready(function() {
+                    $scope.$apply(function() {
+                        var func = $parse(attrs.elemReady);
+                        func($scope);
+                    });
+                });
+            }
+        };
+    }]);
+
+
+angular.module('opengate-angular-js').directive('onSelection', ["RangeService", function(RangeService) {
+    return {
+        restrict: 'A',
+        scope: false,
+        link: function(scope, element, attrs) {
+            var options = {
+                snapToWord: ('snapToWord' in attrs),
+                highlight: ('autoHighlight' in attrs)
+            };
+
+            element.bind('mouseup', function() {
+                if (RangeService.disabled) {
+                    return;
+                }
+
+                var selection = RangeService.process(options);
+
+                if (selection && selection.getText() && selection.getText().trim() !== '') {
+                    scope.$eval(attrs.onSelection, {
+                        selection: selection
+                    });
+                }
+            });
+        }
+    };
+}]);
+
+
+angular.module('opengate-angular-js').directive('disallowSpaces', function() {
+    return {
+        restrict: 'A',
+        link: function($scope, $element) {
+            $element.bind('input', function() {
+                window.$(this).val(window.$(this).val().replace(/ /g, ''));
+            });
+        }
+    };
 });})(window);
