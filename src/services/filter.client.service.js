@@ -399,6 +399,154 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
             },
 
         }
+        var filterKeyForSelectItems = {
+            'provision.administration.identifier': {
+                key: 'provision.administration.identifier',
+                schema: {
+                    type: "string",
+                    public: true,
+                    pattern: "^[a-zA-Z0-9_@.-]*$"
+                },
+                schemaName : 'ogIdentifier',
+            },
+            'provision.device.identifier': {
+                key: 'provision.device.identifier',
+                schema: {
+                    type: "string",
+                    public: true,
+                    pattern: "^[a-zA-Z0-9_@.-]*$"
+                },
+                schemaName : 'ogIdentifier',
+            },
+            'provision.device.communicationModules[].subscription.identifier':{
+                key: 'device.communicationModules[].subscription.identifier',
+                schema: {
+                    type: "string",
+                    public: true,
+                    pattern: "^[a-zA-Z0-9_@.-]*$"
+                },
+                schemaName : 'ogIdentifier',
+            },
+            'provision.device.specificType':{
+                key: 'provision.device.specificType',
+                schema: {
+                    type: "string",
+                    enum : [ 
+                        'BLOODPRESSURE_SENSOR', 
+                        'COMHUB', 
+                        'CONCENTRATOR', 
+                        'CONTAINER', 
+                        'COORDINATOR', 
+                        'GATEWAY', 
+                        'GENERIC', 
+                        'GLUCOMETER_SENSOR', 
+                        'METER', 
+                        'MODEM', 
+                        'ROUTER', 
+                        'SENSOR', 
+                        'TPV', 
+                        'VEHICLE', 
+                        'VENDING', 
+                        'WEIGHT_SENSOR'
+                    ]
+                },
+                schemaName : 'deviceSpecificType'
+                    
+            },
+            'provision.asset.specificType':{
+                key: 'provision.asset.specificType',
+                schema : {
+                    type : 'string',
+                    enum : [ 
+                        'BOX', 
+                        'BUILDING', 
+                        'CONTROL_HOUSE', 
+                        'CRANE', 
+                        'FOUNTAIN', 
+                        'ENGINE', 
+                        'HOUSE', 
+                        'MACHINE', 
+                        'OTHER', 
+                        'PALLET', 
+                        'PIPELINE', 
+                        'SPOOL', 
+                        'TOWER', 
+                        'VEHICLE', 
+                        'WIRE', 
+                        'WORKER', 
+                        'SUPPLY_POINT', 
+                        'CONTRACTOR', 
+                        'ORGANIZATION', 
+                        'OPERATOR', 
+                        'CHANNEL', 
+                        'ZONE', 
+                        'PROVINCE', 
+                        'BTS', 
+                        'POSTAL_CODE'
+                    ]
+                },
+                schemaName : 'assetSpecificType',
+
+            },
+            'provision.device.communicationModules[].subscription.specificType':{
+                key: 'provision.device.communicationModules[].subscription.specificType',
+                schema : {
+                    type : 'string',
+                    enum : [ 
+                        'ADSL', 
+                        'CAN', 
+                        'ETH', 
+                        'GENERIC', 
+                        'GSM', 
+                        'HAN', 
+                        'I2C', 
+                        'LOWPAN', 
+                        'MESH', 
+                        'MOBILE', 
+                        'PLC', 
+                        'RS232', 
+                        'RS422', 
+                        'RS485', 
+                        'SIGFOX', 
+                        'UMTS', 
+                        'WIFI', 
+                        'ZIGBEE', 
+                        'ZWAVE', 
+                        'NARROWBAND', 
+                        'LTE_M'
+                    ]
+                },
+                schemaName : 'assetSpecificType',
+
+            },
+            'resourceType':{
+                key: 'provision.asset.specificType',
+                schema : {
+                    type : 'string',
+                    enum : [ 
+                        'entity.asset',
+                        'entity.device',
+                        'entity.subscriber',
+                        'entity.subscription'
+                    ]
+                },
+            },
+            'alarm.id':{
+                key: 'alarm.id'
+            },
+            'alarm.status':{
+                key: 'alarm.status'
+            },
+            'entityId':{
+                key: 'entityId'
+            },
+            'operationId':{
+                key: 'operationId'
+            },
+            'operationName':{
+                key: 'operationName'
+            }
+        }
 
 
         function buildFilterForTemplates(config, type, value) {
@@ -439,6 +587,46 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
             return filter;
         }
 
+        function buildFilterForSelectItems(selectItems){
+            var queryFields = [];
+            var ids = {};
+            var customOql = '';
+            var finalQueryAsString = '(';
+            angular.forEach(selectItems, function(curItemField, key) {
+                var id;
+                if(ids[curItemField]){
+                    id = ids[curItemField];
+                }else {
+                    id = ids[curItemField] = Math.floor((Math.random() * 1000) + 1);
+                    queryFields.push({
+                        id:ids[curItemField],
+                        name: curItemField,
+                        schema : filterKeyForSelectItems[curItemField].schema ||  undefined,
+                        schemaName : filterKeyForSelectItems[curItemField].schemaName ||  undefined,
+                        disabledComparators: [
+                            8
+                        ],
+
+                    });
+                }
+                if (customOql.length > 0) {
+                    customOql += ' or ';
+                    finalQueryAsString += '||'
+                };
+                customOql += curItemField + " eq '" + key + "'";
+                finalQueryAsString += id + '=\"' + key + '\"';
+            });
+            finalQueryAsString +=')';
+            var filter = {
+                oql: customOql,
+                qas: finalQueryAsString,
+                //value: finalFilter ? JSON.stringify(finalFilter) : '{"eq": {"' + filterKeyForTemplates[type] + '": "' + value + '"}}',
+                //json: finalFilter ? JSON.stringify(finalFilter) : '{"eq": {"' + filterKeyForTemplates[type] + '": "' + value + '"}}',
+                qf: queryFields
+            };
+            return filter;
+        }
+
 
         return {
             suggest_field_delimited: function(term, target_element, selectors) {
@@ -466,7 +654,8 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
                     return null;
                 }
             },
-            buildFilterForTemplates: buildFilterForTemplates
+            buildFilterForTemplates: buildFilterForTemplates,
+            buildFilterForSelectItems: buildFilterForSelectItems
         };
     }
 ]);
