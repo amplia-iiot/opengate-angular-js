@@ -120,10 +120,10 @@ angular.module('uxleaflet')
  * This method updates configuration to improve maps experience in offline config
  */
 .run(function($http, allNgBaseLayers, defaultMapOptions) {
-    $http.get('//a.tile.openstreetmap.org/0/0/0.png').catch(function(data) {
-        delete allNgBaseLayers.osm;
-        defaultMapOptions.baseLayers.splice(defaultMapOptions.baseLayers.indexOf('osm'), 1);
-    });
+    // $http.get('//a.tile.openstreetmap.org/0/0/0.png').catch(function(data) {
+    //     delete allNgBaseLayers.osm;
+    //     defaultMapOptions.baseLayers.splice(defaultMapOptions.baseLayers.indexOf('osm'), 1);
+    // });
 
     // $http.get('//maps.google.com/maps').catch(function(data) {
     //     delete allNgBaseLayers.googleTerrain;
@@ -247,7 +247,7 @@ angular.module('uxleaflet')
      * @param {json} optional. Map options for override returned default options.
      */
     _this.getDefaultOptions = function(overOptions) {
-        return angular.extend({}, defaultMapOptions, overOptions || {});
+        return angular.extend({}, angular.copy(defaultMapOptions), overOptions || {});
     };
 
     /** 
@@ -258,7 +258,7 @@ angular.module('uxleaflet')
      */
     _this.createNgOptions = function(options, searchCallBacks) {
 
-        options = options || defaultMapOptions;
+        options = options || angular.copy(defaultMapOptions);
         searchCallBacks = searchCallBacks || {};
 
         var uxLocation = options.l_gohome ? options.l_gohome : null;

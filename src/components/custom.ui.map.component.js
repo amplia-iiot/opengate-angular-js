@@ -16,9 +16,10 @@ angular.module('opengate-angular-js').controller('customUiMapController', ['$sco
                     lng: null
                 }
             };
+            
             $ctrl.ownConfig = {
-                showMap: $ctrl.showMap
-            }
+                showMap: $ctrl.showMap !== undefined && $ctrl.showMap !== null?$ctrl.showMap:true
+            };
 
             $ctrl.reloadingInfo = false;
             $ctrl.getInfo = function() {
@@ -34,11 +35,11 @@ angular.module('opengate-angular-js').controller('customUiMapController', ['$sco
                     $ctrl.coordsObj = {
                         current: {
                             lat: $ctrl.map.markers.marker.lat,
-                            lng: ctrl.map.markers.marker.lng
+                            lng: $ctrl.map.markers.marker.lng
                         },
                         new: {
                             lat: $ctrl.map.markers.marker.lat,
-                            lng: ctrl.map.markers.marker.lng
+                            lng: $ctrl.map.markers.marker.lng
                         }
                     };
                     geocodingService.reverseSearch($ctrl.map.markers.marker.lat, $ctrl.map.markers.marker.lng, 18,
