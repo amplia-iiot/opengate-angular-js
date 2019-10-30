@@ -153,6 +153,7 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
 
             $window.jsep.addBinaryOp('like', 6);
             $window.jsep.addBinaryOp('gt', 6);
+            $window.jsep.addBinaryOp('lt', 6);
             $window.jsep.addBinaryOp('lte', 6);
             $window.jsep.addBinaryOp('gte', 6);
             $window.jsep.addBinaryOp('eq', 6);
