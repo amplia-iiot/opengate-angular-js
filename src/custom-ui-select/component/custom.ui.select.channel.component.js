@@ -145,54 +145,58 @@ angular.module('opengate-angular-js').controller('customUiSelectChannelControlle
             if (ctrl.identifier) {
                 mapIdentifier(ctrl.identifier);
             }
-        };
 
-        function _getChannel(id) {
-            var administration = {
-                identifier: {
-                    _current: {
-                        value: id
+            if (ctrl.disabled !== undefined) {
+                ctrl.ngDisabled = ctrl.disabled;
+            }    
+
+            function _getChannel(id) {
+                var administration = {
+                    identifier: {
+                        _current: {
+                            value: id
+                        }
                     }
+                };
+
+                var channel = angular.copy(administration);
+
+                if (ctrl.organization) {
+                    administration.organization = {
+                        _current: {
+                            value: ctrl.organization
+                        }
+                    };
                 }
-            };
 
-            var channel = angular.copy(administration);
+                administration.channel = channel;
 
-            if (ctrl.organization) {
-                administration.organization = {
-                    _current: {
-                        value: ctrl.organization
+                return {
+                    provision: {
+                        administration: administration
                     }
                 };
             }
 
-            administration.channel = channel;
-
-            return {
-                provision: {
-                    administration: administration
-                }
-            };
-        }
-
-        function mapIdentifier(identifierSrc) {
-            var identifier = identifierSrc;
-            ctrl.channel = [];
-            if (identifier) {
-                if (identifier._current) {
-                    identifier = identifier._current.value;
-                }
-                if (ctrl.multiple) {
-                    if (angular.isArray(identifier)) {
-                        angular.forEach(identifier, function(idTmp) {
-                            ctrl.channel.push(_getChannel(idTmp));
-                        });
+            function mapIdentifier(identifierSrc) {
+                var identifier = identifierSrc;
+                ctrl.channel = [];
+                if (identifier) {
+                    if (identifier._current) {
+                        identifier = identifier._current.value;
                     }
-                } else {
-                    ctrl.channel.push(_getChannel(identifier));
+                    if (ctrl.multiple) {
+                        if (angular.isArray(identifier)) {
+                            angular.forEach(identifier, function(idTmp) {
+                                ctrl.channel.push(_getChannel(idTmp));
+                            });
+                        }
+                    } else {
+                        ctrl.channel.push(_getChannel(identifier));
+                    }
                 }
             }
-        }
+        };
     }
 ]);
 

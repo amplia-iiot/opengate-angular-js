@@ -313,7 +313,7 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
                 operator === 'lte' ? '<=' : operator;
         }
 
-        function parseJsonFilter(jsonFilter, isLeaf) {
+        function parseJsonFilter(jsonFilter, isLeaf, condition) {
             var sqlResult = '';
 
             // validar el tipo de filtro
@@ -321,22 +321,24 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
                 if (angular.isArray(jsonFilter)) {
                     angular.forEach(jsonFilter, function(curElement, idx) {
                         if (idx && !curElement.and && !curElement.or) {
-                            sqlResult += ' and ';
+                            sqlResult += condition?condition:' and ';
                         }
-                        sqlResult += parseJsonFilter(curElement, true);
+                        sqlResult += parseJsonFilter(curElement, true, condition);
                     });
                 } else {
                     if (jsonFilter.and) {
                         if (!isLeaf) {
-                            sqlResult += parseJsonFilter(jsonFilter.and);
+                            sqlResult += parseJsonFilter(jsonFilter.and, false, ' and ');
                         } else {
-                            sqlResult += ' and (' + parseJsonFilter(jsonFilter.and) + ')';
+                            sqlResult += condition?condition:' and ';
+                            sqlResult += '(' + parseJsonFilter(jsonFilter.and, false, ' and ') + ')';
                         }
                     } else if (jsonFilter.or) {
                         if (!isLeaf) {
-                            sqlResult += parseJsonFilter(jsonFilter.or);
+                            sqlResult += parseJsonFilter(jsonFilter.or, false, ' or ');
                         } else {
-                            sqlResult += ' or (' + parseJsonFilter(jsonFilter.or) + ')';
+                            sqlResult += condition?condition:' or ';
+                            sqlResult += '(' + parseJsonFilter(jsonFilter.or, false, ' or ') + ')';
                         }
                     } else {
                         var sqlResultTmp;
@@ -346,7 +348,7 @@ angular.module('opengate-angular-js').factory('Filter', ['$window', '$sce', '$q'
                                 if (!sqlResultTmp) {
                                     sqlResultTmp = '';
                                 } else {
-                                    sqlResultTmp += ' and ';
+                                    sqlResultTmp += condition?condition:' and ';
                                 }
 
                                 var finalValue = angular.isString(value) ? '"' + value + '"' : value;
