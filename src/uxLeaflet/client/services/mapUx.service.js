@@ -135,12 +135,12 @@ angular.module('uxleaflet')
     // });
     // http://mt0.google.com/vt/lyrs=m&x=0&y=0&z=0
 
-    $http.get('//a.basemaps.cartocdn.com/dark_all/0/0/0.png').catch(function(data) {
-        delete allNgBaseLayers.dark2;
-        defaultMapOptions.baseLayers.splice(defaultMapOptions.baseLayers.indexOf('dark2'), 1);
-    });
+    // $http.get('//a.basemaps.cartocdn.com/dark_all/1/1/1.png').catch(function(data) {
+    //     delete allNgBaseLayers.dark2;
+    //     defaultMapOptions.baseLayers.splice(defaultMapOptions.baseLayers.indexOf('dark2'), 1);
+    // });
 
-    $http.get('//maps.opengate.es/osm_tiles/0/0/0.png').catch(function(data) {
+    $http.get('//maps.opengate.es/osm_tiles/1/1/1.png').catch(function(data) {
         delete allNgBaseLayers.ogWorld;
         defaultMapOptions.baseLayers.splice(defaultMapOptions.baseLayers.indexOf('ogWorld'), 1);
     });
