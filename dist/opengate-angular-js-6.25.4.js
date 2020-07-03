@@ -2309,22 +2309,22 @@ angular.module('opengate-angular-js')
             $scope.today = function(no_fire_event) {
                 $scope.todayClass = 'btn-success';
                 $scope.oneDayClass = $scope.oneWeekClass = $scope.oneMonthClass = $scope.customClass = 'btn-info';
-                $scope.apply(genWindowTime('today'), !no_fire_event);
+                $scope.apply(genWindowTime('day', 'today'), !no_fire_event);
             };
             $scope.oneDay = function(no_fire_event) {
                 $scope.oneDayClass = 'btn-success';
                 $scope.oneWeekClass = $scope.oneMonthClass = $scope.customClass = $scope.todayClass = 'btn-info';
-                $scope.apply(genWindowTime('days'), !no_fire_event);
+                $scope.apply(genWindowTime('minute', 'days'), !no_fire_event);
             };
             $scope.oneWeek = function(no_fire_event) {
                 $scope.oneWeekClass = 'btn-success';
                 $scope.oneDayClass = $scope.oneMonthClass = $scope.customClass = $scope.todayClass = 'btn-info';
-                $scope.apply(genWindowTime('weeks'), !no_fire_event);
+                $scope.apply(genWindowTime('day', 'weeks'), !no_fire_event);
             };
             $scope.oneMonth = function(no_fire_event) {
                 $scope.oneMonthClass = 'btn-success';
                 $scope.oneWeekClass = $scope.oneDayClass = $scope.customClass = $scope.todayClass = 'btn-info';
-                $scope.apply(genWindowTime('months'), !no_fire_event);
+                $scope.apply(genWindowTime('day', 'months'), !no_fire_event);
             };
 
             $scope.applyCustom = function(no_fire_event) {
@@ -2413,9 +2413,8 @@ angular.module('opengate-angular-js')
 
             $scope.init();
 
-            function genWindowTime(type) {
-                var from = window.moment().startOf('day').subtract(1, type);
-
+            function genWindowTime(startof, type) {
+                var from = window.moment().startOf(startof).subtract(1, type);
                 return {
                     from: from._d,
                     type: type
